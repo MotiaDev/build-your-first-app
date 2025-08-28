@@ -1,0 +1,325 @@
+---
+description: State management between steps
+globs: 
+alwaysApply: false
+---
+# Motia State Management
+
+State management in Motia allows data to be persisted and shared between steps within a single workflow execution (flow instance), identified by a unique `traceId`.
+
+## Core Concepts
+
+-   **Zero-config in-memory storage**: Default adapter, easy to get started.
+-   **Flexible storage adapters**: Supports Memory (default), File system, and Redis for more persistent or distributed state.
+-   **Automatic state cleanup with TTL**: Configurable Time-To-Live for state entries, especially useful with adapters like Redis.
+-   **Flow-level isolation using `traceId`**: Each flow execution has its own isolated state, preventing data collision between different workflow runs. The `traceId` acts as the primary scope or namespace for all state operations within that flow instance.
+
+## Basic Usage
+
+The `state` object is available in the handler's context.
+
+**TypeScript Example:**
+```typescript
+// Assuming FlowContext is imported or defined, providing 'state' and 'traceId'.
+// import { FlowContext } from 'motia';
+
+// Example handler function demonstrating state operations.
+export const handler = async (input: any, { state, traceId, logger }: FlowContext) => {
+  // 'traceId' is crucial: it scopes all state operations to the current flow instance.
+  
+  // Store data: Associates 'userObject' with the key 'user' under the current 'traceId'.
+  // The value can be any JSON-serializable object.
+  const userObject = { name: 'Alice', preferences: { theme: 'dark' } };
+  await state.set(traceId, 'user', userObject);
+  logger.info('User data stored in state', { traceId, key: 'user', value: userObject });
+
+  // Retrieve data: Fetches the value associated with the key 'user' for the current 'traceId'.
+  // It's good practice to type the expected return value if known.
+  const retrievedUser = await state.get<{ name: string, preferences: { theme: string } }>(traceId, 'user');
+  if (retrievedUser) {
+    logger.info('User data retrieved from state', { traceId, key: 'user', value: retrievedUser });
+    // console.log(retrievedUser.name); // Alice
+  } else {
+    logger.warn('No user data found in state for key', { traceId, key: 'user' });
+  }
+  
+  // Delete specific data: Removes the key-value pair for 'user' under the current 'traceId'.
+  await state.delete(traceId, 'user');
+  logger.info('User data deleted from state', { traceId, key: 'user' });
+
+  // Clear all flow state: Removes all key-value pairs associated with the current 'traceId'.
+  // Use with caution, as this erases all state for the flow instance.
+  await state.clear(traceId);
+  logger.info('All state cleared for flow instance', { traceId });
+};
+```
+
+**Python Example:**
+```python
+# 'ctx' (context object) provides access to 'state' and 'trace_id'.
+async def handler(input_data, ctx):
+    # 'trace_id' scopes state operations to the current flow instance.
+    trace_id = ctx.trace_id
+ 
+    # Store state: Associates 'booking_details' with the key 'booking' under 'trace_id'.
+    # 'input_data' might contain customer and venue information.
+    booking_details = {
+        'customer': getattr(input_data, 'customer', 'Unknown Customer'),
+        'venue': getattr(input_data, 'venue', 'Unknown Venue'),
+        'status': 'pending_confirmation'
+    }
+    await ctx.state.set(trace_id, 'booking', booking_details)
+    ctx.logger.info(f"Booking details stored for traceId: {trace_id}")
+ 
+    # Retrieve state: Fetches the 'booking' data for 'trace_id'.
+    retrieved_booking = await ctx.state.get(trace_id, 'booking')
+    if retrieved_booking:
+        ctx.logger.info(f"Retrieved booking: {retrieved_booking} for traceId: {trace_id}")
+    else:
+        ctx.logger.warn(f"No booking found for traceId: {trace_id}, key: booking")
+ 
+    # Delete specific state: Removes the 'booking' data for 'trace_id'.
+    await ctx.state.delete(trace_id, 'booking')
+    ctx.logger.info(f"Booking details deleted for traceId: {trace_id}")
+ 
+    # Clear all state for this flow instance: Removes all keys under 'trace_id'.
+    await ctx.state.clear(trace_id)
+    ctx.logger.info(f"All state cleared for trace_id: {trace_id}")
+```
+
+**Ruby Example:**
+```ruby
+# 'context' object provides access to 'state' and 'trace_id'.
+def handler(input_data, context)
+  # 'trace_id' scopes state operations to the current flow instance.
+  trace_id = context.trace_id
+ 
+  # Store state: Associates 'booking_details' with the key 'booking' under 'trace_id'.
+  # 'input_data' might be a hash or an object with customer and venue attributes.
+  booking_details = {
+    customer: input_data[:customer] || 'Unknown Customer', # Using Ruby hash access
+    venue: input_data[:venue] || 'Unknown Venue',
+    status: 'awaiting_payment'
+  }
+  context.state.set(trace_id, 'booking', booking_details)
+  context.logger.info("Booking details stored for trace_id: #{trace_id}")
+ 
+  # Retrieve state: Fetches the 'booking' data for 'trace_id'.
+  retrieved_booking = context.state.get(trace_id, 'booking')
+  if retrieved_booking
+    context.logger.info("Retrieved booking: #{retrieved_booking.inspect} for trace_id: #{trace_id}")
+  else
+    context.logger.warn("No booking found for trace_id: #{trace_id}, key: booking")
+  end
+ 
+  # Delete specific state: Removes the 'booking' data for 'trace_id'.
+  context.state.delete(trace_id, 'booking')
+  context.logger.info("Booking details deleted for trace_id: #{trace_id}")
+ 
+  # Clear all state for this flow instance: Removes all keys under 'trace_id'.
+  context.state.clear(trace_id)
+  context.logger.info("All state cleared for trace_id: #{trace_id}")
+end
+```
+
+## State Methods
+
+| Method   | Usage                                       | Description                                                                 |
+| :------- | :------------------------------------------ | :-------------------------------------------------------------------------- |
+| `get`    | `await state.get(traceId, key)`             | Retrieves the value associated with `key` for the given `traceId`.          |
+| `set`    | `await state.set(traceId, key, value)`      | Stores the `value` associated with `key` for the given `traceId`.           |
+| `delete` | `await state.delete(traceId, key)`          | Deletes the key-value pair for `key` for the given `traceId`.             |
+| `clear`  | `await state.clear(traceId)`                | Removes all key-value pairs associated with the given `traceId`.            |
+
+## Storage Adapters
+
+Configure storage adapters in `config.yml` (or `config.yaml`) in your project root.
+
+```
+my-motia-project/
+├── config.yml       # Motia configuration file
+└── steps/
+    ├── step-1.ts
+    └── step-2.ts
+```
+
+### Memory (Default)
+No explicit configuration needed, but can be specified. Ideal for development and simple use cases. State is lost when the process restarts.
+```yaml
+# config.yml
+state:
+  adapter: memory # This is the default if 'state' section is omitted or 'adapter' is not specified.
+```
+
+### File
+Persists state to a local JSON file. Useful for simple persistence across restarts without external services.
+```yaml
+# config.yml
+state:
+  adapter: file
+  # 'path' specifies the location of the state file.
+  # It's recommended to place it in a non-source controlled directory like '.motia/'.
+  path: '.motia/state.json'
+```
+
+### Redis
+Uses a Redis server for state storage. Suitable for production, distributed environments, and when using features like TTL.
+```yaml
+# config.yml
+state:
+  adapter: redis
+  host: localhost      # Redis server hostname (default: 'localhost')
+  port: 6379           # Redis server port (default: 6379)
+  password: yourpassword # Optional: Password for Redis authentication (if configured).
+  db: 0                # Optional: Redis database number (default: 0).
+  ttl: 3600            # Optional: Default Time-To-Live for state entries in seconds (e.g., 3600 for 1 hour).
+                       # If not set, keys persist indefinitely unless explicitly deleted or Redis eviction policies apply.
+```
+
+## Best Practices
+
+### 1. Type Safety (TypeScript & Python)
+Define types or data classes for your state objects to improve code clarity, maintainability, and catch errors early.
+
+**TypeScript:**
+```typescript
+// Define interfaces for structured state data.
+interface CustomerData {
+  id: string;
+  name: string;
+  email: string;
+}
+ 
+interface VenueData {
+  id: string;
+  name: string;
+  capacity: number;
+}
+ 
+// Define a type for the overall booking state.
+type BookingState = {
+  customerDetails: CustomerData;
+  venueDetails: VenueData;
+  status: 'pending' | 'confirmed' | 'cancelled';
+  lastUpdated: string;
+};
+ 
+// When retrieving state, use the generic type parameter to specify the expected shape.
+// This provides type checking and autocompletion.
+// const booking = await state.get<BookingState>(traceId, 'currentBooking');
+// if (booking) {
+//   console.log(booking.customerDetails.name);
+//   console.log(booking.status);
+// }
+```
+
+**Python (using dataclasses):**
+```python
+from dataclasses import dataclass
+from typing import Literal # For defining specific string literals as types
+
+# Define data classes for structured state data.
+@dataclass
+class CustomerData:
+    id: str
+    name: str
+    email: str
+ 
+@dataclass
+class VenueData:
+    id: str
+    name: str
+    capacity: int
+ 
+# Define a data class for the overall booking state.
+@dataclass
+class BookingState:
+    customer_details: CustomerData
+    venue_details: VenueData
+    status: Literal['pending', 'confirmed', 'cancelled'] # Ensures status is one of these values.
+    last_updated: str
+
+# While Python's state.get doesn't have generic type hints like TypeScript's,
+# you can cast or validate the retrieved data against your dataclass.
+# raw_booking_data = await ctx.state.get(trace_id, 'current_booking')
+# if raw_booking_data:
+#     # You might perform validation here or directly instantiate your dataclass
+#     # For example (assuming raw_booking_data is a dict):
+#     # customer = CustomerData(**raw_booking_data['customer_details'])
+#     # venue = VenueData(**raw_booking_data['venue_details'])
+#     # booking = BookingState(customer, venue, raw_booking_data['status'], raw_booking_data['last_updated'])
+#     pass # Process the retrieved data
+```
+
+### 2. Hierarchical Keys
+Use dot-notation or a consistent naming convention for keys to create a logical hierarchy, making state easier to manage and understand.
+
+**TypeScript Example:**
+```typescript
+// Good: Using a structured approach for keys.
+// await state.set(traceId, 'booking.customer', customerData);
+// await state.set(traceId, 'booking.venue', venueData);
+// await state.set(traceId, 'booking.status', 'pending');
+
+// const customer = await state.get<CustomerData>(traceId, 'booking.customer');
+
+// Avoid: Flat, potentially ambiguous keys if the workflow grows.
+// await state.set(traceId, 'customerDataForBooking', customerData);
+// await state.set(traceId, 'venueDataForBooking', venueData);
+```
+
+### 3. Cleanup
+Explicitly clear state when it's no longer needed, especially for large data or sensitive information, to free up resources and avoid unintended data persistence. This is crucial for long-running flows or when using persistent adapters like Redis without aggressive TTLs.
+
+**TypeScript Example (using `finally` for guaranteed cleanup):**
+```typescript
+// async function processData() { /* ... your logic ... */ }
+
+// try {
+//   // Perform operations that might use state.
+//   // await processData(input, { state, traceId, logger });
+//   await state.set(traceId, 'intermediateResult', { value: 123 });
+// } catch (error) {
+//   // Handle errors appropriately.
+//   logger.error('Error during processing, state might be inconsistent.', { traceId, error });
+// } finally {
+//   // Ensure state cleanup happens whether the try block succeeds or fails.
+//   // Decide whether to clear specific keys or the entire flow's state.
+//   await state.delete(traceId, 'intermediateResult');
+//   // Or, if all state for this flow instance is done:
+//   // await state.clear(traceId);
+//   logger.info('State cleanup performed for flow instance', { traceId });
+// }
+```
+
+**Python Example (using `try...finally`):**
+```python
+# async def process_booking(input_data, ctx): # ... your logic ...
+
+async def handler_with_cleanup(input_data, ctx):
+    trace_id = ctx.trace_id
+    try:
+        # Perform operations that use state.
+        # await process_booking(input_data, ctx)
+        await ctx.state.set(trace_id, 'payment.status', 'processing')
+        # ... other operations ...
+        await ctx.state.set(trace_id, 'payment.status', 'completed')
+
+    except Exception as e:
+        ctx.logger.error(f"Error during booking process for {trace_id}: {e}")
+        # Optionally set an error state
+        await ctx.state.set(trace_id, 'flow.error', str(e))
+    finally:
+        # Cleanup: Decide what to clear.
+        # For instance, clear temporary payment status but keep final booking details.
+        await ctx.state.delete(trace_id, 'payment.status')
+        ctx.logger.info(f"Payment status state cleared for trace_id: {trace_id}")
+        
+        # If the entire flow's state should be purged (e.g., on completion or unrecoverable error):
+        # await ctx.state.clear(trace_id)
+        # ctx.logger.info(f"All state cleared for trace_id: {trace_id}")
+```
+
+## Additional Docs
+For more comprehensive information, refer to the official documentation:
+State Management: `https://motia.dev/docs/concepts/state-management` 

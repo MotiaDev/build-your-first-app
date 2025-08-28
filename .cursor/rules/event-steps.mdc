@@ -1,0 +1,366 @@
+---
+description: Event Steps are fundamental to Motia workflows. They handle asynchronous events, perform business logic, and can emit new events to trigger subsequent steps. They subscribe to topics and process the data from incoming events.
+globs: 
+alwaysApply: false
+---
+# Event Steps Guide
+
+Event Steps are fundamental to Motia workflows. They handle asynchronous events, perform business logic, and can emit new events to trigger subsequent steps. They subscribe to topics and process the data from incoming events.
+
+## Basic Event Step Pattern
+
+This pattern shows the essential structure of an Event Step: a configuration object and a handler function.
+
+**TypeScript Example:**
+```typescript
+// Import necessary types from Motia and Zod for schema validation.
+import { EventConfig, Handlers, FlowContext } from 'motia'; // Assuming FlowContext is part of Handlers or globally available
+import { z } from 'zod';
+
+// Define the Zod schema for the expected input data of the event.
+// This ensures that the data received by the handler matches the expected structure and types.
+const UserCreatedInputSchema = z.object({
+  name: z.string().min(1, "Name is required"), // User's name, must be a non-empty string.
+  email: z.string().email("Invalid email format"), // User's email, must be a valid email string.
+  id: z.string().uuid("ID must be a UUID") // User's unique ID, expected to be a UUID.
+});
+
+// Define the configuration for the Event Step.
+export const config: EventConfig<typeof UserCreatedInputSchema> = {
+  // 'type' specifies that this is an 'event' step.
+  type: 'event',
+  // 'name' is a unique identifier for this step.
+  name: 'process-user-registration',
+  // 'description' provides a human-readable explanation of what the step does.
+  description: 'Processes new user registration events, activates the user, and stores details.',
+  // 'subscribes' is an array of topic names this step listens to.
+  // This step will be triggered when an event is published to 'user.created'.
+  subscribes: ['user.created'],
+  // 'emits' is an array of topic names this step can publish events to after processing.
+  emits: ['user.processed', 'user.activation.failed'], // Can emit success or failure events
+  // 'input' links to the Zod schema for validating the incoming event data.
+  // Motia will automatically validate the event data against this schema before calling the handler.
+  input: UserCreatedInputSchema,
+  // 'flows' is an array of flow names this step is part of, helping to organize workflows.
+  flows: ['user-management-flow']
+};
+
+// Define the handler function that contains the business logic for this step.
+// Handlers['process-user-registration'] links this handler to the configuration by its name.
+// 'input' is the validated event data (typed according to UserCreatedInputSchema).
+// 'context' provides access to Motia functionalities like 'emit', 'logger', and 'state'.
+export const handler: Handlers['process-user-registration'] = async (input, { emit, logger, state, traceId }: FlowContext) => {
+  // Destructure the validated input data for easier access.
+  const { name, email, id } = input;
+  
+  // Use the logger for structured logging of step execution and important data.
+  logger.info('Processing new user registration', { traceId, userId: id, userName: name, userEmail: email });
+  
+  try {
+    // --- Your business logic begins here ---
+    // Example: Activate user, prepare additional user data, interact with external services.
+    const processedUser = {
+      ...input, // Includes original id, name, email
+      status: 'active', // Set user status to active
+      processedAt: new Date().toISOString(), // Timestamp of processing
+      welcomeEmailSent: false // Initial state for a follow-up action
+    };
+    // --- Your business logic ends here ---
+    
+    // Store the processed user data in the flow's state if it needs to be accessed by subsequent steps
+    // or for auditing/debugging purposes within this flow instance.
+    await state.set(traceId, `user_details_${id}`, processedUser);
+    logger.info('User details stored in state', { traceId, userId: id });
+    
+    // Emit an event to indicate successful processing, triggering the next step(s) in the workflow.
+    await emit({
+      topic: 'user.processed',
+      data: processedUser // Pass the processed user data to the next step.
+    });
+    logger.info('User processed event emitted', { traceId, userId: id });
+
+  } catch (error) {
+    // Handle any errors that occur during processing.
+    logger.error('Error processing user registration', { traceId, userId: id, error: error.message, stack: error.stack });
+    
+    // Emit a different event to indicate failure, allowing for error handling workflows.
+    await emit({
+      topic: 'user.activation.failed',
+      data: { userId: id, name, email, error: error.message }
+    });
+  }
+};
+```
+
+**Python Example:**
+```python
+# Python equivalent for the basic event step pattern.
+# Assuming a similar Motia context and capabilities exist in Python.
+
+# Configuration for the Event Step as a Python dictionary.
+config = {
+    "type": "event",  # Specifies the step type.
+    "name": "process_user_registration_py",  # Unique name for the step.
+    "description": "Processes new user registration events in Python.",
+    "subscribes": ["user.created.py"],  # Topic this step listens to.
+    "emits": ["user.processed.py", "user.activation.failed.py"],  # Topics this step can publish to.
+    # Input validation in Python might be handled by a library like Pydantic,
+    # or Motia may provide its own schema validation mechanism.
+    # For this example, we assume input is a dictionary and accessed directly.
+    # "input_schema": { ... Pydantic or other schema definition ... }
+    "flows": ["user-management-flow-py"]
+}
+
+# The handler function in Python.
+# 'input_data' is the incoming event payload.
+# 'ctx' (context) provides access to Motia functionalities like emit, logger, state.
+async def handler(input_data, ctx):
+    user_id = input_data.get("id")
+    user_name = input_data.get("name")
+    user_email = input_data.get("email")
+
+    ctx.logger.info(f"Processing new user registration (Python) for user ID: {user_id}", 
+                    details={"trace_id": ctx.trace_id, "name": user_name, "email": user_email})
+
+    try:
+        # --- Your business logic in Python here ---
+        processed_user = {
+            **input_data,
+            "status": "active_py",
+            "processed_at": ctx.utils.dates.now().isoformat(), # Assuming a date utility
+            "welcome_email_sent": False
+        }
+        # --- End of business logic ---
+
+        await ctx.state.set(ctx.trace_id, f"user_details_{user_id}", processed_user)
+        ctx.logger.info(f"User details stored in state (Python) for user ID: {user_id}", trace_id=ctx.trace_id)
+
+        await ctx.emit({
+            "topic": "user.processed.py",
+            "data": processed_user
+        })
+        ctx.logger.info(f"User processed event emitted (Python) for user ID: {user_id}", trace_id=ctx.trace_id)
+
+    except Exception as e:
+        ctx.logger.error(f"Error processing user registration (Python) for user ID: {user_id}", 
+                         error_message=str(e), trace_id=ctx.trace_id)
+        await ctx.emit({
+            "topic": "user.activation.failed.py",
+            "data": {"user_id": user_id, "name": user_name, "email": user_email, "error": str(e)}
+        })
+```
+
+**Ruby Example:**
+```ruby
+# Ruby equivalent for the basic event step pattern.
+
+# Configuration for the Event Step, typically defined as a method returning a Hash.
+def config
+  {
+    type: 'event', # Specifies the step type.
+    name: 'process_user_registration_rb', # Unique name for the step.
+    description: 'Processes new user registration events in Ruby.',
+    subscribes: ['user.created.rb'], # Topic this step listens to.
+    emits: ['user.processed.rb', 'user.activation.failed.rb'], # Topics this step can publish to.
+    # Input validation in Ruby could use a gem like dry-validation or similar.
+    # "input_schema": { ... schema definition ... }
+    flows: ['user-management-flow-rb']
+  }
+end
+
+# The handler function in Ruby.
+# 'input_data' is the incoming event payload (likely a Hash).
+# 'context' provides access to Motia functionalities.
+def handler(input_data, context)
+  user_id = input_data[:id]
+  user_name = input_data[:name]
+  user_email = input_data[:email]
+
+  context.logger.info("Processing new user registration (Ruby) for user ID: #{user_id}", 
+                      details: { trace_id: context.trace_id, name: user_name, email: user_email })
+
+  begin
+    # --- Your business logic in Ruby here ---
+    processed_user = input_data.merge(
+      status: 'active_rb',
+      processed_at: Time.now.utc.iso8601, # Standard ISO 8601 timestamp
+      welcome_email_sent: false
+    )
+    # --- End of business logic ---
+
+    context.state.set(context.trace_id, "user_details_#{user_id}", processed_user)
+    context.logger.info("User details stored in state (Ruby) for user ID: #{user_id}", trace_id: context.trace_id)
+
+    context.emit(
+      topic: 'user.processed.rb',
+      data: processed_user
+    )
+    context.logger.info("User processed event emitted (Ruby) for user ID: #{user_id}", trace_id: context.trace_id)
+
+  rescue => e
+    context.logger.error("Error processing user registration (Ruby) for user ID: #{user_id}", 
+                         error_message: e.message, trace_id: context.trace_id, backtrace: e.backtrace)
+    context.emit(
+      topic: 'user.activation.failed.rb',
+      data: { user_id: user_id, name: user_name, email: user_email, error: e.message }
+    )
+  end
+end
+```
+
+## Common Event Patterns (TypeScript)
+
+These patterns illustrate common ways Event Steps are used in workflows. The examples are in TypeScript but the concepts apply across languages.
+
+### Sequential Processing
+
+Steps can be chained together by having one step emit an event that another step subscribes to. This creates a sequence of operations.
+
+```typescript
+// Define the Zod schema for the input specifically for sending a welcome email.
+const WelcomeEmailInputSchema = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  // Include any other data specifically needed for the email from the 'user.processed' event.
+  userId: z.string() 
+});
+
+// Configuration for a step that sends a welcome email after a user is processed.
+export const configSendWelcomeEmail: EventConfig<typeof WelcomeEmailInputSchema> = {
+  type: 'event',
+  name: 'send-welcome-email',
+  description: 'Sends a welcome email to a newly processed user.',
+  // This step subscribes to the 'user.processed' event emitted by the previous step.
+  subscribes: ['user.processed'], 
+  // After sending the email, it emits an 'email.sent' event.
+  emits: ['email.sent', 'email.failed'],
+  input: WelcomeEmailInputSchema, // Validates the data received from 'user.processed'.
+  flows: ['user-management-flow']
+};
+
+// Handler for sending the welcome email.
+export const handlerSendWelcomeEmail: Handlers['send-welcome-email'] = async (input, { emit, logger, traceId }: FlowContext) => {
+  const { name, email, userId } = input;
+  
+  logger.info('Attempting to send welcome email', { traceId, userEmail: email, userId });
+  
+  try {
+    // --- Email sending logic here --- 
+    // This would typically involve an email service client (e.g., SendGrid, AWS SES).
+    // For example: await emailService.sendWelcomeEmail(email, name);
+    console.log(`Simulating sending welcome email to ${name} at ${email}.`);
+    // --- End of email sending logic ---
+    
+    // Emit an event indicating the email was sent successfully.
+    await emit({
+      topic: 'email.sent',
+      data: { email, userId, type: 'welcome', sentAt: new Date().toISOString() }
+    });
+    logger.info('Welcome email sent successfully', { traceId, userEmail: email });
+
+  } catch (error) {
+    logger.error('Failed to send welcome email', { traceId, userEmail: email, error: error.message });
+    await emit({
+      topic: 'email.failed',
+      data: { email, userId, type: 'welcome', error: error.message }
+    });
+  }
+};
+```
+
+### Data Transformation
+
+Event steps are often used to transform data from one format or structure to another.
+
+```typescript
+// Define input and output schemas for clarity if transformations are complex.
+const RawOrderDataSchema = z.object({ /* ... complex raw order fields ... */ orderId: z.string(), items: z.array(z.any()) });
+const TransformedOrderDataSchema = z.object({ /* ... simplified/processed order fields ... */ cleanOrderId: z.string(), summary: z.string() });
+
+// Configuration for a data transformation step.
+export const configTransformData: EventConfig<typeof RawOrderDataSchema> = {
+  type: 'event',
+  name: 'transform-order-data',
+  description: 'Transforms raw order data into a processed format.',
+  subscribes: ['raw.order.received'],
+  emits: ['order.data.transformed'],
+  input: RawOrderDataSchema,
+  flows: ['order-processing-flow']
+};
+
+// Handler for transforming data.
+export const handlerTransformData: Handlers['transform-order-data'] = async (input, { emit, logger, traceId }: FlowContext) => {
+  logger.info('Starting data transformation', { traceId, orderId: input.orderId });
+
+  // --- Transformation logic here ---
+  // Example: Clean up fields, calculate summaries, change structure.
+  const transformedOrder = {
+    originalInput: input, // Keep original for reference if needed
+    cleanOrderId: `ORD-${input.orderId.replace(/[^a-zA-Z0-9]/g, "")}`,
+    itemCount: input.items.length,
+    summary: `Order ${input.orderId} with ${input.items.length} items.`,
+    processedAt: new Date().toISOString(),
+    status: 'transformed_for_fulfillment'
+  };
+  // --- End of transformation logic ---
+  
+  // Emit the transformed data.
+  await emit({
+    topic: 'order.data.transformed',
+    data: transformedOrder // Ensure this matches a defined schema if subsequent steps expect it.
+  });
+  logger.info('Data transformation complete', { traceId, cleanOrderId: transformedOrder.cleanOrderId });
+};
+```
+
+### Error Handling
+
+It's crucial to implement robust error handling within event steps to manage failures gracefully.
+
+```typescript
+// Assuming processData is a potentially fallible operation.
+async function processData(input: any): Promise<any> {
+  // Simulate a process that might fail.
+  if (input.shouldFail) {
+    throw new Error("Simulated processing failure due to invalid condition.");
+  }
+  return { ...input, processedField: 'Successfully processed' };
+}
+
+// Configuration for a step that includes error handling.
+export const configSafeProcessor: EventConfig<any> = { // Using z.any() for simplicity, define a schema in real use.
+  type: 'event',
+  name: 'safe-data-processor',
+  description: 'Processes data with robust error handling.',
+  subscribes: ['data.to.process'],
+  emits: ['processing.success', 'processing.failed'],
+  input: z.object({ data: z.any(), shouldFail: z.boolean().optional() }), // Example input schema
+  flows: ['reliable-processing-flow']
+};
+
+// Handler demonstrating try-catch for error handling.
+export const handlerSafeProcessor: Handlers['safe-data-processor'] = async (input, { emit, logger, traceId }: FlowContext) => {
+  logger.info('Attempting to process data safely', { traceId, inputDataId: input.data?.id });
+  try {
+    // Call your core processing logic, which might throw an error.
+    const result = await processData(input.data);
+    
+    // If successful, emit a success event.
+    await emit({
+      topic: 'processing.success',
+      data: result
+    });
+    logger.info('Data processed successfully', { traceId, resultId: result?.id });
+
+  } catch (error) {
+    // If an error occurs, log it with details.
+    logger.error('Processing failed within safe-processor', { traceId, errorMessage: error.message, inputReceived: input, stack: error.stack });
+    
+    // Emit a failure event, including error details and the original input for context.
+    // This allows downstream steps (e.g., a dead-letter queue handler or notification step) to react.
+    await emit({
+      topic: 'processing.failed',
+      data: { error: { message: error.message, name: error.name }, originalInput: input }
+    });
+  }
+};
