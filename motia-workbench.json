@@ -23,5 +23,59 @@
         "sourceHandlePosition": "right"
       }
     }
+  },
+  {
+    "id": "create-pet-flow",
+    "config": {
+      "steps/typescript/create-pet.step.ts": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "get-pets-flow",
+    "config": {
+      "steps/typescript/get-pets.step.ts": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "api-endpoints",
+    "config": {
+      "steps/typescript/get-pets.step.ts": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "api-endpoints-typescript",
+    "config": {
+      "steps/typescript/get-pets.step.ts": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "api-endpoints-javascript",
+    "config": {
+      "steps/javascript/get-pets.step.js": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "api-endpoints-python",
+    "config": {
+      "steps/python/get_pets.step.py": {
+        "x": 0,
+        "y": 0
+      }
+    }
   }
 ]
