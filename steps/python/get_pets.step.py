@@ -14,7 +14,7 @@ config = {
     "name": "GetPets",
     "description": "Get all pets in the store",
     "method": "GET",
-    "path": "/pets",
+    "path": "/python/pets",
     "emits": [],
     "responseSchema": {
         "200": {
