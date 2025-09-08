@@ -12,6 +12,29 @@ declare module 'motia' {
   }
 
   interface Handlers {
-    
+    'TsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsDailyFeeding': CronHandler<never>
+    'TsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsApproveAdoption': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsAdoptionFollowup': EventHandler<never, never>
+    'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyDailyFeeding': CronHandler<never>
+    'PyListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyApproveAdoption': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyAdoptionFollowup': EventHandler<never, never>
+    'JsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'JsDailyFeeding': CronHandler<never>
+    'JsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'JsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'JsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'JsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'JsApproveAdoption': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'JsAdoptionFollowup': EventHandler<never, never>
   }
 }
