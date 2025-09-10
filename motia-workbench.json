@@ -23,5 +23,115 @@
         "sourceHandlePosition": "right"
       }
     }
+  },
+  {
+    "id": "pets",
+    "config": {
+      "steps/typescript/jobs.feeding.daily.step.ts": {
+        "x": 745,
+        "y": -267
+      },
+      "steps/typescript/adoptions.approve.step.ts": {
+        "x": -651,
+        "y": -319,
+        "sourceHandlePosition": "right"
+      },
+      "steps/typescript/adoption.summary.step.ts": {
+        "x": -5,
+        "y": -341,
+        "targetHandlePosition": "top"
+      },
+      "steps/typescript/adoption.followup.event.step.ts": {
+        "x": 438,
+        "y": -228,
+        "targetHandlePosition": "left"
+      },
+      "steps/typescript/adoption.decision.step.ts": {
+        "x": 173,
+        "y": -233,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/typescript/adoption.check.step.ts": {
+        "x": -318,
+        "y": -305,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/python/jobs_feeding_daily.step.py": {
+        "x": 733,
+        "y": -85
+      },
+      "steps/python/adoptions_approve.step.py": {
+        "x": -657,
+        "y": -133,
+        "sourceHandlePosition": "right"
+      },
+      "steps/python/adoption_summary.step.py": {
+        "x": -64,
+        "y": -148,
+        "targetHandlePosition": "top"
+      },
+      "steps/python/adoption_followup_event.step.py": {
+        "x": 446,
+        "y": -45,
+        "targetHandlePosition": "left"
+      },
+      "steps/python/adoption_decision.step.py": {
+        "x": 172,
+        "y": -55,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/python/adoption_check.step.py": {
+        "x": -330,
+        "y": -121,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/javascript/jobs.feeding.daily.step.js": {
+        "x": 735,
+        "y": 92
+      },
+      "steps/javascript/adoptions.approve.step.js": {
+        "x": -649,
+        "y": 63,
+        "sourceHandlePosition": "right"
+      },
+      "steps/javascript/adoption.summary.step.js": {
+        "x": -15,
+        "y": 230,
+        "targetHandlePosition": "top"
+      },
+      "steps/javascript/adoption.followup.event.step.js": {
+        "x": 442,
+        "y": 123,
+        "targetHandlePosition": "left"
+      },
+      "steps/javascript/adoption.decision.step.js": {
+        "x": 127,
+        "y": 112,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/javascript/adoption.check.step.js": {
+        "x": -291,
+        "y": 115,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/javascript/recommendations.step.js": {
+        "x": -1003,
+        "y": 48
+      },
+      "steps/python/recommendations.step.py": {
+        "x": -993,
+        "y": -151
+      },
+      "steps/typescript/recommendations.step.ts": {
+        "x": -992,
+        "y": -333
+      }
+    }
   }
 ]

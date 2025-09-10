@@ -5,7 +5,8 @@ export const config = {
   type: 'event',
   name: 'TsAdoptionFollowup',
   subscribes: ['ts.adoption.approved'],
-  emits: []
+  emits: [],
+  flows: ['pets']
 };
 
 export const handler = async (event: any, context?: any) => {

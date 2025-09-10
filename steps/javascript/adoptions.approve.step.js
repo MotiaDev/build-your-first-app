@@ -3,52 +3,56 @@ const { get, update } = require('./js-store');
 
 exports.config = {
   type: 'api',
-  name: 'JsApproveAdoption',
-  path: '/js/pets/:id/adopt',
+  name: 'JsAdoptionApply',
+  path: '/js/adoptions/apply',
   method: 'POST',
-  emits: ['adoption.approved']
+  emits: ['js.adoption.applied'],
+  flows: ['pets']
 };
 
 exports.handler = async (req) => {
-  const petId = req.pathParams?.id;
-  const { adopterName } = req.body || {};
+  const { petId, adopterName, adopterEmail } = req.body || {};
   
-  if (!petId) {
-    return { status: 400, body: { message: 'Pet ID is required' } };
+  // Validate required fields
+  if (!petId || !adopterName || !adopterEmail) {
+    return { 
+      status: 400, 
+      body: { message: 'Missing required fields: petId, adopterName, adopterEmail' } 
+    };
   }
   
-  if (!adopterName || typeof adopterName !== 'string') {
-    return { status: 400, body: { message: 'Adopter name is required' } };
-  }
-  
+  // Check if pet exists
   const pet = get(petId);
   if (!pet) {
     return { status: 404, body: { message: 'Pet not found' } };
   }
   
-  if (pet.status === 'adopted') {
-    return { status: 400, body: { message: 'Pet is already adopted' } };
+  // Check if pet is available
+  if (pet.status !== 'available') {
+    return { 
+      status: 400, 
+      body: { message: `Pet is not available (current status: ${pet.status})` } 
+    };
   }
   
-  // Update pet status to adopted
-  const updatedPet = update(petId, { status: 'adopted' });
+  // Generate application ID
+  const applicationId = `app-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
   
-  if (!updatedPet) {
-    return { status: 500, body: { message: 'Failed to update pet status' } };
-  }
+  // Update pet status to pending
+  update(petId, { status: 'pending' });
   
-  console.log(`🎉 ${pet.name} has been adopted by ${adopterName}!`);
+  console.log(`📝 Application submitted for ${pet.name} by ${adopterName}`);
   
   return {
-    status: 200,
+    status: 201,
     body: {
-      message: `${pet.name} has been successfully adopted!`,
-      pet: updatedPet,
-      adopterName
+      message: `Application submitted for ${pet.name}`,
+      applicationId,
+      status: 'pending_check'
     },
     events: [{
-      type: 'adoption.approved',
-      data: { petId, adopterName, petName: pet.name }
+      type: 'js.adoption.applied',
+      data: { applicationId, petId, petName: pet.name, adopterName, adopterEmail }
     }]
   };
 };
