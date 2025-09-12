@@ -6,25 +6,32 @@ A multi-language pet adoption management system built with Motia, demonstrating 
 
 - **Multi-language Support**: Complete implementations in TypeScript, JavaScript, and Python
 - **Pet Management**: Full CRUD operations for pet records
-- **Adoption Workflow**: End-to-end adoption process with background checks
+- **Adoption Workflow**: End-to-end adoption process with background checks and follow-up
+- **Real-time Streaming**: Live workflow updates with Motia streams integration
 - **Intelligent Recommendations**: AI-powered pet matching with natural language reasons
 - **Generative Summaries**: Automated application summaries with optional OpenAI enhancement
-- **Event-driven Architecture**: Language-specific event isolation
+- **Language-Specific Event Isolation**: Each language has its own event namespace preventing cross-interference
 - **Background Jobs**: Automated daily feeding reminders
 - **File-based Storage**: JSON persistence across all implementations
 
 ## Architecture
 
-### Workflow Steps
-1. **Application Submission** - Submit adoption application via API
-2. **Background Check** - Automated validation and verification
-3. **Decision Making** - Approve or reject based on check results
-4. **Follow-up Processing** - Send notifications for approved adoptions
+### Complete Adoption Workflow
+1. **Application Submission** - Submit adoption application via API with real-time stream creation
+2. **Background Check** - Automated validation and verification with stream updates
+3. **Summary Generation** - AI-powered application summary with stream status
+4. **Decision Making** - Approve or reject based on check results with stream updates
+5. **Follow-up Processing** - Send notifications for approved adoptions (final step)
 
-### Language-Specific Events
-- **TypeScript**: `ts.adoption.*` events
-- **JavaScript**: `js.adoption.*` events  
-- **Python**: `py.adoption.*` events
+### Language-Specific Event Isolation
+- **TypeScript**: `ts.adoption.*` events (isolated workflow)
+- **JavaScript**: `js.adoption.*` events (isolated workflow)
+- **Python**: `py.adoption.*` events (isolated workflow)
+
+**Benefits:**
+- No cross-language event interference
+- Each API endpoint triggers only its language-specific workflow
+- Clean separation of concerns and easier debugging
 
 ## API Endpoints
 
@@ -98,9 +105,28 @@ POST /js/recommendations
 POST /py/recommendations
 ```
 
+## Real-Time Streaming
+
+### Stream Integration
+The adoption workflow includes real-time streaming capabilities:
+
+- **Stream Definition**: `streams.json` defines the adoptions stream schema
+- **Live Updates**: Each workflow step publishes stream updates with `traceId`
+- **Workbench Integration**: API responses include stream records for live UI updates
+- **Phase Tracking**: Stream updates show progression through workflow phases
+
+### Stream Phases
+1. `applied` - Application submitted
+2. `checked` - Background check completed  
+3. `summary_ready` - Application summary generated
+4. `approved/rejected` - Decision made
+5. `adopted` - Pet status updated (for approved applications)
+
 ## Testing Examples
 
 ### 1. Create Test Pets
+
+**Note**: The system uses `ageMonths` internally but displays as years in responses.
 
 #### TypeScript
 ```bash
@@ -110,8 +136,7 @@ curl -X POST http://localhost:3000/ts/pets \
     "name": "Buddy",
     "species": "dog",
     "breed": "Golden Retriever",
-    "age": 3,
-    "status": "available"
+    "ageMonths": 36
   }'
 ```
 
@@ -123,8 +148,7 @@ curl -X POST http://localhost:3000/js/pets \
     "name": "Whiskers",
     "species": "cat",
     "breed": "Persian",
-    "age": 2,
-    "status": "available"
+    "ageMonths": 24
   }'
 ```
 
@@ -136,8 +160,7 @@ curl -X POST http://localhost:3000/py/pets \
     "name": "Charlie",
     "species": "dog",
     "breed": "Labrador",
-    "age": 4,
-    "status": "available"
+    "ageMonths": 48
   }'
 ```
 
@@ -154,7 +177,7 @@ curl http://localhost:3000/js/pets
 curl http://localhost:3000/py/pets
 ```
 
-### 3. Test Adoption Workflow
+### 3. Test Adoption Workflow with Streaming
 
 #### Successful Adoption (TypeScript)
 ```bash
@@ -162,46 +185,88 @@ curl http://localhost:3000/py/pets
 curl -X POST http://localhost:3000/ts/adoptions/apply \
   -H "Content-Type: application/json" \
   -d '{
-    "petId": "pet-1234567890",
+    "petId": "1",
     "adopterName": "John Smith",
     "adopterEmail": "john@example.com"
   }'
 ```
+
+**Expected Response:**
+```json
+{
+  "status": 202,
+  "body": {
+    "entityId": "app-1234567890",
+    "type": "application",
+    "phase": "applied",
+    "traceId": "trace-app-1234567890"
+  }
+}
+```
+
+**Watch for Console Output:**
+- `📡 Stream Created: trace-app-xxx → application app-xxx applied`
+- `🔍 Running background check for John Smith...`
+- `📝 Generating application summary...`
+- `⚖️ Making adoption decision: APPROVED`
+- `📧 Sending adoption follow-up for Buddy`
 
 #### Failed Adoption (JavaScript - spam email)
 ```bash
 curl -X POST http://localhost:3000/js/adoptions/apply \
   -H "Content-Type: application/json" \
   -d '{
-    "petId": "pet-1234567890",
+    "petId": "1",
     "adopterName": "Spam User",
     "adopterEmail": "spam@example.com"
   }'
 ```
 
-#### Successful Adoption (Python)
+**Expected Behavior:**
+- Background check fails due to "spam" in email
+- Application gets rejected
+- No follow-up step executes
+- Only JavaScript workflow steps execute (language isolation)
+
+#### Language Isolation Test (Python)
 ```bash
 curl -X POST http://localhost:3000/py/adoptions/apply \
   -H "Content-Type: application/json" \
   -d '{
-    "petId": "pet-1234567890",
+    "petId": "1",
     "adopterName": "Alice Johnson",
     "adopterEmail": "alice@example.com"
   }'
 ```
 
-### 4. Update Pet Status
+**Verify Language Isolation:**
+- Only Python workflow steps should execute
+- No TypeScript or JavaScript steps should trigger
+- Check logs for `PyAdoptionApply`, `PyAdoptionCheck`, etc.
+
+### 4. Test Cross-Language Data Consistency
 
 ```bash
-# Update pet via TypeScript
-curl -X PUT http://localhost:3000/ts/pets/pet-1234567890 \
+# Create pet via TypeScript
+curl -X POST http://localhost:3000/ts/pets \
   -H "Content-Type: application/json" \
-  -d '{
-    "status": "available"
-  }'
+  -d '{"name": "Max", "species": "dog", "ageMonths": 60}'
+
+# View same pet via JavaScript
+curl http://localhost:3000/js/pets
+
+# Update via Python
+curl -X PUT http://localhost:3000/py/pets/2 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "pending"}'
+
+# Verify update via TypeScript
+curl http://localhost:3000/ts/pets/2
 ```
 
-### 5. Test Pet Recommendations
+**Expected:** All languages share the same data store, so changes are visible across implementations.
+
+### 5. Test Intelligent Pet Recommendations
 
 #### Get Recommendations (TypeScript)
 ```bash
@@ -236,16 +301,41 @@ curl -X POST http://localhost:3000/py/recommendations \
   }'
 ```
 
-### 6. Test Edge Cases
+### 6. Test Streaming and Workbench Integration
+
+#### Monitor Real-time Updates
+1. **Open Motia Workbench** and navigate to the "adoptions" flow
+2. **Submit an adoption application** using any of the above examples
+3. **Watch the workflow diagram** for real-time step execution
+4. **Check the Streams view** in workbench for live stream updates
+
+#### Stream Data Structure
+```json
+{
+  "entityId": "app-1234567890",
+  "type": "application",
+  "phase": "applied",
+  "message": "Alice Johnson applied to adopt Charlie",
+  "timestamp": 1234567890,
+  "data": {
+    "petId": "1",
+    "petName": "Charlie",
+    "adopterName": "Alice Johnson",
+    "traceId": "trace-app-1234567890"
+  }
+}
+```
+
+### 7. Test Edge Cases
 
 #### Missing Required Fields
 ```bash
 curl -X POST http://localhost:3000/ts/adoptions/apply \
   -H "Content-Type: application/json" \
   -d '{
-    "petId": "pet-1234567890"
+    "petId": "1"
   }'
-# Expected: 400 Bad Request
+# Expected: 400 Bad Request - Missing adopterName and adopterEmail
 ```
 
 #### Non-existent Pet
@@ -266,11 +356,11 @@ curl -X POST http://localhost:3000/js/adoptions/apply \
 curl -X POST http://localhost:3000/py/adoptions/apply \
   -H "Content-Type: application/json" \
   -d '{
-    "petId": "pet-1234567890",
+    "petId": "1",
     "adopterName": "Second Adopter",
     "adopterEmail": "second@example.com"
   }'
-# Expected: 400 Bad Request (Pet not available)
+# Expected: 409 Conflict - Pet already adopted
 ```
 
 ## Background Jobs
@@ -282,25 +372,35 @@ Automated cron jobs run daily to remind staff about pet feeding schedules:
 - **JavaScript**: `jobs.feeding.daily.step.js`  
 - **Python**: `jobs_feeding_daily.step.py`
 
-## Event Flow
+## Event Flow & Streaming
 
-### Adoption Process Events
+### Complete Adoption Process Events
 
 1. **Application Submitted**
-   - `ts.adoption.applied` / `js.adoption.applied` / `py.adoption.applied`
+   - Events: `ts.adoption.applied` / `js.adoption.applied` / `py.adoption.applied`
+   - Stream: `phase: 'applied'`
 
 2. **Background Check Completed**
-   - `ts.adoption.checked` / `js.adoption.checked` / `py.adoption.checked`
+   - Events: `ts.adoption.checked` / `js.adoption.checked` / `py.adoption.checked`
+   - Stream: `phase: 'checked'`
 
 3. **Application Summary Generated**
-   - `ts.adoption.summary.generated` / `js.adoption.summary.generated` / `py.adoption.summary.generated`
+   - Events: `ts.adoption.summary.ready` / `js.adoption.summary.ready` / `py.adoption.summary.ready`
+   - Stream: `phase: 'summary_ready'`
 
 4. **Decision Made**
-   - `ts.adoption.approved` / `js.adoption.approved` / `py.adoption.approved`
-   - `ts.adoption.rejected` / `js.adoption.rejected` / `py.adoption.rejected`
+   - Events: `ts.adoption.approved` / `js.adoption.approved` / `py.adoption.approved`
+   - Stream: `phase: 'approved'` or `phase: 'rejected'`
 
 5. **Follow-up Sent** (for approved adoptions only)
    - Triggered by approval events
+   - Final step in workflow
+
+### Language Isolation Benefits
+- **No Cross-Interference**: Python API only triggers Python events
+- **Independent Scaling**: Each language can be scaled separately  
+- **Easier Debugging**: Clear separation of language-specific issues
+- **Clean Architecture**: Each implementation is self-contained
 
 ## Data Storage
 
@@ -324,12 +424,23 @@ Check console output and structured logs for workflow execution details.
 
 ## Workbench Visualization
 
-The Motia workbench displays three parallel workflow lines:
+### Adoptions Flow
+The Motia workbench displays three parallel workflow lines in the "adoptions" flow:
 - **Top line**: TypeScript adoption workflow
 - **Middle line**: Python adoption workflow  
 - **Bottom line**: JavaScript adoption workflow
 
-Each workflow shows connected steps: Apply → Check → Decision → Followup
+**Complete Workflow:** Apply → Check → Summary → Decision → Followup
+
+### Pets Flow  
+Contains general pet management features:
+- **Recommendations API**: Pet matching endpoints
+- **Daily Jobs**: Feeding reminder cron jobs
+
+### Real-time Features
+- **Live Workflow Execution**: Watch steps execute in real-time
+- **Stream Updates**: Monitor adoption progress via streams
+- **Event Tracing**: Track events flowing through the system
 
 ## AI Enhancement
 

@@ -41,6 +41,7 @@
       "steps/typescript/adoption.decision.step.ts": {
         "x": -634,
         "y": 225,
+        "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
       "steps/typescript/adoption.check.step.ts": {
@@ -63,6 +64,7 @@
       "steps/python/adoption_decision.step.py": {
         "x": -627,
         "y": -131,
+        "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
       "steps/python/adoption_check.step.py": {
@@ -85,12 +87,28 @@
       "steps/javascript/adoption.decision.step.js": {
         "x": -636,
         "y": 38,
+        "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
       "steps/javascript/adoption.check.step.js": {
         "x": -1363,
         "y": 39,
         "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/typescript/adoption.followup.event.step.ts": {
+        "x": -333,
+        "y": 226,
+        "targetHandlePosition": "left"
+      },
+      "steps/javascript/adoption.followup.event.step.js": {
+        "x": -330,
+        "y": 39,
+        "targetHandlePosition": "left"
+      },
+      "steps/python/adoption_followup_event.step.py": {
+        "x": -329,
+        "y": -128,
         "targetHandlePosition": "left"
       }
     }
@@ -106,11 +124,6 @@
         "x": 117,
         "y": -322
       },
-      "steps/typescript/adoption.followup.event.step.ts": {
-        "x": -341,
-        "y": -300,
-        "targetHandlePosition": "left"
-      },
       "steps/python/recommendations.step.py": {
         "x": -993,
         "y": -151
@@ -119,11 +132,6 @@
         "x": 113,
         "y": -161
       },
-      "steps/python/adoption_followup_event.step.py": {
-        "x": -355,
-        "y": -117,
-        "targetHandlePosition": "left"
-      },
       "steps/javascript/recommendations.step.js": {
         "x": -994,
         "y": 47
@@ -131,11 +139,6 @@
       "steps/javascript/jobs.feeding.daily.step.js": {
         "x": 115,
         "y": -1
-      },
-      "steps/javascript/adoption.followup.event.step.js": {
-        "x": -352,
-        "y": 79,
-        "targetHandlePosition": "left"
       }
     }
   }

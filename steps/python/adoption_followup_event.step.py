@@ -6,7 +6,7 @@ config = {
     "name": "PyAdoptionFollowup",
     "subscribes": ["py.adoption.approved"],
     "emits": [],
-    "flows": ["pets"]
+    "flows": ["adoptions"]
 }
 
 async def handler(event, ctx=None):
