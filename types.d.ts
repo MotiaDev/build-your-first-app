@@ -8,45 +8,45 @@ import { EventHandler, ApiRouteHandler, ApiResponse, MotiaStream, CronHandler } 
 
 declare module 'motia' {
   interface FlowContextStateStreams {
-    
+    'adoptions': MotiaStream<unknown>
   }
 
   interface Handlers {
     'TsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsRecommendations': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsDailyFeeding': CronHandler<never>
     'TsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.adoption.applied'; data: never }>
-    'TsAdoptionSummary': EventHandler<never, never>
+    'TsAdoptionSummary': EventHandler<never, { topic: 'ts.adoption.summary.ready'; data: never }>
     'TsAdoptionFollowup': EventHandler<never, never>
     'TsAdoptionDecision': EventHandler<never, { topic: 'ts.adoption.approved'; data: never }>
     'TsAdoptionCheck': EventHandler<never, { topic: 'ts.adoption.checked'; data: never }>
     'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyRecommendations': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyDailyFeeding': CronHandler<never>
     'PyListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.adoption.applied'; data: never }>
-    'PyAdoptionSummary': EventHandler<never, never>
+    'PyAdoptionSummary': EventHandler<never, { topic: 'py.adoption.summary.ready'; data: never }>
     'PyAdoptionFollowup': EventHandler<never, never>
     'PyAdoptionDecision': EventHandler<never, { topic: 'py.adoption.approved'; data: never }>
     'PyAdoptionCheck': EventHandler<never, { topic: 'py.adoption.checked'; data: never }>
     'JsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'JsRecommendations': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsDailyFeeding': CronHandler<never>
     'JsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'js.adoption.applied'; data: never }>
-    'JsAdoptionSummary': EventHandler<never, never>
+    'JsAdoptionSummary': EventHandler<never, { topic: 'js.adoption.summary.ready'; data: never }>
     'JsAdoptionFollowup': EventHandler<never, never>
     'JsAdoptionDecision': EventHandler<never, { topic: 'js.adoption.approved'; data: never }>
     'JsAdoptionCheck': EventHandler<never, { topic: 'js.adoption.checked'; data: never }>
-    'JsRecommendations': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyRecommendations': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'TsRecommendations': ApiRouteHandler<Record<string, unknown>, unknown, never>
   }
 }

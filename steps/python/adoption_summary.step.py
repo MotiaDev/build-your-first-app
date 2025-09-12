@@ -1,78 +1,35 @@
 # steps/python/adoption_summary.step.py
-import time
-from .agent import PetRecommendationAgent
-
-config = {
-    "type": "event",
-    "name": "PyAdoptionSummary",
-    "subscribes": ["py.adoption.checked"],
-    "emits": ["py.adoption.summary.generated"],
-    "flows": ["pets"]
-}
+config = { "type":"event", "name":"PyAdoptionSummary", "subscribes":["py.adoption.checked"], "emits":["py.adoption.summary.ready"], "flows":["adoptions"] }
 
 async def handler(event, ctx=None):
-    logger = getattr(ctx, 'logger', None) if ctx else None
-    emit = getattr(ctx, 'emit', None) if ctx else None
-    
-    event_data = event.get("data", event)
-    application_id = event_data.get("applicationId")
-    pet_name = event_data.get("petName")
-    adopter_name = event_data.get("adopterName")
-    check_result = event_data.get("checkResult")
-    check_reason = event_data.get("checkReason")
-    
-    if not application_id:
-        print("❌ No application ID provided in adoption.checked event")
-        return {"success": False, "message": "Missing application ID"}
-    
-    print(f"📝 Generating application summary for {adopter_name} → {pet_name}")
-    
     try:
-        # Generate intelligent summary using the agent
-        summary = await PetRecommendationAgent.generate_application_summary({
-            "petName": pet_name,
-            "adopterName": adopter_name,
-            "checkResult": check_result,
-            "checkReason": check_reason,
-            "applicationId": application_id
+        import sys
+        import os
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+        from services import pet_store
+    except ImportError:
+        return {"success": False, "message": "Import error"}
+    
+    app_id = (event or {}).get("applicationId")
+    pet_id = (event or {}).get("petId")
+    pet = pet_store.get(pet_id)
+
+    message = (
+        f"Application {app_id} for {pet['name']} the {pet['species']} looks good. Proceeding to approval."
+        if pet else
+        f"Application {app_id} looks good. Proceeding to approval."
+    )
+
+    logger = getattr(ctx, "logger", None)
+    if logger: logger.info("Adoption summary generated", {"applicationId": app_id, "PetId": pet_id, "message": message})
+
+    streams = getattr(ctx, "streams", None)
+    trace_id = getattr(ctx, "traceId", None) or getattr(ctx, "trace_id", None)
+    if streams and trace_id:
+        await streams.adoptions.set(trace_id, "summary", {
+            "entityId": app_id, "type": "application", "phase": "summary_ready", "message": message
         })
-        
-        summary_data = {
-            "applicationId": application_id,
-            "petName": pet_name,
-            "adopterName": adopter_name,
-            "checkResult": check_result,
-            "summary": summary,
-            "generatedAt": int(time.time() * 1000)
-        }
-        
-        # Log the generated summary
-        if logger:
-            logger.info("Application summary generated", summary_data)
-        
-        print(f"✨ Summary: \"{summary}\"")
-        
-        # Emit summary generated event
-        if emit:
-            await emit({
-                "topic": "py.adoption.summary.generated",
-                "data": summary_data
-            })
-        
-        return {
-            "success": True,
-            "message": "Application summary generated",
-            "summary": summary,
-            "applicationId": application_id
-        }
-        
-    except Exception as error:
-        print(f"❌ Failed to generate summary: {str(error)}")
-        if logger:
-            logger.error("Summary generation failed", {"error": str(error), "applicationId": application_id})
-        
-        return {
-            "success": False,
-            "message": "Failed to generate summary",
-            "applicationId": application_id
-        }
+
+    emit = getattr(ctx, "emit", None)
+    if emit:
+        await emit({"topic":"py.adoption.summary.ready", "data":{"applicationId": app_id, "petId": pet_id, "message": message, "TraceId": trace_id}})

@@ -1,70 +1,42 @@
-// steps/typescript/adoption.decision.step.ts
 import { TSStore } from './ts-store';
 
 export const config = {
   type: 'event',
   name: 'TsAdoptionDecision',
-  subscribes: ['ts.adoption.checked'],
-  emits: ['ts.adoption.approved', 'ts.adoption.rejected'],
-  flows: ['pets']
+  subscribes: ['ts.adoption.summary.ready'],
+  emits: ['ts.adoption.approved'],
+  flows: ['adoptions'],
 };
 
 export const handler = async (event: any, context?: any) => {
-  const logger = context?.logger;
-  const emit = context?.emit;
+  const { emit, logger, streams, traceId } = context || {};
+  const { applicationId, petId } = event || {};
   
-  const { applicationId, petId, petName, adopterName, checkResult, checkReason } = event.data || event;
+  const pet = TSStore.get(petId);
+  if (!pet) return;
+
+  TSStore.update(petId, { status: 'adopted' });
   
-  if (!applicationId) {
-    console.log('❌ No application ID provided in adoption.checked event');
-    return { success: false, message: 'Missing application ID' };
-  }
-  
-  // Make decision based on background check
-  const approved = checkResult === 'passed';
-  const decision = approved ? 'approved' : 'rejected';
-  const decisionReason = approved ? 'Background check passed' : `Background check failed: ${checkReason}`;
-  
-  console.log(`⚖️ Making adoption decision for ${adopterName}: ${decision.toUpperCase()}`);
-  
-  // Update pet status based on decision
-  if (approved) {
-    TSStore.update(petId, { status: 'adopted' });
-  } else {
-    TSStore.update(petId, { status: 'available' }); // Make available again
-  }
-  
-  const decisionData = {
-    applicationId,
-    petId,
-    petName,
-    adopterName,
-    decision,
-    decisionReason,
-    decidedAt: Date.now()
-  };
-  
-  // Log the decision
   if (logger) {
-    logger.info(`Adoption ${decision}`, decisionData);
+    logger.info('Adoption approved, pet marked adopted', { applicationId, petId });
   }
-  
-  console.log(`${approved ? '🎉' : '❌'} Adoption ${decision} for ${petName} → ${adopterName}`);
-  
-  // Emit appropriate event based on decision
-  if (emit) {
-    const eventTopic = approved ? 'ts.adoption.approved' : 'ts.adoption.rejected';
-    await emit({
-      topic: eventTopic,
-      data: decisionData
+
+  if (streams?.adoptions && traceId) {
+    await streams.adoptions.set(traceId, 'status', {
+      entityId: applicationId,
+      type: 'application',
+      phase: 'approved',
+    });
+
+    await streams.adoptions.set(traceId, 'availability', {
+      entityId: petId,
+      type: 'pet',
+      phase: 'adopted',
+      message: 'Pet adopted',
     });
   }
-  
-  return {
-    success: true,
-    message: `Adoption ${decision}`,
-    decision,
-    applicationId,
-    petId
-  };
+
+  if (emit) {
+    await emit({ topic: 'ts.adoption.approved', data: { applicationId, petId, traceId } });
+  }
 };

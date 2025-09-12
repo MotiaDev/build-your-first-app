@@ -1,78 +1,36 @@
-// steps/typescript/adoption.summary.step.ts
-import { PetRecommendationAgent } from './agent';
+import { TSStore } from './ts-store';
 
 export const config = {
   type: 'event',
   name: 'TsAdoptionSummary',
   subscribes: ['ts.adoption.checked'],
-  emits: ['ts.adoption.summary.generated'],
-  flows: ['pets']
+  emits: ['ts.adoption.summary.ready'],
+  flows: ['adoptions'],
 };
 
 export const handler = async (event: any, context?: any) => {
-  const logger = context?.logger;
-  const emit = context?.emit;
+  const { emit, logger, streams, traceId } = context || {};
+  const { applicationId, petId } = event || {};
   
-  const { applicationId, petName, adopterName, checkResult, checkReason } = event.data || event;
-  
-  if (!applicationId) {
-    console.log('❌ No application ID provided in adoption.checked event');
-    return { success: false, message: 'Missing application ID' };
+  const pet = TSStore.get(petId);
+  const message = pet
+    ? `Application ${applicationId} for ${pet.name} the ${pet.species} looks good. Proceeding to approval.`
+    : `Application ${applicationId} looks good. Proceeding to approval.`;
+
+  if (logger) {
+    logger.info('Adoption summary generated', { applicationId, petId, message });
   }
-  
-  console.log(`📝 Generating application summary for ${adopterName} → ${petName}`);
-  
-  try {
-    // Generate intelligent summary using the agent
-    const summary = await PetRecommendationAgent.generateApplicationSummary({
-      petName,
-      adopterName,
-      checkResult,
-      checkReason,
-      applicationId
+
+  if (streams?.adoptions && traceId) {
+    await streams.adoptions.set(traceId, 'summary', {
+      entityId: applicationId,
+      type: 'application',
+      phase: 'summary_ready',
+      message,
     });
-    
-    const summaryData = {
-      applicationId,
-      petName,
-      adopterName,
-      checkResult,
-      summary,
-      generatedAt: Date.now()
-    };
-    
-    // Log the generated summary
-    if (logger) {
-      logger.info('Application summary generated', summaryData);
-    }
-    
-    console.log(`✨ Summary: "${summary}"`);
-    
-    // Emit summary generated event
-    if (emit) {
-      await emit({
-        topic: 'ts.adoption.summary.generated',
-        data: summaryData
-      });
-    }
-    
-    return {
-      success: true,
-      message: 'Application summary generated',
-      summary,
-      applicationId
-    };
-    
-  } catch (error) {
-    console.log(`❌ Failed to generate summary: ${error.message}`);
-    if (logger) {
-      logger.error('Summary generation failed', { error: error.message, applicationId });
-    }
-    
-    return {
-      success: false,
-      message: 'Failed to generate summary',
-      applicationId
-    };
+  }
+
+  if (emit) {
+    await emit({ topic: 'ts.adoption.summary.ready', data: { applicationId, petId, message, traceId } });
   }
 };

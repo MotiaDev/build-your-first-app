@@ -1,0 +1,13 @@
+{
+  "adoptions": {
+    "description": "Real-time updates for pet adoption workflow",
+    "schema": {
+      "entityId": "string",
+      "type": "string",
+      "phase": "string", 
+      "message": "string",
+      "timestamp": "number",
+      "data": "object"
+    }
+  }
+}
