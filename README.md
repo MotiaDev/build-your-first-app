@@ -244,7 +244,51 @@ curl -X POST http://localhost:3000/py/adoptions/apply \
 - No TypeScript or JavaScript steps should trigger
 - Check logs for `PyAdoptionApply`, `PyAdoptionCheck`, etc.
 
-### 4. Test Cross-Language Data Consistency
+### 4. Test Pet Status Management
+
+#### Valid Pet Status Values
+```json
+"available"  // Pet is available for adoption (default)
+"pending"    // Pet has pending adoption application  
+"adopted"    // Pet has been successfully adopted
+```
+
+#### Status Workflow Testing
+```bash
+# Make pet available for adoption
+curl -X PUT http://localhost:3000/ts/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "available"}'
+
+# Mark pet as pending (simulates application submission)
+curl -X PUT http://localhost:3000/js/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "pending"}'
+
+# Mark pet as adopted (simulates successful adoption)
+curl -X PUT http://localhost:3000/py/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "adopted"}'
+
+# Verify status changes
+curl http://localhost:3000/ts/pets/1
+```
+
+#### Update Multiple Pet Fields
+```bash
+curl -X PUT http://localhost:3000/ts/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Updated Name",
+    "species": "dog",
+    "ageMonths": 24,
+    "status": "available"
+  }'
+```
+
+**Valid Species Values:** `"dog"`, `"cat"`, `"bird"`, `"other"`
+
+### 5. Test Cross-Language Data Consistency
 
 ```bash
 # Create pet via TypeScript
@@ -266,7 +310,7 @@ curl http://localhost:3000/ts/pets/2
 
 **Expected:** All languages share the same data store, so changes are visible across implementations.
 
-### 5. Test Intelligent Pet Recommendations
+### 6. Test Intelligent Pet Recommendations
 
 #### Get Recommendations (TypeScript)
 ```bash
@@ -301,7 +345,7 @@ curl -X POST http://localhost:3000/py/recommendations \
   }'
 ```
 
-### 6. Test Streaming and Workbench Integration
+### 7. Test Streaming and Workbench Integration
 
 #### Monitor Real-time Updates
 1. **Open Motia Workbench** and navigate to the "adoptions" flow
@@ -326,7 +370,7 @@ curl -X POST http://localhost:3000/py/recommendations \
 }
 ```
 
-### 7. Test Edge Cases
+### 8. Test Edge Cases
 
 #### Missing Required Fields
 ```bash
@@ -487,11 +531,23 @@ export OPENAI_API_KEY=your_openai_api_key_here
 
 ### Validation Rules
 
+#### Pet Data Validation
 - **Pet names**: Must be non-empty strings
+- **Pet species**: Must be one of: `"dog"`, `"cat"`, `"bird"`, `"other"`
+- **Pet age**: `ageMonths` must be a positive number
+- **Pet status**: Must be one of: `"available"`, `"pending"`, `"adopted"`
+
+#### Adoption Validation
 - **Adopter names**: Must be longer than 2 characters
 - **Adopter emails**: Cannot contain "spam"
-- **Pet status**: Must be "available" to start adoption process
+- **Pet availability**: Pet status must be "available" to start adoption process
 - **Recommendations**: At least one preference must be provided
+
+#### API Behavior
+- ✅ Invalid field values are ignored (not applied to pet)
+- ✅ Only valid fields are updated
+- ✅ Returns 404 if pet ID doesn't exist
+- ✅ Returns 200 with updated pet data on success
 
 ## Development
 
