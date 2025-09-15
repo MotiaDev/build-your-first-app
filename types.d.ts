@@ -19,16 +19,13 @@ declare module 'motia' {
     'TsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'TsAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.adoption.applied'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; traceId: string } }>
-    'TsApplicationSummarizer': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; traceId: string }, { topic: 'ts.adoption.summary.complete'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult?: string; checkDetails?: string; summary?: string; traceId: string } }>
-    'TsRiskAssessor': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult: string; checkDetails: string; summary: string; traceId: string }, never>
-    'TsRecommender': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; rejectionReason?: string; traceId: string }, never>
+    'TsAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.adoption.applied'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string } } | { topic: 'ts.adoption.rejected'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; rejectionReason?: string } }>
+    'TsApplicationSummarizer': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string }, { topic: 'ts.adoption.summary.complete'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult?: string; checkDetails?: string; summary?: string } }>
+    'TsRiskAssessor': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult: string; checkDetails: string; summary: string }, never>
+    'TsRecommender': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; rejectionReason?: string }, never>
     'TsAdoptionFollowup': EventHandler<never, never>
-    'TsWorkflowDecision': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult?: string; checkDetails?: string; summary?: string; traceId: string }, { topic: 'ts.adoption.approved'; data: never } | { topic: 'ts.adoption.rejected'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; rejectionReason?: string; traceId: string } } | { topic: 'ts.adoption.escalate'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult: string; checkDetails: string; summary: string; traceId: string } }>
-    'TsStaleApplicationCleanup': CronHandler<never>
     'TsAdoptionCheckinDay3': CronHandler<never>
-    'TsAdoptionCheckinDay14': CronHandler<never>
-    'TsBackgroundCheck': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; traceId: string }, { topic: 'ts.adoption.background.complete'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult?: string; checkDetails?: string; summary?: string; traceId: string } }>
+    'TsBackgroundCheck': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string }, { topic: 'ts.adoption.background.complete'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult?: string; checkDetails?: string; summary?: string } }>
     'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyRecommendations': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyDailyFeeding': CronHandler<never>
@@ -36,7 +33,7 @@ declare module 'motia' {
     'PyGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.adoption.applied'; data: never }>
+    'PyAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.adoption.applied'; data: never } | { topic: 'py.adoption.rejected'; data: never }>
     'PyApplicationSummarizer': EventHandler<never, { topic: 'py.adoption.summary.complete'; data: never }>
     'PyRiskAssessor': EventHandler<never, never>
     'PyRecommender': EventHandler<never, never>
@@ -50,12 +47,15 @@ declare module 'motia' {
     'JsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'JsAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'js.adoption.applied'; data: never }>
+    'JsAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'js.adoption.applied'; data: never } | { topic: 'js.adoption.rejected'; data: never }>
     'JsApplicationSummarizer': EventHandler<never, { topic: 'js.adoption.summary.complete'; data: never }>
     'JsRiskAssessor': EventHandler<never, never>
     'JsRecommender': EventHandler<never, never>
     'JsAdoptionFollowup': EventHandler<never, never>
     'JsWorkflowDecision': EventHandler<never, { topic: 'js.adoption.approved'; data: never } | { topic: 'js.adoption.rejected'; data: never } | { topic: 'js.adoption.escalate'; data: never }>
     'JsBackgroundCheck': EventHandler<never, { topic: 'js.adoption.background.complete'; data: never }>
+    'TsWorkflowDecision': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult?: string; checkDetails?: string; summary?: string }, { topic: 'ts.adoption.approved'; data: never } | { topic: 'ts.adoption.rejected'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; rejectionReason?: string } } | { topic: 'ts.adoption.escalate'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult: string; checkDetails: string; summary: string } }>
+    'JsAdoptionCheckinDay3': CronHandler<never>
+    'PyAdoptionCheckinDay3': CronHandler<never>
   }
 }
