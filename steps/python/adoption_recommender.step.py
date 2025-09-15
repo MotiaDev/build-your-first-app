@@ -111,22 +111,13 @@ async def handler(event, ctx=None):
         })
 
         # Update stream with recommendations
-        if hasattr(ctx, 'streams') and ctx.streams and ctx.trace_id:
-            await ctx.streams.adoptions.set(ctx.trace_id, "recommendations", {
-                "entityId": application_id,
-                "type": "recommendations",
-                "phase": "recommendations_sent",
-                "message": f"{len(recommendations)} alternative pets recommended",
-                "timestamp": int(time.time() * 1000),
-                "data": recommendation_data
-            })
+        # Recommendations generated - no stream update needed
 
         # Emit recommendations
         await ctx.emit({
             "topic": "py.adoption.recommendations.sent",
             "data": {
-                **recommendation_data,
-                "traceId": ctx.trace_id
+                **recommendation_data
             }
         })
 
@@ -151,7 +142,6 @@ async def handler(event, ctx=None):
                 "recommendations": [],
                 "message": fallback_message,
                 "error": str(error),
-                "generatedAt": datetime.utcnow().isoformat(),
-                "traceId": ctx.trace_id
+                "generatedAt": datetime.utcnow().isoformat()
             }
         })

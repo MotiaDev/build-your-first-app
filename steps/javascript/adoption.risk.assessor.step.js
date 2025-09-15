@@ -10,7 +10,7 @@ exports.config = {
   flows: ['javascript-adoptions'],
 };
 
-exports.handler = async (event, { emit, logger, streams, traceId }) => {
+exports.handler = async (event, { emit, logger }) => {
   const { applicationId, petId, adopterName, adopterEmail, checkResult, checkDetails, summary } = event || {};
 
   logger.info('🔍 Assessing adoption risk', { applicationId, petId, adopterName });
@@ -150,25 +150,10 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
       factorCount: riskFactors.length
     });
 
-    // Update stream with risk assessment
-    if (streams?.adoptions && traceId) {
-      await streams.adoptions.set(traceId, 'risk_assessment', {
-        entityId: applicationId,
-        type: 'assessment',
-        phase: 'risk_assessed',
-        message: `Risk assessment: ${confidence}% confidence, ${recommendation}`,
-        timestamp: Date.now(),
-        data: assessmentResult
-      });
-    }
-
     // Emit assessment result
     await emit({
       topic: 'js.adoption.risk.assessed',
-      data: {
-        ...assessmentResult,
-        traceId
-      }
+      data: assessmentResult
     });
 
   } catch (error) {
@@ -192,7 +177,6 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
         riskFactors: ['Assessment system error'],
         recommendations: ['Manual review required'],
         error: error.message,
-        traceId
       }
     });
   }

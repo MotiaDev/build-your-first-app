@@ -57,15 +57,7 @@ async def handler(event, ctx=None):
         })
 
         # Update stream with summary
-        if hasattr(ctx, 'streams') and ctx.streams and ctx.trace_id:
-            await ctx.streams.adoptions.set(ctx.trace_id, "summary", {
-                "entityId": application_id,
-                "type": "application",
-                "phase": "summary_ready",
-                "message": summary,
-                "timestamp": int(time.time() * 1000),
-                "data": {"petId": pet_id, "petName": pet_name, "adopterName": adopter_name}
-            })
+        # Summary generated - no stream update needed
 
         # Emit completion event with summary
         await ctx.emit({
@@ -76,8 +68,7 @@ async def handler(event, ctx=None):
                 "petName": pet_name,
                 "adopterName": adopter_name,
                 "adopterEmail": adopter_email,
-                "summary": summary,
-                "traceId": ctx.trace_id
+                "summary": summary
             }
         })
 
@@ -99,7 +90,6 @@ async def handler(event, ctx=None):
                 "adopterName": adopter_name,
                 "adopterEmail": adopter_email,
                 "summary": fallback_summary,
-                "error": str(error),
-                "traceId": ctx.trace_id
+                "error": str(error)
             }
         })

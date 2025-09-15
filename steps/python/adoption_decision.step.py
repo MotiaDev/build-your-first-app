@@ -131,24 +131,7 @@ async def handler(event, ctx=None):
                 pet_store.update(pet_id, {"status": "adopted"})
 
             # Update stream
-            if hasattr(ctx, 'streams') and ctx.streams and ctx.trace_id:
-                await ctx.streams.adoptions.set(ctx.trace_id, "decision", {
-                    "entityId": application_id,
-                    "type": "decision",
-                    "phase": "approved",
-                    "message": f"Application approved: {reason}",
-                    "timestamp": int(time.time() * 1000),
-                    "data": {"petId": pet_id, "adopterName": adopter_name, "decision": decision, "reason": reason}
-                })
-
-                await ctx.streams.adoptions.set(ctx.trace_id, "pet_status", {
-                    "entityId": pet_id,
-                    "type": "pet",
-                    "phase": "adopted",
-                    "message": "Pet successfully adopted",
-                    "timestamp": int(time.time() * 1000),
-                    "data": {"petName": pet.get("name") if pet else None}
-                })
+            # Application approved - no stream update needed
 
             # Emit approval
             await ctx.emit({
@@ -161,21 +144,12 @@ async def handler(event, ctx=None):
                     "reason": reason,
                     "checkResult": check_result,
                     "summary": summary,
-                    "traceId": ctx.trace_id
                 }
             })
 
         elif decision == "reject":
             # Update stream
-            if hasattr(ctx, 'streams') and ctx.streams and ctx.trace_id:
-                await ctx.streams.adoptions.set(ctx.trace_id, "decision", {
-                    "entityId": application_id,
-                    "type": "decision",
-                    "phase": "rejected",
-                    "message": f"Application rejected: {reason}",
-                    "timestamp": int(time.time() * 1000),
-                    "data": {"petId": pet_id, "adopterName": adopter_name, "decision": decision, "reason": reason}
-                })
+            # Application rejected - no stream update needed
 
             # Emit rejection
             await ctx.emit({
@@ -189,21 +163,12 @@ async def handler(event, ctx=None):
                     "checkResult": check_result,
                     "checkDetails": check_details,
                     "summary": summary,
-                    "traceId": ctx.trace_id
                 }
             })
 
         elif decision == "escalate":
             # Update stream
-            if hasattr(ctx, 'streams') and ctx.streams and ctx.trace_id:
-                await ctx.streams.adoptions.set(ctx.trace_id, "decision", {
-                    "entityId": application_id,
-                    "type": "decision",
-                    "phase": "escalated",
-                    "message": f"Application escalated: {reason}",
-                    "timestamp": int(time.time() * 1000),
-                    "data": {"petId": pet_id, "adopterName": adopter_name, "decision": decision, "reason": reason}
-                })
+            # Application escalated - no stream update needed
 
             # Emit escalation for risk assessment
             await ctx.emit({
@@ -217,7 +182,6 @@ async def handler(event, ctx=None):
                     "checkResult": check_result,
                     "checkDetails": check_details,
                     "summary": summary,
-                    "traceId": ctx.trace_id
                 }
             })
 
@@ -242,7 +206,6 @@ async def handler(event, ctx=None):
                 "adopterEmail": adopter_email,
                 "escalationReason": f"Decision process error: {str(error)}",
                 "error": str(error),
-                "traceId": ctx.trace_id
             }
         })
 

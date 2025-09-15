@@ -159,22 +159,13 @@ async def handler(event, ctx=None):
         })
 
         # Update stream with risk assessment
-        if hasattr(ctx, 'streams') and ctx.streams and ctx.trace_id:
-            await ctx.streams.adoptions.set(ctx.trace_id, "risk_assessment", {
-                "entityId": application_id,
-                "type": "assessment",
-                "phase": "risk_assessed",
-                "message": f"Risk assessment: {confidence}% confidence, {recommendation}",
-                "timestamp": int(time.time() * 1000),
-                "data": assessment_result
-            })
+        # Risk assessment completed - no stream update needed
 
         # Emit assessment result
         await ctx.emit({
             "topic": "py.adoption.risk.assessed",
             "data": {
-                **assessment_result,
-                "traceId": ctx.trace_id
+                **assessment_result
             }
         })
 
@@ -198,7 +189,6 @@ async def handler(event, ctx=None):
                 "reasoning": f"Risk assessment failed: {str(error)}",
                 "riskFactors": ["Assessment system error"],
                 "recommendations": ["Manual review required"],
-                "error": str(error),
-                "traceId": ctx.trace_id
+                "error": str(error)
             }
         })

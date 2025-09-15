@@ -8,8 +8,7 @@ const RecommenderInputSchema = z.object({
   petId: z.string(),
   adopterName: z.string().optional(),
   adopterEmail: z.string().optional(),
-  rejectionReason: z.string().optional(),
-  traceId: z.string()
+  rejectionReason: z.string().optional()
 });
 
 export const config: EventConfig<typeof RecommenderInputSchema> = {
@@ -22,7 +21,7 @@ export const config: EventConfig<typeof RecommenderInputSchema> = {
   flows: ['typescript-adoptions'],
 };
 
-export const handler: Handlers['TsRecommender'] = async (input, { emit, logger, streams, traceId }) => {
+export const handler: Handlers['TsRecommender'] = async (input, { emit, logger }) => {
   const { applicationId, petId, adopterName, adopterEmail, rejectionReason } = input;
 
   logger.info('🤖 Generating pet recommendations after rejection', { 
@@ -102,25 +101,10 @@ export const handler: Handlers['TsRecommender'] = async (input, { emit, logger, 
       topScore: recommendations.length > 0 ? recommendations[0].score : 0
     });
 
-    // Update stream with recommendations
-    if (streams?.adoptions && traceId) {
-      await streams.adoptions.set(traceId, 'recommendations', {
-        entityId: applicationId,
-        type: 'recommendations',
-        phase: 'recommendations_sent',
-        message: `${recommendations.length} alternative pets recommended`,
-        timestamp: Date.now(),
-        data: recommendationData
-      });
-    }
-
     // Emit recommendations
     await emit({
       topic: 'ts.adoption.recommendations.sent',
-      data: {
-        ...recommendationData,
-        traceId
-      }
+      data: recommendationData
     });
 
   } catch (error) {
@@ -145,7 +129,6 @@ export const handler: Handlers['TsRecommender'] = async (input, { emit, logger, 
         message: fallbackMessage,
         error: error.message,
         generatedAt: new Date().toISOString(),
-        traceId
       }
     });
   }

@@ -10,22 +10,10 @@ exports.config = {
   flows: ['javascript-adoptions'],
 };
 
-exports.handler = async (event, { emit, logger, streams, traceId }) => {
+exports.handler = async (event, { emit, logger }) => {
   const { applicationId, petId, adopterName, adopterEmail } = event || {};
 
   logger.info('🔍 Running background check', { applicationId, petId, adopterName });
-
-  // Update stream to show checking phase
-  if (streams?.adoptions && traceId) {
-    await streams.adoptions.set(traceId, 'status', {
-      entityId: applicationId,
-      type: 'application',
-      phase: 'checking',
-      message: 'Running background check and generating summary',
-      timestamp: Date.now(),
-      data: { petId, adopterName }
-    });
-  }
 
   // Simulate background check logic
   let checkResult = 'passed';
@@ -74,7 +62,6 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
         adopterEmail,
         checkResult,
         checkDetails,
-        traceId
       }
     });
 
@@ -90,7 +77,6 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
         adopterEmail,
         checkResult: 'error',
         checkDetails: `Check failed: ${error.message}`,
-        traceId
       }
     });
   }

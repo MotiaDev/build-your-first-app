@@ -13,7 +13,7 @@ exports.config = {
 // Track completion of parallel processes per application
 const applicationState = new Map();
 
-exports.handler = async (event, { emit, logger, streams, traceId }) => {
+exports.handler = async (event, { emit, logger }) => {
   const { applicationId, petId, adopterName, adopterEmail } = event || {};
 
   logger.info('⚖️ Processing workflow decision input', { applicationId, petId });
@@ -127,27 +127,6 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
         update(petId, { status: 'adopted' });
       }
 
-      // Update stream
-      if (streams?.adoptions && traceId) {
-        await streams.adoptions.set(traceId, 'decision', {
-          entityId: applicationId,
-          type: 'decision',
-          phase: 'approved',
-          message: `Application approved: ${reason}`,
-          timestamp: Date.now(),
-          data: { petId, adopterName, decision, reason }
-        });
-
-        await streams.adoptions.set(traceId, 'pet_status', {
-          entityId: petId,
-          type: 'pet',
-          phase: 'adopted',
-          message: 'Pet successfully adopted',
-          timestamp: Date.now(),
-          data: { petName: pet?.name }
-        });
-      }
-
       // Emit approval
       await emit({
         topic: 'js.adoption.approved',
@@ -159,23 +138,10 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
           reason,
           checkResult,
           summary,
-          traceId
         }
       });
 
     } else if (decision === 'reject') {
-      // Update stream
-      if (streams?.adoptions && traceId) {
-        await streams.adoptions.set(traceId, 'decision', {
-          entityId: applicationId,
-          type: 'decision',
-          phase: 'rejected',
-          message: `Application rejected: ${reason}`,
-          timestamp: Date.now(),
-          data: { petId, adopterName, decision, reason }
-        });
-      }
-
       // Emit rejection
       await emit({
         topic: 'js.adoption.rejected',
@@ -188,23 +154,10 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
           checkResult,
           checkDetails,
           summary,
-          traceId
         }
       });
 
     } else if (decision === 'escalate') {
-      // Update stream
-      if (streams?.adoptions && traceId) {
-        await streams.adoptions.set(traceId, 'decision', {
-          entityId: applicationId,
-          type: 'decision',
-          phase: 'escalated',
-          message: `Application escalated: ${reason}`,
-          timestamp: Date.now(),
-          data: { petId, adopterName, decision, reason }
-        });
-      }
-
       // Emit escalation for risk assessment
       await emit({
         topic: 'js.adoption.escalate',
@@ -217,7 +170,6 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
           checkResult,
           checkDetails,
           summary,
-          traceId
         }
       });
     }
@@ -242,7 +194,6 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
         adopterEmail,
         escalationReason: `Decision process error: ${error.message}`,
         error: error.message,
-        traceId
       }
     });
 

@@ -31,15 +31,7 @@ async def handler(event, ctx=None):
     })
 
     # Update stream to show checking phase
-    if hasattr(ctx, 'streams') and ctx.streams and ctx.trace_id:
-        await ctx.streams.adoptions.set(ctx.trace_id, "status", {
-            "entityId": application_id,
-            "type": "application",
-            "phase": "checking",
-            "message": "Running background check and generating summary",
-            "timestamp": int(asyncio.get_event_loop().time() * 1000),
-            "data": {"petId": pet_id, "adopterName": adopter_name}
-        })
+    # Background check starting - no stream update needed
 
     # Simulate background check logic
     check_result = "passed"
@@ -85,7 +77,6 @@ async def handler(event, ctx=None):
                 "adopterEmail": adopter_email,
                 "checkResult": check_result,
                 "checkDetails": check_details,
-                "traceId": ctx.trace_id
             }
         })
 
@@ -105,6 +96,5 @@ async def handler(event, ctx=None):
                 "adopterEmail": adopter_email,
                 "checkResult": "error",
                 "checkDetails": f"Check failed: {str(error)}",
-                "traceId": ctx.trace_id
             }
         })

@@ -9,8 +9,7 @@ const RiskAssessorInputSchema = z.object({
   adopterEmail: z.string().optional(),
   checkResult: z.string(),
   checkDetails: z.string(),
-  summary: z.string(),
-  traceId: z.string()
+  summary: z.string()
 });
 
 export const config: EventConfig<typeof RiskAssessorInputSchema> = {
@@ -23,7 +22,7 @@ export const config: EventConfig<typeof RiskAssessorInputSchema> = {
   flows: ['typescript-adoptions'],
 };
 
-export const handler: Handlers['TsRiskAssessor'] = async (input, { emit, logger, streams, traceId }) => {
+export const handler: Handlers['TsRiskAssessor'] = async (input, { emit, logger }) => {
   const { applicationId, petId, adopterName, adopterEmail, checkResult, checkDetails, summary } = input;
 
   logger.info('🔍 Assessing adoption risk', { applicationId, petId, adopterName });
@@ -163,25 +162,10 @@ export const handler: Handlers['TsRiskAssessor'] = async (input, { emit, logger,
       factorCount: riskFactors.length
     });
 
-    // Update stream with risk assessment
-    if (streams?.adoptions && traceId) {
-      await streams.adoptions.set(traceId, 'risk_assessment', {
-        entityId: applicationId,
-        type: 'assessment',
-        phase: 'risk_assessed',
-        message: `Risk assessment: ${confidence}% confidence, ${recommendation}`,
-        timestamp: Date.now(),
-        data: assessmentResult
-      });
-    }
-
     // Emit assessment result
     await emit({
       topic: 'ts.adoption.risk.assessed',
-      data: {
-        ...assessmentResult,
-        traceId
-      }
+      data: assessmentResult
     });
 
   } catch (error) {
@@ -205,7 +189,6 @@ export const handler: Handlers['TsRiskAssessor'] = async (input, { emit, logger,
         riskFactors: ['Assessment system error'],
         recommendations: ['Manual review required'],
         error: error.message,
-        traceId
       }
     });
   }

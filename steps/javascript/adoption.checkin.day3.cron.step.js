@@ -1,22 +1,22 @@
-import { CronConfig, Handlers } from 'motia';
-import { TSStore } from './ts-store';
+// steps/javascript/adoption.checkin.day3.cron.step.js
+const { get, list } = require('./js-store');
 
-export const config: CronConfig = {
+exports.config = {
   type: 'cron',
-  name: 'TsAdoptionCheckinDay3',
+  name: 'JsAdoptionCheckinDay3',
   description: 'Runs 3 days after approval to check in on new adoptions',
   cron: '0 10 * * *', // Daily at 10 AM - in production would be more specific
-  emits: ['ts.adoption.checkin.day3'],
-  flows: ['typescript-adoptions'],
+  emits: ['js.adoption.checkin.day3'],
+  flows: ['javascript-adoptions'],
 };
 
-export const handler: Handlers['TsAdoptionCheckinDay3'] = async ({ emit, logger }) => {
-  logger.info('🗓️ Running 3-day adoption check-in job');
+exports.handler = async ({ emit, logger }) => {
+  logger.info('🗓️ Running 3-day adoption check-in job (JavaScript)');
 
   try {
     // In a real system, this would query a database for adoptions from 3 days ago
     // For this demo, we'll simulate by checking recent adoptions
-    const allPets = TSStore.list();
+    const allPets = list();
     const adoptedPets = allPets.filter(pet => pet.status === 'adopted');
 
     logger.info('Found adopted pets for potential check-in', { 
@@ -48,7 +48,7 @@ export const handler: Handlers['TsAdoptionCheckinDay3'] = async ({ emit, logger 
 
       // Emit check-in event
       await emit({
-        topic: 'ts.adoption.checkin.day3',
+        topic: 'js.adoption.checkin.day3',
         data: checkinData
       });
 
@@ -56,11 +56,11 @@ export const handler: Handlers['TsAdoptionCheckinDay3'] = async ({ emit, logger 
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
-    logger.info('3-day check-in job completed', { 
+    logger.info('3-day check-in job completed (JavaScript)', { 
       processedCount: Math.min(adoptedPets.length, 2) 
     });
 
   } catch (error) {
-    logger.error('3-day check-in job failed', { error: error.message });
+    logger.error('3-day check-in job failed (JavaScript)', { error: error.message });
   }
 };

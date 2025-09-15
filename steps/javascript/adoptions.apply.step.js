@@ -6,11 +6,11 @@ exports.config = {
   name: 'JsAdoptionApply',
   path: '/js/adoptions/apply',
   method: 'POST',
-  emits: ['js.adoption.applied'],
+  emits: ['js.adoption.applied', 'js.adoption.rejected'],
   flows: ['javascript-adoptions']
 };
 
-exports.handler = async (req, { emit, logger, streams, traceId }) => {
+exports.handler = async (req, { emit, logger }) => {
   const b = req.body || {};
   const petId = String(b.petId || '');
   const adopterName = String(b.adopterName || '');
@@ -23,7 +23,39 @@ exports.handler = async (req, { emit, logger, streams, traceId }) => {
   
   const pet = get(petId);
   if (!pet) return { status: 404, body: { message: 'Pet not found' } };
-  if (pet.status === 'adopted') return { status: 409, body: { message: 'Pet already adopted' } };
+  
+  if (pet.status === 'adopted') {
+    const applicationId = `app-${Date.now()}`;
+    
+    logger.info('🚫 Pet already adopted - triggering recommender', { 
+      applicationId, 
+      petId, 
+      petName: pet.name,
+      adopterName,
+      adopterEmail 
+    });
+
+    // Trigger recommender for alternative pets
+    await emit({
+      topic: 'js.adoption.rejected',
+      data: {
+        applicationId,
+        petId,
+        adopterName,
+        adopterEmail,
+        rejectionReason: `${pet.name} has already been adopted`
+      }
+    });
+
+    return { 
+      status: 409, 
+      body: { 
+        message: `${pet.name} has already been adopted. We're finding alternative pets for you...`,
+        applicationId,
+        status: 'finding_alternatives'
+      } 
+    };
+  }
 
   const applicationId = `app-${Date.now()}`;
   
@@ -35,40 +67,22 @@ exports.handler = async (req, { emit, logger, streams, traceId }) => {
     adopterEmail 
   });
 
-  // Create & return the initial stream record (grouped by traceId)
-  const record = await streams.adoptions.set(traceId, 'status', {
-    entityId: applicationId,
-    type: 'application',
-    phase: 'applied',
-    message: `${adopterName} applied to adopt ${pet.name}`,
-    timestamp: Date.now(),
-    data: { 
-      petId, 
-      petName: pet.name, 
-      petSpecies: pet.species,
-      adopterName,
-      adopterEmail 
-    }
-  });
-
   await emit({ 
     topic: 'js.adoption.applied', 
     data: { 
       applicationId, 
       petId, 
       adopterName,
-      adopterEmail,
-      traceId 
+      adopterEmail
     } 
   });
   
   return { 
     status: 202, 
-    body: record || { 
-      entityId: applicationId, 
-      type: 'application', 
-      phase: 'applied',
-      traceId 
+    body: { 
+      applicationId,
+      message: `Application submitted for ${pet.name}`,
+      status: 'processing'
     } 
   };
 };

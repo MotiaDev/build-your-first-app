@@ -6,8 +6,7 @@ const BackgroundCheckInputSchema = z.object({
   applicationId: z.string(),
   petId: z.string(),
   adopterName: z.string().optional(),
-  adopterEmail: z.string().optional(),
-  traceId: z.string()
+  adopterEmail: z.string().optional()
 });
 
 export const config: EventConfig<typeof BackgroundCheckInputSchema> = {
@@ -20,22 +19,10 @@ export const config: EventConfig<typeof BackgroundCheckInputSchema> = {
   flows: ['typescript-adoptions'],
 };
 
-export const handler: Handlers['TsBackgroundCheck'] = async (input, { emit, logger, streams, traceId }) => {
+export const handler: Handlers['TsBackgroundCheck'] = async (input, { emit, logger }) => {
   const { applicationId, petId, adopterName, adopterEmail } = input;
 
   logger.info('🔍 Running background check', { applicationId, petId, adopterName });
-
-  // Update stream to show checking phase
-  if (streams?.adoptions && traceId) {
-    await streams.adoptions.set(traceId, 'status', {
-      entityId: applicationId,
-      type: 'application',
-      phase: 'checking',
-      message: 'Running background check and generating summary',
-      timestamp: Date.now(),
-      data: { petId, adopterName }
-    });
-  }
 
   // Simulate background check logic
   let checkResult = 'passed';
@@ -83,8 +70,7 @@ export const handler: Handlers['TsBackgroundCheck'] = async (input, { emit, logg
         adopterName,
         adopterEmail,
         checkResult,
-        checkDetails,
-        traceId
+        checkDetails
       }
     });
 
@@ -99,8 +85,7 @@ export const handler: Handlers['TsBackgroundCheck'] = async (input, { emit, logg
         adopterName,
         adopterEmail,
         checkResult: 'error',
-        checkDetails: `Check failed: ${error.message}`,
-        traceId
+        checkDetails: `Check failed: ${error.message}`
       }
     });
   }

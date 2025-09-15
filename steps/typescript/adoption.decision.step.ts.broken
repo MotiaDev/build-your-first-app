@@ -2,7 +2,7 @@ import { EventConfig, Handlers } from 'motia';
 import { z } from 'zod';
 import { TSStore } from './ts-store';
 
-const SimpleWorkflowDecisionInputSchema = z.object({
+const WorkflowDecisionInputSchema = z.object({
   applicationId: z.string(),
   petId: z.string(),
   adopterName: z.string().optional(),
@@ -12,31 +12,82 @@ const SimpleWorkflowDecisionInputSchema = z.object({
   summary: z.string().optional()
 });
 
-export const config: EventConfig<typeof SimpleWorkflowDecisionInputSchema> = {
+export const config: EventConfig<typeof WorkflowDecisionInputSchema> = {
   type: 'event',
   name: 'TsWorkflowDecision',
   description: 'Workflow gateway that decides to approve, reject, or escalate based on background check and summary',
   subscribes: ['ts.adoption.background.complete', 'ts.adoption.summary.complete'],
   emits: ['ts.adoption.approved', 'ts.adoption.rejected', 'ts.adoption.escalate'],
-  input: SimpleWorkflowDecisionInputSchema,
+  input: WorkflowDecisionInputSchema,
   flows: ['typescript-adoptions'],
 };
+
+// Track completion of parallel processes per application
+const applicationState = new Map<string, { backgroundComplete?: any, summaryComplete?: any }>();
 
 export const handler: Handlers['TsWorkflowDecision'] = async (input, { emit, logger }) => {
   const { applicationId, petId, adopterName, adopterEmail } = input;
 
-  logger.info('⚖️ Processing workflow decision', { 
+  logger.info('⚖️ Processing workflow decision input', { 
     applicationId, 
-    petId,
+    petId, 
+    topic: input.topic || 'unknown',
     hasCheckResult: input.checkResult !== undefined,
-    hasSummary: input.summary !== undefined
+    hasSummary: input.summary !== undefined,
+    inputKeys: Object.keys(input)
   });
 
   try {
-    // Simple decision logic - don't wait for parallel completion
-    const checkResult = input.checkResult || 'passed';
-    const checkDetails = input.checkDetails || 'No details provided';
-    const summary = input.summary || 'No summary available';
+    // Determine which process completed based on event data
+    const isBackgroundComplete = input.checkResult !== undefined;
+    const isSummaryComplete = input.summary !== undefined;
+
+    // Get or create application state
+    let appState = applicationState.get(applicationId) || {};
+
+    // Update state based on completed process
+    if (isBackgroundComplete) {
+      appState.backgroundComplete = {
+        checkResult: input.checkResult,
+        checkDetails: input.checkDetails,
+        completedAt: new Date().toISOString()
+      };
+      logger.info('Background check completed for application', { applicationId });
+    }
+
+    if (isSummaryComplete) {
+      appState.summaryComplete = {
+        summary: input.summary,
+        completedAt: new Date().toISOString()
+      };
+      logger.info('Summary generation completed for application', { applicationId });
+    }
+
+    // Save updated state
+    applicationState.set(applicationId, appState);
+
+    // Check if both processes are complete
+    if (!appState.backgroundComplete || !appState.summaryComplete) {
+      logger.info('Waiting for parallel processes to complete', { 
+        applicationId,
+        backgroundComplete: !!appState.backgroundComplete,
+        summaryComplete: !!appState.summaryComplete,
+        currentInput: {
+          hasCheckResult: isBackgroundComplete,
+          hasSummary: isSummaryComplete,
+          checkResult: input.checkResult,
+          summaryLength: input.summary?.length || 0
+        }
+      });
+      return; // Wait for the other process
+    }
+
+    // Both processes complete - make decision
+    logger.info('🎯 Making workflow decision - both processes complete', { applicationId, petId });
+
+    const checkResult = appState.backgroundComplete.checkResult;
+    const checkDetails = appState.backgroundComplete.checkDetails;
+    const summary = appState.summaryComplete.summary;
 
     // Decision logic
     let decision = 'approve';
@@ -84,7 +135,7 @@ export const handler: Handlers['TsWorkflowDecision'] = async (input, { emit, log
       reason = 'Random quality assurance review';
     }
 
-    logger.info('🎯 Workflow decision made', { 
+    logger.info('Workflow decision made', { 
       applicationId, 
       petId, 
       decision, 
@@ -99,7 +150,6 @@ export const handler: Handlers['TsWorkflowDecision'] = async (input, { emit, log
       const pet = TSStore.get(petId);
       if (pet) {
         TSStore.update(petId, { status: 'adopted' });
-        logger.info('✅ Pet status updated to adopted', { petId, petName: pet.name });
       }
 
       // Emit approval
@@ -112,7 +162,7 @@ export const handler: Handlers['TsWorkflowDecision'] = async (input, { emit, log
           adopterEmail,
           reason,
           checkResult,
-          summary
+          summary,
         }
       });
 
@@ -128,7 +178,7 @@ export const handler: Handlers['TsWorkflowDecision'] = async (input, { emit, log
           rejectionReason: reason,
           checkResult,
           checkDetails,
-          summary
+          summary,
         }
       });
 
@@ -144,10 +194,13 @@ export const handler: Handlers['TsWorkflowDecision'] = async (input, { emit, log
           escalationReason: reason,
           checkResult,
           checkDetails,
-          summary
+          summary,
         }
       });
     }
+
+    // Clean up application state
+    applicationState.delete(applicationId);
 
   } catch (error) {
     logger.error('Workflow decision failed', { 
@@ -165,8 +218,12 @@ export const handler: Handlers['TsWorkflowDecision'] = async (input, { emit, log
         adopterName,
         adopterEmail,
         escalationReason: `Decision process error: ${error.message}`,
-        error: error.message
+        error: error.message,
+        traceId
       }
     });
+
+    // Clean up
+    applicationState.delete(applicationId);
   }
 };

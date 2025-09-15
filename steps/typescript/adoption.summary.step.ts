@@ -7,8 +7,7 @@ const ApplicationSummarizerInputSchema = z.object({
   applicationId: z.string(),
   petId: z.string(),
   adopterName: z.string().optional(),
-  adopterEmail: z.string().optional(),
-  traceId: z.string()
+  adopterEmail: z.string().optional()
 });
 
 export const config: EventConfig<typeof ApplicationSummarizerInputSchema> = {
@@ -21,7 +20,7 @@ export const config: EventConfig<typeof ApplicationSummarizerInputSchema> = {
   flows: ['typescript-adoptions'],
 };
 
-export const handler: Handlers['TsApplicationSummarizer'] = async (input, { emit, logger, streams, traceId }) => {
+export const handler: Handlers['TsApplicationSummarizer'] = async (input, { emit, logger }) => {
   const { applicationId, petId, adopterName, adopterEmail } = input;
 
   logger.info('📝 Generating application summary', { applicationId, petId, adopterName });
@@ -51,18 +50,6 @@ export const handler: Handlers['TsApplicationSummarizer'] = async (input, { emit
       summary: summary.substring(0, 100) + '...' 
     });
 
-    // Update stream with summary
-    if (streams?.adoptions && traceId) {
-      await streams.adoptions.set(traceId, 'summary', {
-        entityId: applicationId,
-        type: 'application',
-        phase: 'summary_ready',
-        message: summary,
-        timestamp: Date.now(),
-        data: { petId, petName, adopterName }
-      });
-    }
-
     // Emit completion event with summary
     await emit({
       topic: 'ts.adoption.summary.complete',
@@ -72,8 +59,7 @@ export const handler: Handlers['TsApplicationSummarizer'] = async (input, { emit
         petName,
         adopterName,
         adopterEmail,
-        summary,
-        traceId
+        summary
       }
     });
 
@@ -95,8 +81,7 @@ export const handler: Handlers['TsApplicationSummarizer'] = async (input, { emit
         adopterName,
         adopterEmail,
         summary: fallbackSummary,
-        error: error.message,
-        traceId
+        error: error.message
       }
     });
   }

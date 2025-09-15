@@ -11,7 +11,7 @@ exports.config = {
   flows: ['javascript-adoptions'],
 };
 
-exports.handler = async (event, { emit, logger, streams, traceId }) => {
+exports.handler = async (event, { emit, logger }) => {
   const { applicationId, petId, adopterName, adopterEmail, rejectionReason } = event || {};
 
   logger.info('🤖 Generating pet recommendations after rejection', { 
@@ -91,25 +91,10 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
       topScore: recommendations.length > 0 ? recommendations[0].score : 0
     });
 
-    // Update stream with recommendations
-    if (streams?.adoptions && traceId) {
-      await streams.adoptions.set(traceId, 'recommendations', {
-        entityId: applicationId,
-        type: 'recommendations',
-        phase: 'recommendations_sent',
-        message: `${recommendations.length} alternative pets recommended`,
-        timestamp: Date.now(),
-        data: recommendationData
-      });
-    }
-
     // Emit recommendations
     await emit({
       topic: 'js.adoption.recommendations.sent',
-      data: {
-        ...recommendationData,
-        traceId
-      }
+      data: recommendationData
     });
 
   } catch (error) {
@@ -134,7 +119,6 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
         message: fallbackMessage,
         error: error.message,
         generatedAt: new Date().toISOString(),
-        traceId
       }
     });
   }

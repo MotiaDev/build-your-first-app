@@ -11,7 +11,7 @@ exports.config = {
   flows: ['javascript-adoptions'],
 };
 
-exports.handler = async (event, { emit, logger, streams, traceId }) => {
+exports.handler = async (event, { emit, logger }) => {
   const { applicationId, petId, adopterName, adopterEmail } = event || {};
 
   logger.info('📝 Generating application summary', { applicationId, petId, adopterName });
@@ -41,18 +41,6 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
       summary: summary.substring(0, 100) + '...' 
     });
 
-    // Update stream with summary
-    if (streams?.adoptions && traceId) {
-      await streams.adoptions.set(traceId, 'summary', {
-        entityId: applicationId,
-        type: 'application',
-        phase: 'summary_ready',
-        message: summary,
-        timestamp: Date.now(),
-        data: { petId, petName, adopterName }
-      });
-    }
-
     // Emit completion event with summary
     await emit({
       topic: 'js.adoption.summary.complete',
@@ -63,7 +51,6 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
         adopterName,
         adopterEmail,
         summary,
-        traceId
       }
     });
 
@@ -86,7 +73,6 @@ exports.handler = async (event, { emit, logger, streams, traceId }) => {
         adopterEmail,
         summary: fallbackSummary,
         error: error.message,
-        traceId
       }
     });
   }
