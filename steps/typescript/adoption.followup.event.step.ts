@@ -6,7 +6,7 @@ export const config = {
   name: 'TsAdoptionFollowup',
   subscribes: ['ts.adoption.approved'],
   emits: [],
-  flows: ['adoptions']
+  flows: ['typescript-adoptions']
 };
 
 export const handler = async (event: any, context?: any) => {

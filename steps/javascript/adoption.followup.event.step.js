@@ -6,7 +6,7 @@ exports.config = {
   name: 'JsAdoptionFollowup',
   subscribes: ['js.adoption.approved'],
   emits: [],
-  flows: ['adoptions']
+  flows: ['javascript-adoptions']
 };
 
 exports.handler = async (event, context) => {

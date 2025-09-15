@@ -25,95 +25,6 @@
     }
   },
   {
-    "id": "adoptions",
-    "config": {
-      "steps/typescript/adoptions.apply.step.ts": {
-        "x": -1748,
-        "y": 190,
-        "sourceHandlePosition": "right"
-      },
-      "steps/typescript/adoption.summary.step.ts": {
-        "x": -968,
-        "y": 224,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/typescript/adoption.decision.step.ts": {
-        "x": -634,
-        "y": 225,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/typescript/adoption.check.step.ts": {
-        "x": -1377,
-        "y": 223,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/python/adoptions_apply.step.py": {
-        "x": -1751,
-        "y": -166,
-        "sourceHandlePosition": "right"
-      },
-      "steps/python/adoption_summary.step.py": {
-        "x": -963,
-        "y": -131,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/python/adoption_decision.step.py": {
-        "x": -627,
-        "y": -131,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/python/adoption_check.step.py": {
-        "x": -1343,
-        "y": -131,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/javascript/adoptions.apply.step.js": {
-        "x": -1752,
-        "y": 5,
-        "sourceHandlePosition": "right"
-      },
-      "steps/javascript/adoption.summary.step.js": {
-        "x": -966,
-        "y": 37,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/javascript/adoption.decision.step.js": {
-        "x": -636,
-        "y": 38,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/javascript/adoption.check.step.js": {
-        "x": -1363,
-        "y": 39,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/typescript/adoption.followup.event.step.ts": {
-        "x": -333,
-        "y": 226,
-        "targetHandlePosition": "left"
-      },
-      "steps/javascript/adoption.followup.event.step.js": {
-        "x": -330,
-        "y": 39,
-        "targetHandlePosition": "left"
-      },
-      "steps/python/adoption_followup_event.step.py": {
-        "x": -329,
-        "y": -128,
-        "targetHandlePosition": "left"
-      }
-    }
-  },
-  {
     "id": "pets",
     "config": {
       "steps/typescript/recommendations.step.ts": {
@@ -139,6 +50,153 @@
       "steps/javascript/jobs.feeding.daily.step.js": {
         "x": 115,
         "y": -1
+      }
+    }
+  },
+  {
+    "id": "adoptions",
+    "config": {
+      "steps/python/adoption_followup_event.step.py": {
+        "x": -329,
+        "y": -128,
+        "targetHandlePosition": "left"
+      },
+      "steps/python/adoption_decision.step.py": {
+        "x": -627,
+        "y": -131,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/javascript/adoption.followup.event.step.js": {
+        "x": -330,
+        "y": 39,
+        "targetHandlePosition": "left"
+      },
+      "steps/javascript/adoption.decision.step.js": {
+        "x": -636,
+        "y": 38,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      }
+    }
+  },
+  {
+    "id": "typescript-adoptions",
+    "config": {
+      "steps/typescript/adoptions.apply.step.ts": {
+        "x": -1895,
+        "y": 56,
+        "sourceHandlePosition": "right"
+      },
+      "steps/typescript/adoption.summary.step.ts": {
+        "x": -1456,
+        "y": -55,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/typescript/adoption.risk.assessor.step.ts": {
+        "x": -328,
+        "y": 267,
+        "targetHandlePosition": "left"
+      },
+      "steps/typescript/adoption.recommender.step.ts": {
+        "x": -350,
+        "y": 36,
+        "targetHandlePosition": "left"
+      },
+      "steps/typescript/adoption.followup.event.step.ts": {
+        "x": -332,
+        "y": -107
+      },
+      "steps/typescript/adoption.decision.step.ts": {
+        "x": -970,
+        "y": 27,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/typescript/adoption.cleanup.cron.step.ts": {
+        "x": -1616,
+        "y": 307
+      },
+      "steps/typescript/adoption.checkin.day3.cron.step.ts": {
+        "x": -876,
+        "y": 310
+      },
+      "steps/typescript/adoption.checkin.day14.cron.step.ts": {
+        "x": -1255,
+        "y": 311
+      },
+      "steps/typescript/adoption.check.step.ts": {
+        "x": -1463,
+        "y": 135,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      }
+    }
+  },
+  {
+    "id": "python-adoptions",
+    "config": {
+      "steps/python/adoptions_apply.step.py": {
+        "x": -668,
+        "y": 141
+      },
+      "steps/python/adoption_summary.step.py": {
+        "x": -141,
+        "y": 40
+      },
+      "steps/python/adoption_risk_assessor.step.py": {
+        "x": 895,
+        "y": 28
+      },
+      "steps/python/adoption_recommender.step.py": {
+        "x": 895,
+        "y": 221
+      },
+      "steps/python/adoption_check.step.py": {
+        "x": -161,
+        "y": 336
+      },
+      "steps/python/adoption_decision.step.py": {
+        "x": 285,
+        "y": 184
+      },
+      "steps/python/adoption_followup_event.step.py": {
+        "x": 899,
+        "y": 402
+      }
+    }
+  },
+  {
+    "id": "javascript-adoptions",
+    "config": {
+      "steps/javascript/adoptions.apply.step.js": {
+        "x": -668,
+        "y": 163
+      },
+      "steps/javascript/adoption.summary.step.js": {
+        "x": -134,
+        "y": 28
+      },
+      "steps/javascript/adoption.risk.assessor.step.js": {
+        "x": 808,
+        "y": -46
+      },
+      "steps/javascript/adoption.recommender.step.js": {
+        "x": 804,
+        "y": 238
+      },
+      "steps/javascript/adoption.check.step.js": {
+        "x": -135,
+        "y": 257
+      },
+      "steps/javascript/adoption.decision.step.js": {
+        "x": 314,
+        "y": 110
+      },
+      "steps/javascript/adoption.followup.event.step.js": {
+        "x": 810,
+        "y": 156
       }
     }
   }

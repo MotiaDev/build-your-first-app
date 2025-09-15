@@ -16,22 +16,66 @@ A multi-language pet adoption management system built with Motia, demonstrating 
 
 ## Architecture
 
-### Complete Adoption Workflow
-1. **Application Submission** - Submit adoption application via API with real-time stream creation
-2. **Background Check** - Automated validation and verification with stream updates
-3. **Summary Generation** - AI-powered application summary with stream status
-4. **Decision Making** - Approve or reject based on check results with stream updates
-5. **Follow-up Processing** - Send notifications for approved adoptions (final step)
+### Workflow Organization
 
-### Language-Specific Event Isolation
-- **TypeScript**: `ts.adoption.*` events (isolated workflow)
-- **JavaScript**: `js.adoption.*` events (isolated workflow)
-- **Python**: `py.adoption.*` events (isolated workflow)
+The system uses separate workflow definitions in `motia-workbench.json` for better organization:
+
+- `"typescript-adoptions"` - Complete TypeScript adoption workflow
+- `"javascript-adoptions"` - Complete JavaScript adoption workflow  
+- `"python-adoptions"` - Complete Python adoption workflow
+- `"pets"` - Shared pet management operations (CRUD, recommendations, daily jobs)
+
+Each workflow definition includes:
+- **Step Positioning**: Visual layout in Motia Workbench
+- **Event Flow**: Connection between steps via handle positions
+- **Language Isolation**: Complete separation of adoption workflows
+- **Shared Resources**: Pet management steps available to all languages
+
+### Enhanced Adoption Workflow
+The system now implements a sophisticated, non-linear workflow with AI agents and parallel processing:
+
+1. **Application Submission** - Submit adoption application via API with comprehensive validation
+2. **Parallel Processing** - Two processes run simultaneously:
+   - **Background Check** - Validates adopter history and pet availability
+   - **AI Summarization** - Generates intelligent application summary
+3. **Workflow Gateway** - Decision engine with three paths:
+   - **Approve** → Pet marked adopted, follow-up scheduled
+   - **Reject** → Recommender agent suggests alternative pets
+   - **Escalate** → Risk assessor evaluates confidence level
+4. **AI Agents**:
+   - **Application Summarizer** - Creates professional summaries
+   - **Risk Assessor** - Evaluates adoption risk and confidence
+   - **Recommender** - Suggests alternative pets with reasoning
+5. **Automated Follow-up** - Cron jobs for:
+   - 3-day check-in after adoption
+   - 14-day wellness check
+   - Stale application cleanup
+6. **Real-time Streaming** - Live updates through all phases
+
+### Language-Specific Workflow Isolation
+Each language now has its own dedicated workflow in `motia-workbench.json`:
+
+- **TypeScript**: `"typescript-adoptions"` workflow with `ts.adoption.*` events
+- **JavaScript**: `"javascript-adoptions"` workflow with `js.adoption.*` events  
+- **Python**: `"python-adoptions"` workflow with `py.adoption.*` events
+- **General**: `"adoptions"` workflow for shared/legacy steps
+- **Pet Management**: `"pets"` workflow for shared CRUD operations
+
+**Complete Workflow Coverage:**
+Each language now includes all workflow steps:
+- API endpoint for application submission
+- Parallel background check and AI summarization
+- Workflow gateway for decision making (approve/reject/escalate)
+- Post-decision actions (follow-up, recommendations, risk assessment)
+- Automated cron jobs (TypeScript only for demonstration)
 
 **Benefits:**
+- Complete workflow isolation per language
 - No cross-language event interference
 - Each API endpoint triggers only its language-specific workflow
 - Clean separation of concerns and easier debugging
+- Individual workflow visualization in Motia Workbench
+- Consistent workflow logic across all languages
 
 ## API Endpoints
 
@@ -116,11 +160,14 @@ The adoption workflow includes real-time streaming capabilities:
 - **Phase Tracking**: Stream updates show progression through workflow phases
 
 ### Stream Phases
-1. `applied` - Application submitted
-2. `checked` - Background check completed  
-3. `summary_ready` - Application summary generated
-4. `approved/rejected` - Decision made
-5. `adopted` - Pet status updated (for approved applications)
+1. `applied` - Initial adoption application submitted
+2. `checking` - Background check and AI summarization running in parallel
+3. `summary_ready` - Application summary generated and ready for decision
+4. `approved` - Application approved, pet marked as adopted
+5. `rejected` - Application rejected, recommender suggestions provided
+6. `needs_human` - Escalated to human review due to risk assessment
+7. `followup` - Follow-up check-ins scheduled or completed
+8. `closed` - Application process completed and archived
 
 ## Testing Examples
 
@@ -177,9 +224,25 @@ curl http://localhost:3000/js/pets
 curl http://localhost:3000/py/pets
 ```
 
-### 3. Test Adoption Workflow with Streaming
+### 3. Test Enhanced Adoption Workflow with AI Agents and Streaming
 
-#### Successful Adoption (TypeScript)
+The new adoption workflow demonstrates:
+- **Parallel Processing**: Background check and AI summarization run simultaneously
+- **Workflow Branching**: Approve, reject, or escalate based on intelligent decision-making
+- **AI Agents**: Risk assessment, recommendations, and application summarization
+- **Language Isolation**: Each language has its own complete workflow
+- **Cron Jobs**: Automated follow-up check-ins and cleanup
+- **Real-time Streaming**: Live updates through all workflow phases
+
+#### Complete Workflow Testing
+
+**Required Fields for All Applications:**
+All adoption applications now require these fields:
+- `petId` - ID of the pet to adopt
+- `adopterName` - Name of the adopter (minimum 3 characters)
+- `adopterEmail` - Email address (will be validated)
+
+#### Successful Adoption Flow (TypeScript)
 ```bash
 # First, get a pet ID from the list above, then:
 curl -X POST http://localhost:3000/ts/adoptions/apply \
@@ -204,14 +267,22 @@ curl -X POST http://localhost:3000/ts/adoptions/apply \
 }
 ```
 
-**Watch for Console Output:**
-- `📡 Stream Created: trace-app-xxx → application app-xxx applied`
-- `🔍 Running background check for John Smith...`
-- `📝 Generating application summary...`
-- `⚖️ Making adoption decision: APPROVED`
-- `📧 Sending adoption follow-up for Buddy`
+**Watch for Console Output (Complete Workflow):**
+- `📋 Adoption application received` - Application submitted
+- `🔍 Running background check` - Parallel background validation
+- `📝 Generating application summary` - Parallel AI summarization
+- `⚖️ Processing workflow decision input` - Waiting for both processes
+- `🎯 Making workflow decision - both processes complete` - Decision gateway
+- `📧 Sending adoption follow-up` - Follow-up for approved applications
 
-#### Failed Adoption (JavaScript - spam email)
+**Stream Phases You'll See:**
+1. `applied` - Initial application
+2. `checking` - Parallel processes running
+3. `summary_ready` - AI summary complete
+4. `approved` - Decision made
+5. `followup` - Check-in scheduled
+
+#### Rejected Application with Recommendations (JavaScript)
 ```bash
 curl -X POST http://localhost:3000/js/adoptions/apply \
   -H "Content-Type: application/json" \
@@ -222,27 +293,146 @@ curl -X POST http://localhost:3000/js/adoptions/apply \
   }'
 ```
 
-**Expected Behavior:**
+**Expected Enhanced Behavior:**
 - Background check fails due to "spam" in email
-- Application gets rejected
-- No follow-up step executes
-- Only JavaScript workflow steps execute (language isolation)
+- AI summary still generated in parallel
+- Workflow gateway decides to reject
+- **Recommender agent** automatically suggests alternative pets
+- Stream shows `rejected` phase with recommendations
+- Only JavaScript workflow steps execute (language isolation maintained)
 
-#### Language Isolation Test (Python)
+**Watch for New Console Output:**
+- `🤖 Generating pet recommendations after rejection`
+- Alternative pet suggestions with AI-powered reasons
+
+#### Escalation Flow - Risk Assessment (Python)
 ```bash
+# Create a senior pet first to trigger escalation
+curl -X POST http://localhost:3000/py/pets \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Senior Max",
+    "species": "dog",
+    "breed": "Golden Retriever",
+    "ageMonths": 132
+  }'
+
+# Then apply for adoption
 curl -X POST http://localhost:3000/py/adoptions/apply \
   -H "Content-Type: application/json" \
   -d '{
-    "petId": "1",
+    "petId": "3",
     "adopterName": "Alice Johnson",
     "adopterEmail": "alice@example.com"
   }'
 ```
 
-**Verify Language Isolation:**
-- Only Python workflow steps should execute
-- No TypeScript or JavaScript steps should trigger
-- Check logs for `PyAdoptionApply`, `PyAdoptionCheck`, etc.
+**Expected Escalation Behavior:**
+- Background check passes
+- AI summary generated
+- Workflow gateway detects senior pet (11+ years)
+- **Escalates to risk assessment agent**
+- Risk assessor evaluates confidence level
+- If confidence < threshold → `needs_human` phase
+- If confidence adequate → conditional approval
+
+**Watch for Risk Assessment Output:**
+- `🔍 Assessing adoption risk`
+- Risk score calculation and confidence rating
+- AI-enhanced assessment reasoning (if OpenAI key available)
+
+#### Advanced Workflow Testing
+
+**Test All Three Language Workflows:**
+Each language now has a complete, isolated workflow. Test each one separately:
+
+```bash
+# TypeScript - Complete workflow with cron jobs
+curl -X POST http://localhost:3000/ts/adoptions/apply \
+  -H "Content-Type: application/json" \
+  -d '{
+    "petId": "1",
+    "adopterName": "TypeScript User",
+    "adopterEmail": "ts@example.com"
+  }'
+
+# JavaScript - Complete workflow 
+curl -X POST http://localhost:3000/js/adoptions/apply \
+  -H "Content-Type: application/json" \
+  -d '{
+    "petId": "2", 
+    "adopterName": "JavaScript User",
+    "adopterEmail": "js@example.com"
+  }'
+
+# Python - Complete workflow
+curl -X POST http://localhost:3000/py/adoptions/apply \
+  -H "Content-Type: application/json" \
+  -d '{
+    "petId": "3",
+    "adopterName": "Python User", 
+    "adopterEmail": "py@example.com"
+  }'
+```
+
+**Verify Workflow Isolation:**
+- Each language should trigger only its own workflow steps
+- Check logs for language-specific prefixes: `Ts`, `Js`, `Py`
+- Workbench should show three separate workflow executions
+- No cross-language interference should occur
+
+**Test Error Handling and Validation:**
+```bash
+# Missing required fields
+curl -X POST http://localhost:3000/ts/adoptions/apply \
+  -H "Content-Type: application/json" \
+  -d '{"petId": "1"}'
+# Expected: 400 Bad Request
+
+# Short adopter name (triggers escalation)
+curl -X POST http://localhost:3000/js/adoptions/apply \
+  -H "Content-Type: application/json" \
+  -d '{
+    "petId": "1",
+    "adopterName": "Jo",
+    "adopterEmail": "short@example.com"
+  }'
+# Expected: Background check fails, rejection with recommendations
+
+# Spam email (triggers rejection)
+curl -X POST http://localhost:3000/py/adoptions/apply \
+  -H "Content-Type: application/json" \
+  -d '{
+    "petId": "1", 
+    "adopterName": "Spam User",
+    "adopterEmail": "spam@example.com"
+  }'
+# Expected: Background check fails, triggers recommender agent
+```
+
+**Test Cron Job Simulation (TypeScript Only):**
+The system includes three automated cron jobs:
+- `TsAdoptionCheckinDay3` - 3-day follow-up (runs at 10 AM daily)
+- `TsAdoptionCheckinDay14` - 14-day follow-up (runs at 2 PM daily)  
+- `TsStaleApplicationCleanup` - Cleanup old applications (runs at 2 AM daily)
+
+**Test AI Enhancement (Optional):**
+Set your OpenAI API key to see enhanced AI features:
+```bash
+export OPENAI_API_KEY=your_openai_api_key_here
+```
+
+With AI enabled, you'll get:
+- More engaging recommendation reasons
+- Professional application summaries
+- Enhanced risk assessment explanations
+
+**Workbench Testing:**
+1. Open Motia Workbench
+2. Navigate to each workflow: `"typescript-adoptions"`, `"javascript-adoptions"`, `"python-adoptions"`
+3. Submit applications and watch real-time step execution
+4. Verify each workflow runs independently
+5. Check stream updates in the adoptions stream view
 
 ### 4. Test Pet Status Management
 
@@ -468,23 +658,46 @@ Check console output and structured logs for workflow execution details.
 
 ## Workbench Visualization
 
-### Adoptions Flow
-The Motia workbench displays three parallel workflow lines in the "adoptions" flow:
-- **Top line**: TypeScript adoption workflow
-- **Middle line**: Python adoption workflow  
-- **Bottom line**: JavaScript adoption workflow
+### Separate Workflow Views
+The Motia workbench now displays individual workflows defined in `motia-workbench.json`:
 
-**Complete Workflow:** Apply → Check → Summary → Decision → Followup
+#### TypeScript Adoption Workflow (`"typescript-adoptions"`)
+- **Complete Flow**: Apply → Parallel(Check + Summary) → Decision Gateway → Post-Decision Actions → Follow-up
+- **Includes**: All TypeScript-specific adoption steps and cron jobs
+- **Events**: `ts.adoption.*` event namespace
+- **Steps**: 10 total steps including 3 automated cron jobs
+- **Visual Layout**: Comprehensive left-to-right flow with all workflow phases
 
-### Pets Flow  
-Contains general pet management features:
-- **Recommendations API**: Pet matching endpoints
-- **Daily Jobs**: Feeding reminder cron jobs
+#### JavaScript Adoption Workflow (`"javascript-adoptions"`)
+- **Complete Flow**: Apply → Parallel(Check + Summary) → Decision Gateway → Post-Decision Actions
+- **Includes**: All JavaScript-specific adoption steps  
+- **Events**: `js.adoption.*` event namespace
+- **Steps**: 7 total steps covering complete adoption workflow
+- **Visual Layout**: Clean workflow layout with parallel processing branches
+
+#### Python Adoption Workflow (`"python-adoptions"`)
+- **Complete Flow**: Apply → Parallel(Check + Summary) → Decision Gateway → Post-Decision Actions
+- **Includes**: All Python-specific adoption steps
+- **Events**: `py.adoption.*` event namespace
+- **Steps**: 7 total steps covering complete adoption workflow
+- **Visual Layout**: Consistent structure matching other language workflows
+
+#### General Adoption Workflow (`"adoptions"`)
+- **Legacy Support**: Contains some shared/legacy adoption steps
+- **Events**: Mixed event namespaces
+- **Purpose**: Maintains compatibility with existing configurations
+
+#### Pet Management Workflow (`"pets"`)
+- **CRUD Operations**: Create, read, update, delete pets across all languages
+- **Recommendations**: AI-powered pet matching
+- **Daily Maintenance**: Feeding reminder cron jobs
+- **Visual Layout**: Shared operations available to all adoption workflows
 
 ### Real-time Features
-- **Live Workflow Execution**: Watch steps execute in real-time
-- **Stream Updates**: Monitor adoption progress via streams
-- **Event Tracing**: Track events flowing through the system
+- **Individual Workflow Execution**: Watch language-specific workflows in isolation
+- **Stream Updates**: Monitor adoption progress via shared streams
+- **Event Tracing**: Track events within each workflow boundary
+- **Cross-Language Data**: Shared pet data store across all workflows
 
 ## AI Enhancement
 
@@ -518,6 +731,87 @@ export OPENAI_API_KEY=your_openai_api_key_here
 - `maxAge`: Maximum age preference
 - `minAge`: Minimum age preference  
 - `breed`: Breed name (partial matching)
+
+## Workflow Architecture & Testing
+
+### Complete Workflow Coverage
+
+Each language implementation now includes the full adoption workflow:
+
+#### 1. **Application Phase**
+- **API Endpoint**: Receives and validates adoption applications
+- **Required Fields**: `petId`, `adopterName`, `adopterEmail`
+- **Stream Creation**: Creates initial stream record with `applied` phase
+- **Event Emission**: Triggers parallel processing
+
+#### 2. **Parallel Processing Phase**
+- **Background Check**: Validates adopter history, pet availability, email patterns
+- **AI Summarization**: Generates intelligent application summaries
+- **Synchronization**: Workflow gateway waits for both processes to complete
+- **Stream Updates**: Shows `checking` phase during parallel execution
+
+#### 3. **Decision Gateway Phase**
+- **Three-Path Logic**: Approve, Reject, or Escalate
+- **Decision Criteria**:
+  - **Approve**: All checks pass, no risk factors detected
+  - **Reject**: Background check fails, invalid data detected
+  - **Escalate**: Senior pets, exotic species, concerning summary content
+- **Random Escalation**: 10% chance for quality assurance demonstration
+
+#### 4. **Post-Decision Actions**
+- **Approved**: Pet marked adopted, follow-up scheduled, stream updated
+- **Rejected**: Recommender agent suggests alternative pets
+- **Escalated**: Risk assessor evaluates confidence level
+
+#### 5. **Follow-up & Maintenance** (TypeScript Only)
+- **3-Day Check-in**: Automated cron job for early adoption support
+- **14-Day Check-in**: Wellness check and milestone verification
+- **Cleanup Jobs**: Stale application management
+
+### Testing Strategy
+
+#### **Isolation Testing**
+Test each language workflow independently:
+```bash
+# Each should trigger only its own language-specific steps
+curl -X POST http://localhost:3000/ts/adoptions/apply -d '{"petId":"1","adopterName":"TS Test","adopterEmail":"ts@test.com"}'
+curl -X POST http://localhost:3000/js/adoptions/apply -d '{"petId":"2","adopterName":"JS Test","adopterEmail":"js@test.com"}'
+curl -X POST http://localhost:3000/py/adoptions/apply -d '{"petId":"3","adopterName":"PY Test","adopterEmail":"py@test.com"}'
+```
+
+#### **Parallel Processing Testing**
+Watch logs to verify simultaneous execution:
+- Background check and AI summarization should start at nearly the same time
+- Decision gateway should wait for both to complete
+- Look for "Waiting for parallel processes" message
+
+#### **Decision Path Testing**
+Force different decision paths:
+```bash
+# Force rejection with spam email
+curl -X POST http://localhost:3000/js/adoptions/apply -d '{"petId":"1","adopterName":"Test","adopterEmail":"spam@test.com"}'
+
+# Force escalation with short name  
+curl -X POST http://localhost:3000/py/adoptions/apply -d '{"petId":"1","adopterName":"Jo","adopterEmail":"short@test.com"}'
+
+# Normal approval path
+curl -X POST http://localhost:3000/ts/adoptions/apply -d '{"petId":"1","adopterName":"John Smith","adopterEmail":"john@test.com"}'
+```
+
+#### **Stream Monitoring**
+Monitor real-time stream updates:
+1. Open Motia Workbench
+2. Navigate to Streams view
+3. Watch `adoptions` stream for phase progression
+4. Verify consistent phase tracking across all languages
+
+#### **Workbench Verification**
+Visual workflow verification:
+1. Each language should have its own workflow tab
+2. Steps should execute in proper sequence
+3. Parallel steps should show simultaneous execution
+4. Decision gateway should show branching logic
+5. No cross-language step execution
 
 ## Troubleshooting
 

@@ -1,6 +1,6 @@
 {
   "adoptions": {
-    "description": "Real-time updates for pet adoption workflow",
+    "description": "Real-time updates for pet adoption workflow with comprehensive phase tracking",
     "schema": {
       "entityId": "string",
       "type": "string",
@@ -8,6 +8,16 @@
       "message": "string",
       "timestamp": "number",
       "data": "object"
+    },
+    "phases": {
+      "applied": "Initial adoption application submitted",
+      "checking": "Background check and application summarizer running in parallel",
+      "summary_ready": "Application summary generated and ready for decision",
+      "approved": "Application approved, pet marked as adopted",
+      "rejected": "Application rejected, recommender suggestions provided",
+      "needs_human": "Escalated to human review due to risk assessment",
+      "followup": "Follow-up check-ins scheduled or completed",
+      "closed": "Application process completed and archived"
     }
   }
 }

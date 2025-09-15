@@ -7,7 +7,7 @@ config = {
     "path": "/py/recommendations",
     "method": "POST",
     "emits": [],
-    "flows": ["pets"]
+    "flows": ["pets_management"]
 }
 
 async def handler(req, ctx=None):
