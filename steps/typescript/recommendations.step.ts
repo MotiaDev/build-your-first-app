@@ -8,7 +8,7 @@ export const config: ApiRouteConfig = {
   path: '/ts/recommendations',
   method: 'POST',
   emits: [],
-  flows: ['pets_management'],
+  flows: ['pets'],
 };
 
 export const handler: Handlers['TsRecommendations'] = async (req, { logger }) => {

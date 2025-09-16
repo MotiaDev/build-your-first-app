@@ -52,19 +52,6 @@
     }
   },
   {
-    "id": "pets",
-    "config": {
-      "steps/javascript/recommendations.step.js": {
-        "x": -994,
-        "y": 47
-      },
-      "steps/javascript/jobs.feeding.daily.step.js": {
-        "x": 115,
-        "y": -1
-      }
-    }
-  },
-  {
     "id": "javascript-adoptions",
     "config": {
       "steps/javascript/adoptions.apply.step.js": {
@@ -182,6 +169,44 @@
         "y": 28,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
+      }
+    }
+  },
+  {
+    "id": "pets_management",
+    "config": {
+      "steps/python/jobs_feeding_daily.step.py": {
+        "x": 19,
+        "y": 182
+      }
+    }
+  },
+  {
+    "id": "pets",
+    "config": {
+      "steps/javascript/recommendations.step.js": {
+        "x": -595,
+        "y": 19
+      },
+      "steps/javascript/jobs.feeding.daily.step.js": {
+        "x": -316,
+        "y": 31
+      },
+      "steps/typescript/recommendations.step.ts": {
+        "x": -595,
+        "y": 175
+      },
+      "steps/typescript/jobs.feeding.daily.step.ts": {
+        "x": -319,
+        "y": 165
+      },
+      "steps/python/recommendations.step.py": {
+        "x": -596,
+        "y": 311
+      },
+      "steps/python/jobs_feeding_daily.step.py": {
+        "x": -328,
+        "y": 314
       }
     }
   }

@@ -1,5 +1,5 @@
 # steps/python/jobs_feeding_daily.step.py
-config = { "type":"cron", "name":"PyDailyFeeding", "cron":"30 2 * * *", "emits":[], "flows":["pets_management"] }
+config = { "type":"cron", "name":"PyDailyFeeding", "cron":"30 2 * * *", "emits":[], "flows":["pets"] }
 
 async def handler(ctx, logger=None):
     try:

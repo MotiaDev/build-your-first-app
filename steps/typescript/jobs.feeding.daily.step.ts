@@ -7,7 +7,7 @@ export const config: CronConfig = {
   name: 'TsDailyFeeding',
   cron: '30 2 * * *',   // ≈ 07:30 IST if server is UTC
   emits: [],
-  flows: ['pets_management'],
+  flows: ['pets'],
 };
 
 export const handler: Handlers['TsDailyFeeding'] = async ({ logger }) => {
