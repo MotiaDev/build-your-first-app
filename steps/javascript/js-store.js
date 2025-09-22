@@ -32,7 +32,7 @@ function create({ name, species, ageMonths }) {
     name: String(name).trim(),
     species,
     ageMonths: Math.max(0, Math.floor(Number(ageMonths))),
-    status: 'available',
+    status: 'new',
     createdAt: now(),
     updatedAt: now()
   };

@@ -4,10 +4,14 @@ config = {
     "name": "PyCreatePet",
     "path": "/py/pets",
     "method": "POST",
-    "emits": []
+    "emits": ["pet.created"],
+    "flows": ["pets"]
 }
 
 async def handler(req, ctx=None):
+    logger = getattr(ctx, 'logger', None) if ctx else None
+    emit = getattr(ctx, 'emit', None) if ctx else None
+    
     try:
         import sys
         import os
@@ -30,4 +34,19 @@ async def handler(req, ctx=None):
     except Exception:
         return {"status": 400, "body": {"message": "Invalid ageMonths"}}
     pet = pet_store.create(name, species, age_val)
+    
+    if logger:
+        logger.info('🐾 Pet created', {
+            'petId': pet['id'], 
+            'name': pet['name'], 
+            'species': pet['species'], 
+            'status': pet['status']
+        })
+    
+    if emit:
+        await emit({
+            'topic': 'pet.created',
+            'data': {'petId': pet['id'], 'name': pet['name'], 'species': pet['species']}
+        })
+    
     return {"status": 201, "body": pet}

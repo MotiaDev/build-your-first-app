@@ -7,7 +7,7 @@ export type Pet = {
   name: string;
   species: "dog" | "cat" | "bird" | "other";
   ageMonths: number;
-  status: "available" | "pending" | "adopted";
+  status: "new" | "available" | "pending" | "adopted";
   createdAt: number;
   updatedAt: number;
 };
@@ -42,7 +42,7 @@ export const TSStore = {
       name: input.name.trim(),
       species: input.species,
       ageMonths: Math.max(0, Math.floor(input.ageMonths)),
-      status: "available",
+      status: "new",
       createdAt: now(),
       updatedAt: now(),
     };

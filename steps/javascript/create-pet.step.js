@@ -6,10 +6,12 @@ exports.config = {
   name: 'JsCreatePet',
   path: '/js/pets',
   method: 'POST',
-  emits: []
+  emits: ['pet.created'],
+  flows: ['pets']
 };
 
-exports.handler = async (req) => {
+exports.handler = async (req, context) => {
+  const { emit, logger } = context || {};
   const b = req.body || {};
   const name = typeof b.name === 'string' && b.name.trim();
   const speciesOk = ['dog','cat','bird','other'].includes(b.species);
@@ -18,5 +20,17 @@ exports.handler = async (req) => {
     return { status: 400, body: { message: 'Invalid payload: {name, species, ageMonths}' } };
   }
   const pet = create({ name, species: b.species, ageMonths: Number(b.ageMonths) });
+  
+  if (logger) {
+    logger.info('🐾 Pet created', { petId: pet.id, name: pet.name, species: pet.species, status: pet.status });
+  }
+  
+  if (emit) {
+    await emit({
+      topic: 'pet.created',
+      data: { petId: pet.id, name: pet.name, species: pet.species }
+    });
+  }
+  
   return { status: 201, body: pet };
 };

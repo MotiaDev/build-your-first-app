@@ -46,7 +46,7 @@ def create(name: str, species: str, ageMonths: int) -> Pet:
         'name': name.strip(),
         'species': species,
         'ageMonths': max(0, int(ageMonths)),
-        'status': 'available',
+        'status': 'new',
         'createdAt': _now(),
         'updatedAt': _now()
     }

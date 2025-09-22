@@ -7,7 +7,8 @@ export const config = {
   name: 'TsGetPet',
   path: '/ts/pets/:id',
   method: 'GET',
-  emits: []
+  emits: [],
+  flows: ['pets']
 };
 
 export const handler = async (req: any) => {

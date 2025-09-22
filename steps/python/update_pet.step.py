@@ -1,5 +1,5 @@
 # steps/python/update_pet.step.py
-config = { "type":"api", "name":"PyUpdatePet", "path":"/py/pets/:id", "method":"PUT", "emits": [] }
+config = { "type":"api", "name":"PyUpdatePet", "path":"/py/pets/:id", "method":"PUT", "emits": [], "flows": ["pets"] }
 
 async def handler(req, _ctx=None):
     try:
@@ -17,6 +17,6 @@ async def handler(req, _ctx=None):
     if isinstance(b.get("ageMonths"), (int, float, str)):
         try: patch["ageMonths"] = int(b["ageMonths"])
         except Exception: pass
-    if b.get("status") in ["available","pending","adopted"]: patch["status"] = b["status"]
+    if b.get("status") in ["new","available","pending","adopted"]: patch["status"] = b["status"]
     updated = pet_store.update(pid, patch)
     return {"status": 200, "body": updated} if updated else {"status": 404, "body": {"message":"Not found"}}

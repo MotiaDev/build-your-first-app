@@ -7,7 +7,8 @@ export const config = {
   name: 'TsUpdatePet',
   path: '/ts/pets/:id',
   method: 'PUT',
-  emits: []
+  emits: [],
+  flows: ['pets']
 };
 
 export const handler = async (req: any) => {
@@ -16,7 +17,7 @@ export const handler = async (req: any) => {
   if (typeof b.name === 'string') patch.name = b.name;
   if (['dog','cat','bird','other'].includes(String(b.species))) patch.species = b.species;
   if (Number.isFinite(b.ageMonths)) patch.ageMonths = Number(b.ageMonths);
-  if (['available','pending','adopted'].includes(String(b.status))) patch.status = b.status;
+  if (['new','available','pending','adopted'].includes(String(b.status))) patch.status = b.status;
 
   const updated = TSStore.update(req.pathParams.id, patch);
   return updated ? { status: 200, body: updated } : { status: 404, body: { message: 'Not found' } };

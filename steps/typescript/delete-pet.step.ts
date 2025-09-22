@@ -7,7 +7,8 @@ export const config = {
   name: 'TsDeletePet',
   path: '/ts/pets/:id',
   method: 'DELETE',
-  emits: []
+  emits: [],
+  flows: ['pets']
 };
 
 export const handler = async (req: any) => {

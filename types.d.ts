@@ -8,54 +8,24 @@ import { EventHandler, ApiRouteHandler, ApiResponse, MotiaStream, CronHandler } 
 
 declare module 'motia' {
   interface FlowContextStateStreams {
-    'adoptions': MotiaStream<unknown>
+    
   }
 
   interface Handlers {
     'TsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'TsRecommendations': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'TsDailyFeeding': CronHandler<never>
     'TsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'TsAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.adoption.applied'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string } } | { topic: 'ts.adoption.rejected'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; rejectionReason?: string } }>
-    'TsApplicationSummarizer': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string }, { topic: 'ts.adoption.summary.complete'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult?: string; checkDetails?: string; summary?: string } }>
-    'TsRiskAssessor': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult: string; checkDetails: string; summary: string }, never>
-    'TsRecommender': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; rejectionReason?: string }, never>
-    'TsAdoptionFollowup': EventHandler<never, never>
-    'TsAdoptionCheckinDay3': CronHandler<never>
-    'TsBackgroundCheck': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string }, { topic: 'ts.adoption.background.complete'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult?: string; checkDetails?: string; summary?: string } }>
     'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyRecommendations': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyDailyFeeding': CronHandler<never>
     'PyListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.adoption.applied'; data: never } | { topic: 'py.adoption.rejected'; data: never }>
-    'PyApplicationSummarizer': EventHandler<never, { topic: 'py.adoption.summary.complete'; data: never }>
-    'PyRiskAssessor': EventHandler<never, never>
-    'PyRecommender': EventHandler<never, never>
-    'PyAdoptionFollowup': EventHandler<never, never>
-    'PyWorkflowDecision': EventHandler<never, { topic: 'py.adoption.approved'; data: never } | { topic: 'py.adoption.rejected'; data: never } | { topic: 'py.adoption.escalate'; data: never }>
-    'PyBackgroundCheck': EventHandler<never, { topic: 'py.adoption.background.complete'; data: never }>
     'JsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'JsRecommendations': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'JsDailyFeeding': CronHandler<never>
     'JsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'JsAdoptionApply': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'js.adoption.applied'; data: never } | { topic: 'js.adoption.rejected'; data: never }>
-    'JsApplicationSummarizer': EventHandler<never, { topic: 'js.adoption.summary.complete'; data: never }>
-    'JsRiskAssessor': EventHandler<never, never>
-    'JsRecommender': EventHandler<never, never>
-    'JsAdoptionFollowup': EventHandler<never, never>
-    'JsWorkflowDecision': EventHandler<never, { topic: 'js.adoption.approved'; data: never } | { topic: 'js.adoption.rejected'; data: never } | { topic: 'js.adoption.escalate'; data: never }>
-    'JsBackgroundCheck': EventHandler<never, { topic: 'js.adoption.background.complete'; data: never }>
-    'TsWorkflowDecision': EventHandler<{ applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult?: string; checkDetails?: string; summary?: string }, { topic: 'ts.adoption.approved'; data: never } | { topic: 'ts.adoption.rejected'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; rejectionReason?: string } } | { topic: 'ts.adoption.escalate'; data: { applicationId: string; petId: string; adopterName?: string; adopterEmail?: string; checkResult: string; checkDetails: string; summary: string } }>
-    'JsAdoptionCheckinDay3': CronHandler<never>
-    'PyAdoptionCheckinDay3': CronHandler<never>
   }
 }
