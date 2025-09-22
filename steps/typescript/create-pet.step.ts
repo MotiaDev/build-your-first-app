@@ -7,7 +7,7 @@ export const config = {
   name: 'TsCreatePet',
   path: '/ts/pets',
   method: 'POST',
-  emits: ['pet.created'],
+  emits: ['ts.pet.created', 'ts.job.postcreate.enqueued'],
   flows: ['pets']
 };
 
@@ -28,8 +28,14 @@ export const handler = async (req: any, context?: any) => {
   
   if (emit) {
     await emit({
-      topic: 'pet.created',
+      topic: 'ts.pet.created',
       data: { petId: pet.id, name: pet.name, species: pet.species }
+    });
+    
+    // Enqueue PostCreateLite background job
+    await emit({
+      topic: 'ts.job.postcreate.enqueued',
+      data: { petId: pet.id, enqueuedAt: Date.now() }
     });
   }
   

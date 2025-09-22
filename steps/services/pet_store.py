@@ -86,3 +86,29 @@ def remove(pid: str) -> bool:
     del db['pets'][pid]
     save(db)
     return True
+
+def soft_delete(pid: str) -> Optional[Pet]:
+    db = load()
+    pet = db['pets'].get(pid)
+    if not pet:
+        return None
+    
+    now_ms = _now()
+    updated_pet: Pet = {
+        **pet,
+        'status': 'deleted',
+        'deletedAt': now_ms,
+        'purgeAt': now_ms + (30 * 24 * 60 * 60 * 1000),  # 30 days from now
+        'updatedAt': now_ms
+    }
+    db['pets'][pid] = updated_pet
+    save(db)
+    return updated_pet
+
+def find_deleted_pets_ready_to_purge() -> List[Pet]:
+    db = load()
+    now_ms = _now()
+    return [
+        pet for pet in db['pets'].values() 
+        if pet['status'] == 'deleted' and pet.get('purgeAt', 0) <= now_ms
+    ]

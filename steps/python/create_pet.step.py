@@ -4,7 +4,7 @@ config = {
     "name": "PyCreatePet",
     "path": "/py/pets",
     "method": "POST",
-    "emits": ["pet.created"],
+    "emits": ["py.pet.created", "py.job.postcreate.enqueued"],
     "flows": ["pets"]
 }
 
@@ -15,6 +15,7 @@ async def handler(req, ctx=None):
     try:
         import sys
         import os
+        import time
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
         from services import pet_store
     except ImportError:
@@ -45,8 +46,14 @@ async def handler(req, ctx=None):
     
     if emit:
         await emit({
-            'topic': 'pet.created',
+            'topic': 'py.pet.created',
             'data': {'petId': pet['id'], 'name': pet['name'], 'species': pet['species']}
+        })
+        
+        # Enqueue PostCreateLite background job
+        await emit({
+            'topic': 'py.job.postcreate.enqueued',
+            'data': {'petId': pet['id'], 'enqueuedAt': int(time.time() * 1000)}
         })
     
     return {"status": 201, "body": pet}

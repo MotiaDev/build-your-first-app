@@ -76,4 +76,29 @@ function remove(id) {
   return true;
 }
 
-module.exports = { create, list, get, update, remove };
+function softDelete(id) {
+  const db = load();
+  const pet = db.pets[id];
+  if (!pet) return null;
+  const nowMs = now();
+  const updated = {
+    ...pet,
+    status: 'deleted',
+    deletedAt: nowMs,
+    purgeAt: nowMs + (30 * 24 * 60 * 60 * 1000), // 30 days from now
+    updatedAt: nowMs
+  };
+  db.pets[id] = updated;
+  save(db);
+  return updated;
+}
+
+function findDeletedPetsReadyToPurge() {
+  const db = load();
+  const nowMs = now();
+  return Object.values(db.pets).filter(
+    pet => pet.status === 'deleted' && pet.purgeAt && pet.purgeAt <= nowMs
+  );
+}
+
+module.exports = { create, list, get, update, remove, softDelete, findDeletedPetsReadyToPurge };

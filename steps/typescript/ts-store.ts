@@ -7,9 +7,13 @@ export type Pet = {
   name: string;
   species: "dog" | "cat" | "bird" | "other";
   ageMonths: number;
-  status: "new" | "available" | "pending" | "adopted";
+  status: "new" | "available" | "pending" | "adopted" | "deleted";
   createdAt: number;
   updatedAt: number;
+  notes?: string;
+  nextFeedingAt?: number;
+  deletedAt?: number;
+  purgeAt?: number;
 };
 
 const DATA_DIR = path.join(process.cwd(), ".data");
@@ -82,5 +86,28 @@ export const TSStore = {
     delete db.pets[id];
     save(db);
     return true;
+  },
+  softDelete(id: string): Pet | null {
+    const db = load();
+    const pet = db.pets[id];
+    if (!pet) return null;
+    const now = Date.now();
+    const updated: Pet = {
+      ...pet,
+      status: "deleted",
+      deletedAt: now,
+      purgeAt: now + (30 * 24 * 60 * 60 * 1000), // 30 days from now
+      updatedAt: now,
+    };
+    db.pets[id] = updated;
+    save(db);
+    return updated;
+  },
+  findDeletedPetsReadyToPurge(): Pet[] {
+    const db = load();
+    const now = Date.now();
+    return Object.values(db.pets).filter(
+      pet => pet.status === "deleted" && pet.purgeAt && pet.purgeAt <= now
+    );
   },
 };
