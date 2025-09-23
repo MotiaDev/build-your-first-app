@@ -8,6 +8,7 @@ A multi-language pet management system built with Motia, demonstrating CRUD oper
 - **Pet Management**: Full CRUD operations for pet records
 - **Background Job Processing**: Queue-based and cron-based background jobs
 - **Automated Pet Lifecycle**: Orchestrated status transitions from new to available
+- **AI Profile Enrichment**: Automatic pet profile generation using OpenAI
 - **Soft Delete Pattern**: 30-day retention with automatic cleanup
 - **Event-Driven Architecture**: Language-isolated event namespaces
 - **File-based Storage**: JSON persistence across all implementations
@@ -26,6 +27,7 @@ The workflow includes:
 - **CRUD APIs**: Create, Read, Update, Delete operations
 - **Background Jobs**: SetNextFeedingReminder queue jobs and Deletion Reaper cron jobs
 - **Pet Lifecycle Orchestrator**: Automated status transitions through pet lifecycle stages
+- **AI Profile Enrichment**: Automatic pet profile generation using OpenAI
 - **Language Isolation**: Each language operates independently with its own event namespace
 
 ### Enhanced Pet Data Model
@@ -44,7 +46,13 @@ Each pet has the following structure:
   "notes": "Welcome to our pet store! We'll take great care of this pet.",
   "nextFeedingAt": 1641081600000,
   "deletedAt": null,
-  "purgeAt": null
+  "purgeAt": null,
+  "profile": {
+    "bio": "Buddy is a friendly and energetic golden retriever mix who loves playing fetch and meeting new people. He's great with children and would make an excellent family companion.",
+    "breedGuess": "Golden Retriever Mix",
+    "temperamentTags": ["friendly", "energetic", "loyal", "playful", "gentle"],
+    "adopterHints": "Perfect for active families with children. Needs daily exercise and mental stimulation. Great for first-time dog owners due to his gentle nature."
+  }
 }
 ```
 
@@ -619,6 +627,116 @@ All create and update operations include validation:
 }
 ```
 
+## Section 4 — Agentic Workflow (AI inside the flow)
+
+The system includes an **AI Profile Enrichment** feature that automatically generates detailed pet profiles using OpenAI's GPT models. This demonstrates how AI agents can be seamlessly integrated into event-driven workflows.
+
+### How It Works
+
+1. **Trigger**: When a pet is created, the `pet.created` event is emitted
+2. **AI Agent Activation**: The AI Profile Enrichment step listens to `pet.created` events
+3. **OpenAI API Call**: The agent calls OpenAI with pet details (name, species)
+4. **Profile Generation**: AI generates bio, breed guess, temperament tags, and adopter hints
+5. **Data Storage**: The generated profile is stored in the pet record under the `profile` field
+6. **Event Emission**: Events are emitted for `profile_enrichment_started` and `profile_enrichment_completed`
+
+### AI-Generated Profile Fields
+
+The AI agent enriches each pet with:
+
+- **`bio`**: A warm, engaging 2-3 sentence description appealing to potential adopters
+- **`breedGuess`**: AI's best guess at the breed or breed mix
+- **`temperamentTags`**: Array of 3-5 personality traits (e.g., "friendly", "energetic", "calm")
+- **`adopterHints`**: Practical advice for potential adopters (family type, living situation, care needs)
+
+### Sample AI-Enriched Pet Record
+
+```json
+{
+  "id": "pet-123",
+  "name": "Luna",
+  "species": "cat",
+  "ageMonths": 18,
+  "status": "new",
+  "createdAt": 1640995200000,
+  "updatedAt": 1640995201500,
+  "profile": {
+    "bio": "Luna is a graceful and independent cat with striking green eyes who enjoys sunny windowsills and gentle head scratches. She's perfectly content being the only pet and would thrive in a quiet, loving home.",
+    "breedGuess": "Domestic Shorthair",
+    "temperamentTags": ["independent", "calm", "affectionate", "observant", "gentle"],
+    "adopterHints": "Ideal for singles or couples seeking a low-maintenance companion. Prefers quiet environments and would do best as an only pet. Perfect for apartment living."
+  }
+}
+```
+
+### Environment Setup
+
+To enable AI profile enrichment, you need an OpenAI API key:
+
+1. **Get OpenAI API Key**: Visit [OpenAI Platform](https://platform.openai.com/api-keys)
+2. **Set Environment Variable**:
+   ```bash
+   export OPENAI_API_KEY=your_openai_api_key_here
+   ```
+3. **Or create `.env` file**:
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+### AI Agent Behavior
+
+- **Automatic**: Triggers on every pet creation
+- **Idempotent**: Re-enriching overwrites existing profile (no duplicates)
+- **Resilient**: Falls back to default profile if AI call fails
+- **Non-blocking**: Runs asynchronously, doesn't slow down pet creation
+- **Status-safe**: Never modifies pet status, only enriches metadata
+- **Language-isolated**: Each language has its own AI agent step
+
+### Console Output Examples
+
+**AI Enrichment Started:**
+```
+🤖 AI Profile Enrichment started { petId: 'pet-123', name: 'Luna', species: 'cat' }
+```
+
+**AI Enrichment Completed:**
+```
+✅ AI Profile Enrichment completed {
+  petId: 'pet-123',
+  profile: {
+    bio: 'Luna is a graceful and independent cat with...',
+    breedGuess: 'Domestic Shorthair',
+    temperamentTags: ['independent', 'calm', 'affectionate', 'observant', 'gentle'],
+    adopterHints: 'Ideal for singles or couples seeking a low-main...'
+  }
+}
+```
+
+**Error Handling:**
+```
+❌ AI Profile Enrichment failed { petId: 'pet-123', error: 'OpenAI API rate limit exceeded' }
+```
+
+### Testing AI Enrichment
+
+Create a pet and watch the AI enrichment happen automatically:
+
+```bash
+# Create a pet - AI enrichment will trigger automatically
+curl -X POST http://localhost:3000/ts/pets \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Max",
+    "species": "dog",
+    "ageMonths": 36
+  }'
+
+# Check the pet record after a few seconds to see the AI-generated profile
+curl http://localhost:3000/ts/pets/[pet-id]
+```
+
+The pet record will include the AI-generated `profile` field with personalized bio, breed guess, temperament tags, and adopter hints.
+
 ## Getting Started
 
 1. **Install Dependencies**
@@ -627,20 +745,56 @@ All create and update operations include validation:
    pip install -r requirements.txt
    ```
 
-2. **Start Motia Server**
+2. **Set Up Environment Variables**
+   
+   Create a `.env` file in the project root:
+   ```bash
+   # .env
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+   
+   **Sample `.env.example` file:**
+   ```bash
+   # Environment Variables for Pet Management System
+   
+   # OpenAI API Configuration
+   # Required for AI Profile Enrichment feature
+   # Get your API key from: https://platform.openai.com/api-keys
+   OPENAI_API_KEY=your_openai_api_key_here
+   
+   # Database Configuration (if needed)
+   # DATABASE_URL=your_database_url_here
+   
+   # Other API Keys (add as needed)
+   # SOME_OTHER_API_KEY=your_other_api_key_here
+   ```
+   
+   Or set the environment variable directly:
+   ```bash
+   export OPENAI_API_KEY=your_openai_api_key_here
+   ```
+   
+   **Get your OpenAI API key:**
+   - Visit [OpenAI Platform](https://platform.openai.com/api-keys)
+   - Create an account or sign in
+   - Generate a new API key
+   - Copy the key and add it to your environment
+
+3. **Start Motia Server**
    ```bash
    motia dev
    ```
 
-3. **Open Workbench**
+4. **Open Workbench**
    - Navigate to Motia Workbench
    - Select the `pets` workflow
    - View all CRUD operations and background jobs for all three languages
 
-4. **Test APIs and Background Jobs**
+5. **Test APIs and Background Jobs**
    - Use the provided curl examples
-   - Monitor console output for background job processing
-   - Check `.data/pets.json` for data persistence and background job effects
+   - Monitor console output for background job processing and AI enrichment
+   - Check `.data/pets.json` for data persistence and AI-generated profiles
+   - **Note**: AI profile enrichment requires a valid `OPENAI_API_KEY`. Without it, pets will receive fallback profiles.
 
 ## Key Learning Points
 
@@ -649,12 +803,14 @@ This example demonstrates:
 1. **Multi-language Implementation**: Same functionality in TypeScript, JavaScript, and Python
 2. **RESTful API Design**: Standard HTTP methods and response codes
 3. **Background Job Patterns**: Both queue-based (event-triggered) and cron-based (scheduled) jobs
-4. **Soft Delete Pattern**: Graceful deletion with recovery window and automatic cleanup
-5. **Event-Driven Architecture**: Language-isolated event namespaces prevent cross-triggering
-6. **Non-Blocking Processing**: Background jobs don't slow down API responses
-7. **Data Validation**: Input validation and error handling
-8. **File-based Persistence**: Simple JSON storage across languages
-9. **Workflow Visualization**: Using Motia Workbench for system understanding
-10. **Audit Logging**: Comprehensive event emission for system monitoring
+4. **AI Integration**: Seamless AI agents within event-driven workflows
+5. **Soft Delete Pattern**: Graceful deletion with recovery window and automatic cleanup
+6. **Event-Driven Architecture**: Language-isolated event namespaces prevent cross-triggering
+7. **Non-Blocking Processing**: Background jobs and AI enrichment don't slow down API responses
+8. **Data Validation**: Input validation and error handling
+9. **File-based Persistence**: Simple JSON storage across languages
+10. **Workflow Visualization**: Using Motia Workbench for system understanding
+11. **Audit Logging**: Comprehensive event emission for system monitoring
+12. **AI Resilience**: Graceful fallbacks when AI services are unavailable
 
 This is a demonstration project for Motia workflow capabilities, showcasing modern backend patterns including CRUD operations, background job processing, and event-driven architecture.

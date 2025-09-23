@@ -120,6 +120,21 @@ def soft_delete(pid: str) -> Optional[Pet]:
     save(db)
     return updated_pet
 
+def update_profile(pid: str, profile: Dict) -> Optional[Pet]:
+    db = load()
+    pet = db['pets'].get(pid)
+    if not pet:
+        return None
+    
+    updated_pet: Pet = {
+        **pet,
+        'profile': profile,
+        'updatedAt': _now()
+    }
+    db['pets'][pid] = updated_pet
+    save(db)
+    return updated_pet
+
 def find_deleted_pets_ready_to_purge() -> List[Pet]:
     db = load()
     now_ms = _now()

@@ -107,6 +107,20 @@ function softDelete(id) {
   return updated;
 }
 
+function updateProfile(id, profile) {
+  const db = load();
+  const pet = db.pets[id];
+  if (!pet) return null;
+  const updated = {
+    ...pet,
+    profile,
+    updatedAt: now()
+  };
+  db.pets[id] = updated;
+  save(db);
+  return updated;
+}
+
 function findDeletedPetsReadyToPurge() {
   const db = load();
   const nowMs = now();
@@ -115,4 +129,4 @@ function findDeletedPetsReadyToPurge() {
   );
 }
 
-module.exports = { create, list, get, update, remove, softDelete, findDeletedPetsReadyToPurge, updateStatus };
+module.exports = { create, list, get, update, remove, softDelete, findDeletedPetsReadyToPurge, updateStatus, updateProfile };

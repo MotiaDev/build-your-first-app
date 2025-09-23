@@ -2,6 +2,13 @@
 import fs from "node:fs";
 import path from "node:path";
 
+export type PetProfile = {
+  bio: string;
+  breedGuess: string;
+  temperamentTags: string[];
+  adopterHints: string;
+};
+
 export type Pet = {
   id: string;
   name: string;
@@ -14,6 +21,7 @@ export type Pet = {
   nextFeedingAt?: number;
   deletedAt?: number;
   purgeAt?: number;
+  profile?: PetProfile;
 };
 
 const DATA_DIR = path.join(process.cwd(), ".data");
@@ -111,6 +119,19 @@ export const TSStore = {
       deletedAt: now,
       purgeAt: now + (30 * 24 * 60 * 60 * 1000), // 30 days from now
       updatedAt: now,
+    };
+    db.pets[id] = updated;
+    save(db);
+    return updated;
+  },
+  updateProfile(id: string, profile: PetProfile): Pet | null {
+    const db = load();
+    const pet = db.pets[id];
+    if (!pet) return null;
+    const updated: Pet = {
+      ...pet,
+      profile,
+      updatedAt: now(),
     };
     db.pets[id] = updated;
     save(db);
