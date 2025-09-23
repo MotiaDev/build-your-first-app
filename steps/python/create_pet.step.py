@@ -4,7 +4,7 @@ config = {
     "name": "PyCreatePet",
     "path": "/py/pets",
     "method": "POST",
-    "emits": ["py.pet.created", "py.job.postcreate.enqueued"],
+    "emits": ["py.pet.created", "py.feeding.reminder.enqueued"],
     "flows": ["pets"]
 }
 
@@ -50,9 +50,9 @@ async def handler(req, ctx=None):
             'data': {'petId': pet['id'], 'name': pet['name'], 'species': pet['species']}
         })
         
-        # Enqueue PostCreateLite background job
+        # Enqueue feeding reminder background job
         await emit({
-            'topic': 'py.job.postcreate.enqueued',
+            'topic': 'py.feeding.reminder.enqueued',
             'data': {'petId': pet['id'], 'enqueuedAt': int(time.time() * 1000)}
         })
     

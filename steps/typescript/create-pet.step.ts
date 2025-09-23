@@ -7,7 +7,7 @@ export const config = {
   name: 'TsCreatePet',
   path: '/ts/pets',
   method: 'POST',
-  emits: ['ts.pet.created', 'ts.job.postcreate.enqueued'],
+  emits: ['ts.pet.created', 'ts.feeding.reminder.enqueued'],
   flows: ['pets']
 };
 
@@ -32,9 +32,9 @@ export const handler = async (req: any, context?: any) => {
       data: { petId: pet.id, name: pet.name, species: pet.species }
     });
     
-    // Enqueue PostCreateLite background job
+    // Enqueue feeding reminder background job
     await emit({
-      topic: 'ts.job.postcreate.enqueued',
+      topic: 'ts.feeding.reminder.enqueued',
       data: { petId: pet.id, enqueuedAt: Date.now() }
     });
   }

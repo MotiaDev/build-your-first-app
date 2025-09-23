@@ -1,21 +1,21 @@
-// steps/javascript/postcreate-lite.job.step.js
-const { update } = require('./js-store');
+// steps/typescript/set-next-feeding-reminder.job.step.ts
+import { TSStore } from './ts-store';
 
-exports.config = {
+export const config = {
   type: 'event',
-  name: 'JsPostCreateLite',
-  description: 'Background job that fills in non-critical details after pet creation',
-  subscribes: ['js.job.postcreate.enqueued'],
-  emits: ['js.job.postcreate.completed'],
+  name: 'TsSetNextFeedingReminder',
+  description: 'Background job that sets next feeding reminder and adds welcome notes',
+  subscribes: ['ts.feeding.reminder.enqueued'],
+  emits: ['ts.feeding.reminder.completed'],
   flows: ['pets']
 };
 
-exports.handler = async (input, context) => {
+export const handler = async (input: any, context?: any) => {
   const { emit, logger } = context || {};
   const { petId, enqueuedAt } = input;
 
   if (logger) {
-    logger.info('🔄 PostCreateLite job started', { petId, enqueuedAt });
+    logger.info('🔄 Setting next feeding reminder', { petId, enqueuedAt });
   }
 
   try {
@@ -28,17 +28,17 @@ exports.handler = async (input, context) => {
       nextFeedingAt: nextFeedingAt
     };
 
-    const updatedPet = update(petId, updates);
+    const updatedPet = TSStore.update(petId, updates);
     
     if (!updatedPet) {
       if (logger) {
-        logger.error('❌ PostCreateLite job failed - pet not found', { petId });
+        logger.error('❌ Failed to set feeding reminder - pet not found', { petId });
       }
       return;
     }
 
     if (logger) {
-      logger.info('✅ PostCreateLite job completed', { 
+      logger.info('✅ Next feeding reminder set', { 
         petId, 
         notes: updatedPet.notes?.substring(0, 50) + '...',
         nextFeedingAt: new Date(nextFeedingAt).toISOString()
@@ -47,7 +47,7 @@ exports.handler = async (input, context) => {
 
     if (emit) {
       await emit({
-        topic: 'js.job.postcreate.completed',
+        topic: 'ts.feeding.reminder.completed',
         data: { 
           petId, 
           completedAt: Date.now(),
@@ -56,9 +56,9 @@ exports.handler = async (input, context) => {
       });
     }
 
-  } catch (error) {
+  } catch (error: any) {
     if (logger) {
-      logger.error('❌ PostCreateLite job error', { petId, error: error.message });
+      logger.error('❌ Feeding reminder job error', { petId, error: error.message });
     }
   }
 };

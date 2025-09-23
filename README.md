@@ -23,7 +23,7 @@ The system uses a single workflow definition in `motia-workbench.json`:
 
 The workflow includes:
 - **CRUD APIs**: Create, Read, Update, Delete operations
-- **Background Jobs**: PostCreateLite queue jobs and Deletion Reaper cron jobs
+- **Background Jobs**: SetNextFeedingReminder queue jobs and Deletion Reaper cron jobs
 - **Language Isolation**: Each language operates independently with its own event namespace
 
 ### Enhanced Pet Data Model
@@ -54,7 +54,7 @@ Each pet has the following structure:
 - `"deleted"` - Pet is soft deleted (scheduled for purging)
 
 **Background Job Fields:**
-- `notes` - Added by PostCreateLite background job
+- `notes` - Added by SetNextFeedingReminder background job
 - `nextFeedingAt` - Calculated feeding schedule (24 hours from creation)
 - `deletedAt` - Timestamp when pet was soft deleted
 - `purgeAt` - Timestamp when pet will be permanently removed (deletedAt + 30 days)
@@ -63,24 +63,24 @@ Each pet has the following structure:
 
 ## Background Job System
 
-### Queue-Based Job: PostCreateLite
+### Queue-Based Job: SetNextFeedingReminder
 
 **Triggered by**: Creating a pet via any `POST /*/pets` endpoint
 
-**Purpose**: Fills in non-critical details after pet creation without blocking the API response
+**Purpose**: Sets next feeding reminder and adds welcome notes after pet creation without blocking the API response
 
 **Process**:
 1. Pet creation API completes immediately with `status: 201`
-2. API emits language-specific event (e.g., `js.job.postcreate.enqueued`)
+2. API emits language-specific event (e.g., `js.feeding.reminder.enqueued`)
 3. Background job picks up the event and processes asynchronously
-4. Job adds default notes and calculates next feeding time
+4. Job adds welcome notes and calculates next feeding time
 5. Job emits completion event with processing metrics
 
 **Console Output**:
 ```
 🐾 Pet created { petId: '1', name: 'Buddy', species: 'dog', status: 'new' }
-🔄 PostCreateLite job started { petId: '1', enqueuedAt: 1640995200000 }
-✅ PostCreateLite job completed { petId: '1', notes: 'Welcome to our pet store!...', nextFeedingAt: '2022-01-02T00:00:00.000Z' }
+🔄 Setting next feeding reminder { petId: '1', enqueuedAt: 1640995200000 }
+✅ Next feeding reminder set { petId: '1', notes: 'Welcome to our pet store!...', nextFeedingAt: '2022-01-02T00:00:00.000Z' }
 ```
 
 ### Cron-Based Job: Deletion Reaper
