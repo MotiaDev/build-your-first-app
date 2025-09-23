@@ -7,7 +7,7 @@ exports.config = {
   path: '/js/pets',
   method: 'POST',
   emits: ['js.pet.created', 'js.feeding.reminder.enqueued'],
-  flows: ['pets']
+  flows: ['JsPetManagement']
 };
 
 exports.handler = async (req, context) => {

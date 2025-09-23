@@ -1,5 +1,5 @@
 # steps/python/update_pet.step.py
-config = { "type":"api", "name":"PyUpdatePet", "path":"/py/pets/:id", "method":"PUT", "emits": [], "flows": ["pets"] }
+config = { "type":"api", "name":"PyUpdatePet", "path":"/py/pets/:id", "method":"PUT", "emits": [], "flows": ["PyPetManagement"] }
 
 async def handler(req, _ctx=None):
     try:

@@ -5,7 +5,7 @@ config = {
     "path": "/py/pets",
     "method": "POST",
     "emits": ["py.pet.created", "py.feeding.reminder.enqueued"],
-    "flows": ["pets"]
+    "flows": ["PyPetManagement"]
 }
 
 async def handler(req, ctx=None):

@@ -8,7 +8,7 @@ export const config = {
   path: '/ts/pets/:id',
   method: 'PUT',
   emits: [],
-  flows: ['pets']
+  flows: ['TsPetManagement']
 };
 
 export const handler = async (req: any) => {

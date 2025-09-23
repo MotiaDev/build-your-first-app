@@ -6,7 +6,7 @@ config = {
     "description": "Background job that sets next feeding reminder and adds welcome notes",
     "subscribes": ["py.feeding.reminder.enqueued"],
     "emits": ["py.feeding.reminder.completed"],
-    "flows": ["pets"]
+    "flows": ["PyPetManagement"]
 }
 
 async def handler(input_data, ctx=None):
