@@ -7,6 +7,7 @@ A multi-language pet management system built with Motia, demonstrating CRUD oper
 - **Multi-language Support**: Complete implementations in TypeScript, JavaScript, and Python
 - **Pet Management**: Full CRUD operations for pet records
 - **Background Job Processing**: Queue-based and cron-based background jobs
+- **Automated Pet Lifecycle**: Orchestrated status transitions from new to available
 - **Soft Delete Pattern**: 30-day retention with automatic cleanup
 - **Event-Driven Architecture**: Language-isolated event namespaces
 - **File-based Storage**: JSON persistence across all implementations
@@ -24,6 +25,7 @@ The system uses a single workflow definition in `motia-workbench.json`:
 The workflow includes:
 - **CRUD APIs**: Create, Read, Update, Delete operations
 - **Background Jobs**: SetNextFeedingReminder queue jobs and Deletion Reaper cron jobs
+- **Pet Lifecycle Orchestrator**: Automated status transitions through pet lifecycle stages
 - **Language Isolation**: Each language operates independently with its own event namespace
 
 ### Enhanced Pet Data Model
@@ -46,12 +48,17 @@ Each pet has the following structure:
 }
 ```
 
-**Status Values:**
-- `"new"` - Default status when pet is created
-- `"available"` - Pet is available for adoption
+**Lifecycle Status Values:**
+- `"new"` - Initial status when pet is created
+- `"in_quarantine"` - Pet is in quarantine after feeding reminder setup
+- `"healthy"` - Pet is healthy and cleared from quarantine
+- `"available"` - Pet is ready for adoption
 - `"pending"` - Adoption application in progress
 - `"adopted"` - Pet has been adopted
-- `"deleted"` - Pet is soft deleted (scheduled for purging)
+- `"ill"` - Pet is identified as ill (random health check)
+- `"under_treatment"` - Pet is receiving medical treatment
+- `"recovered"` - Pet has recovered from illness (transitions back to healthy)
+- `"deleted"` - Pet is soft deleted (scheduled for purging, outside orchestrator)
 
 **Background Job Fields:**
 - `notes` - Added by SetNextFeedingReminder background job
@@ -101,6 +108,211 @@ Each pet has the following structure:
 💀 Pet permanently purged { petId: '1', name: 'Buddy', deletedAt: '2022-01-01T00:00:00.000Z', purgeAt: '2022-01-31T00:00:00.000Z' }
 ✅ Deletion Reaper completed { totalScanned: 5, purgedCount: 2, failedCount: 0 }
 ```
+
+## Section 3 — Pet Lifecycle Orchestrator with Staff Interaction
+
+The Pet Lifecycle Orchestrator manages pet status transitions through a realistic shelter workflow with staff decision points. It's the only component allowed to modify pet status, ensuring consistent state management while requiring human oversight at key stages.
+
+### Core Architecture
+
+**Centralized Control**: Only the orchestrator can modify `pet.status`. All other components emit events.
+
+**Staff-Driven Workflow**: Status changes require staff decisions through the existing PUT API.
+
+**Event-Driven**: Orchestrator subscribes to domain events and validates transition rules.
+
+**Language Isolation**: Each language has its own orchestrator with language-specific event namespaces.
+
+### Hybrid Staff + Automatic Workflow
+
+```
+POST /pets → new
+↓ (SetNextFeedingReminder completes - automatic)
+in_quarantine
+↓ (Staff health check via PUT API)
+healthy
+↓ (AUTOMATIC - orchestrator progression)
+available
+↓ (Staff adoption process via PUT API)
+pending → adopted
+
+Illness Can Happen Anytime:
+in_quarantine → ill (Staff finds illness during quarantine)
+healthy → ill (Staff assessment during health check)
+available → ill (Staff discovers illness before adoption)
+↓ (AUTOMATIC - orchestrator starts treatment)
+under_treatment
+↓ (Staff marks recovered via PUT API)
+recovered
+↓ (AUTOMATIC - orchestrator clears recovery)
+healthy
+↓ (AUTOMATIC - orchestrator marks ready)
+available
+```
+
+### Transition Rules
+
+| Trigger Event | From Status | To Status | Action Type |
+|---------------|-------------|-----------|-------------|
+| `feeding.reminder.completed` | `new` | `in_quarantine` | **Automatic** |
+| `status.update.requested` | `in_quarantine` | `healthy` | **Staff Decision** |
+| `status.update.requested` | `healthy` | `available` | **Automatic Progression** |
+| `status.update.requested` | `healthy`, `in_quarantine`, `available` | `ill` | **Staff Assessment** |
+| `status.update.requested` | `ill` | `under_treatment` | **Automatic Progression** |
+| `status.update.requested` | `under_treatment` | `recovered` | **Staff Decision** |
+| `status.update.requested` | `recovered` | `healthy` | **Automatic Progression** |
+| `status.update.requested` | `available` | `pending` | **Staff Decision** |
+| `status.update.requested` | `pending` | `adopted` | **Staff Decision** |
+| `status.update.requested` | `pending` | `available` | **Staff Decision** |
+
+### Automatic Progressions
+
+**Healthy → Available**: When a pet becomes healthy, the orchestrator automatically marks them as available for adoption.
+
+**Ill → Under Treatment**: When a pet is marked as ill, the orchestrator automatically starts treatment.
+
+**Recovered → Healthy → Available**: When a pet recovers, the orchestrator automatically clears them to healthy, then immediately to available.
+
+### Staff Decision Points
+
+**Health Assessment**: Staff evaluates pets in quarantine and decides if they're healthy or need medical attention.
+
+**Illness Detection**: Staff identifies when healthy pets become ill.
+
+**Treatment Completion**: Staff determines when treatment is complete and pets have recovered.
+
+**Adoption Process**: Staff manages adoption applications and final adoption completion.
+
+### Console Output Examples
+
+**Normal Workflow with Automatic Progressions**:
+```
+🐾 Pet created { petId: '1', name: 'Buddy', species: 'dog', status: 'new' }
+🔄 Setting next feeding reminder { petId: '1' }
+✅ Next feeding reminder set { petId: '1' }
+🔄 Lifecycle orchestrator processing { petId: '1', eventType: 'feeding.reminder.completed' }
+✅ Lifecycle transition completed { petId: '1', oldStatus: 'new', newStatus: 'in_quarantine', description: 'Pet moved to quarantine after feeding setup' }
+
+👤 Staff requesting status change { petId: '1', currentStatus: 'in_quarantine', requestedStatus: 'healthy' }
+🔄 Lifecycle orchestrator processing { petId: '1', eventType: 'status.update.requested', requestedStatus: 'healthy' }
+✅ Lifecycle transition completed { petId: '1', oldStatus: 'in_quarantine', newStatus: 'healthy', description: 'Staff health check - pet cleared from quarantine' }
+
+🤖 Orchestrator triggering automatic progression { petId: '1', currentStatus: 'healthy', nextStatus: 'available' }
+🤖 Automatic progression { petId: '1', eventType: 'status.update.requested', requestedStatus: 'available', automatic: true }
+✅ Lifecycle transition completed { petId: '1', oldStatus: 'healthy', newStatus: 'available', description: 'Automatic progression - pet ready for adoption' }
+```
+
+**Invalid Transition Attempt**:
+```
+👤 Staff requesting status change { petId: '1', currentStatus: 'in_quarantine', requestedStatus: 'available' }
+⚠️ Transition rejected { petId: '1', currentStatus: 'in_quarantine', requestedStatus: 'available', reason: 'Invalid transition: cannot change from in_quarantine to available' }
+```
+
+**Illness and Treatment Workflow with Automatic Progressions**:
+```
+👤 Staff requesting status change { petId: '1', currentStatus: 'healthy', requestedStatus: 'ill' }
+✅ Lifecycle transition completed { petId: '1', oldStatus: 'healthy', newStatus: 'ill', description: 'Staff assessment - pet identified as ill' }
+
+🤖 Orchestrator triggering automatic progression { petId: '1', currentStatus: 'ill', nextStatus: 'under_treatment' }
+🤖 Automatic progression { petId: '1', eventType: 'status.update.requested', requestedStatus: 'under_treatment', automatic: true }
+✅ Lifecycle transition completed { petId: '1', oldStatus: 'ill', newStatus: 'under_treatment', description: 'Automatic progression - treatment started' }
+
+👤 Staff requesting status change { petId: '1', currentStatus: 'under_treatment', requestedStatus: 'recovered' }
+✅ Lifecycle transition completed { petId: '1', oldStatus: 'under_treatment', newStatus: 'recovered', description: 'Staff assessment - treatment completed' }
+
+🤖 Orchestrator triggering automatic progression { petId: '1', currentStatus: 'recovered', nextStatus: 'healthy' }
+🤖 Automatic progression { petId: '1', eventType: 'status.update.requested', requestedStatus: 'healthy', automatic: true }
+✅ Lifecycle transition completed { petId: '1', oldStatus: 'recovered', newStatus: 'healthy', description: 'Automatic progression - recovery complete' }
+
+🤖 Orchestrator triggering automatic progression { petId: '1', currentStatus: 'healthy', nextStatus: 'available' }
+🤖 Automatic progression { petId: '1', eventType: 'status.update.requested', requestedStatus: 'available', automatic: true }
+✅ Lifecycle transition completed { petId: '1', oldStatus: 'healthy', newStatus: 'available', description: 'Automatic progression - pet ready for adoption' }
+```
+
+### Integration with Existing System
+
+**CRUD APIs**: The `POST /pets` endpoint creates pets with `status=new` and emits `pet.created` events.
+
+**SetNextFeedingReminder**: After completing, emits `feeding.reminder.completed` to trigger quarantine.
+
+**Background Jobs**: Deletion Reaper remains unchanged and operates outside the lifecycle.
+
+**Soft Delete**: `DELETE /pets/:id` continues to work as before, setting `status=deleted` directly.
+
+### Testing the Staff-Driven Workflow
+
+**Create a Pet and Guide Through Lifecycle**:
+```bash
+# 1. Create a pet - starts with status=new, automatically moves to in_quarantine
+curl -X POST http://localhost:3000/js/pets \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Buddy", "species": "dog", "ageMonths": 24}'
+
+# 2. Check current status (should be in_quarantine after feeding reminder completes)
+curl http://localhost:3000/js/pets/1
+
+# 3. Staff health check - clear from quarantine to healthy
+curl -X PUT http://localhost:3000/js/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "healthy"}'
+
+# 4. Staff marks pet ready for adoption
+curl -X PUT http://localhost:3000/js/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "available"}'
+
+# 5. Adoption application received
+curl -X PUT http://localhost:3000/js/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "pending"}'
+
+# 6. Adoption completed
+curl -X PUT http://localhost:3000/js/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "adopted"}'
+```
+
+**Test Invalid Transitions**:
+```bash
+# Try to skip quarantine (should be rejected)
+curl -X PUT http://localhost:3000/js/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "available"}'
+# Returns 202 with rejection message
+```
+
+**Illness and Treatment Workflow**:
+```bash
+# Mark healthy pet as ill
+curl -X PUT http://localhost:3000/js/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "ill"}'
+
+# Start treatment
+curl -X PUT http://localhost:3000/js/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "under_treatment"}'
+
+# Mark as recovered
+curl -X PUT http://localhost:3000/js/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "recovered"}'
+
+# Clear back to healthy
+curl -X PUT http://localhost:3000/js/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "healthy"}'
+```
+
+### Orchestrator Behavior
+
+**Validation**: Only valid transitions are allowed based on current status and transition rules.
+
+**Staff Control**: All status changes (except initial quarantine) require explicit staff decisions.
+
+**Idempotency**: Attempting to set the same status twice has no effect.
+
+**Error Handling**: Invalid transitions return 202 with clear rejection reasons.
 
 ## API Endpoints
 

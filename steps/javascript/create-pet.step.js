@@ -7,7 +7,7 @@ exports.config = {
   path: '/js/pets',
   method: 'POST',
   emits: ['js.pet.created', 'js.feeding.reminder.enqueued'],
-  flows: ['pets']
+  flows: ['JsPetManagement']
 };
 
 exports.handler = async (req, context) => {
@@ -28,7 +28,7 @@ exports.handler = async (req, context) => {
   if (emit) {
     await emit({
       topic: 'js.pet.created',
-      data: { petId: pet.id, name: pet.name, species: pet.species }
+      data: { petId: pet.id, event: 'pet.created', name: pet.name, species: pet.species }
     });
     
     // Enqueue feeding reminder background job

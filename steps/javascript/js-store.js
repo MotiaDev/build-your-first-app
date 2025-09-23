@@ -41,6 +41,20 @@ function create({ name, species, ageMonths }) {
   return pet;
 }
 
+function updateStatus(id, status) {
+  const db = load();
+  const pet = db.pets[id];
+  if (!pet) return null;
+  const updated = {
+    ...pet,
+    status,
+    updatedAt: now()
+  };
+  db.pets[id] = updated;
+  save(db);
+  return updated;
+}
+
 function list() {
   const db = load();
   return Object.values(db.pets).sort((a, b) => b.updatedAt - a.updatedAt);
@@ -101,4 +115,4 @@ function findDeletedPetsReadyToPurge() {
   );
 }
 
-module.exports = { create, list, get, update, remove, softDelete, findDeletedPetsReadyToPurge };
+module.exports = { create, list, get, update, remove, softDelete, findDeletedPetsReadyToPurge, updateStatus };

@@ -7,7 +7,7 @@ export const config = {
   description: 'Daily job that permanently removes pets scheduled for deletion',
   cron: '0 2 * * *', // Daily at 2:00 AM
   emits: ['ts.pet.purged', 'ts.reaper.completed'],
-  flows: ['pets']
+  flows: ['TsPetManagement']
 };
 
 export const handler = async ({ emit, logger }: any) => {

@@ -5,7 +5,7 @@ config = {
     "path": "/py/pets",
     "method": "POST",
     "emits": ["py.pet.created", "py.feeding.reminder.enqueued"],
-    "flows": ["pets"]
+    "flows": ["PyPetManagement"]
 }
 
 async def handler(req, ctx=None):
@@ -47,7 +47,7 @@ async def handler(req, ctx=None):
     if emit:
         await emit({
             'topic': 'py.pet.created',
-            'data': {'petId': pet['id'], 'name': pet['name'], 'species': pet['species']}
+            'data': {'petId': pet['id'], 'event': 'pet.created', 'name': pet['name'], 'species': pet['species']}
         })
         
         # Enqueue feeding reminder background job

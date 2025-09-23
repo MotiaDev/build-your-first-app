@@ -1,5 +1,5 @@
 # steps/python/delete_pet.step.py
-config = { "type":"api", "name":"PyDeletePet", "path":"/py/pets/:id", "method":"DELETE", "emits": ["py.pet.soft.deleted"], "flows": ["pets"] }
+config = { "type":"api", "name":"PyDeletePet", "path":"/py/pets/:id", "method":"DELETE", "emits": ["py.pet.soft.deleted"], "flows": ["PyPetManagement"] }
 
 async def handler(req, ctx=None):
     logger = getattr(ctx, 'logger', None) if ctx else None

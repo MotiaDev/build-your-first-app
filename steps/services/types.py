@@ -2,7 +2,7 @@
 from typing import TypedDict, Literal, Optional
 
 Species = Literal['dog','cat','bird','other']
-Status = Literal['new','available','pending','adopted','deleted']
+Status = Literal['new','in_quarantine','healthy','available','pending','adopted','ill','under_treatment','recovered','deleted']
 
 class Pet(TypedDict, total=False):
     id: str

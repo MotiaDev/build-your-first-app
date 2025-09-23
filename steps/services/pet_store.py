@@ -54,6 +54,21 @@ def create(name: str, species: str, ageMonths: int) -> Pet:
     save(db)
     return pet
 
+def update_status(pid: str, status: str) -> Optional[Pet]:
+    db = load()
+    pet = db['pets'].get(pid)
+    if not pet:
+        return None
+    
+    updated_pet: Pet = {
+        **pet,
+        'status': status,
+        'updatedAt': _now()
+    }
+    db['pets'][pid] = updated_pet
+    save(db)
+    return updated_pet
+
 def list_all() -> List[Pet]:
     db = load()
     return sorted(db['pets'].values(), key=lambda p: p['updatedAt'], reverse=True)

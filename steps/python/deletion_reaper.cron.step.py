@@ -5,7 +5,7 @@ config = {
     "description": "Daily job that permanently removes pets scheduled for deletion",
     "cron": "0 2 * * *",  # Daily at 2:00 AM
     "emits": ["py.pet.purged", "py.reaper.completed"],
-    "flows": ["pets"]
+    "flows": ["PyPetManagement"]
 }
 
 async def handler(ctx):

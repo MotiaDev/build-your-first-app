@@ -8,7 +8,7 @@ export const config = {
   path: '/ts/pets',
   method: 'GET',
   emits: [],
-  flows: ['pets']
+  flows: ['TsPetManagement']
 };
 
 export const handler = async () => {

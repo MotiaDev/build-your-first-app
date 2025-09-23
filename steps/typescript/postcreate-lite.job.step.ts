@@ -1,21 +1,21 @@
-// steps/javascript/set-next-feeding-reminder.job.step.js
-const { update } = require('./js-store');
+// steps/typescript/postcreate-lite.job.step.ts
+import { TSStore } from './ts-store';
 
-exports.config = {
+export const config = {
   type: 'event',
-  name: 'JsSetNextFeedingReminder',
-  description: 'Background job that sets next feeding reminder and adds welcome notes',
-  subscribes: ['js.feeding.reminder.enqueued'],
-  emits: ['js.feeding.reminder.completed'],
-  flows: ['JsPetManagement']
+  name: 'TsPetEnrichment',
+  description: 'Background job that enriches pet records with default notes and feeding schedule',
+  subscribes: ['ts.pet.enrichment.enqueued'],
+  emits: ['ts.pet.enrichment.completed'],
+  flows: ['pets']
 };
 
-exports.handler = async (input, context) => {
+export const handler = async (input: any, context?: any) => {
   const { emit, logger } = context || {};
   const { petId, enqueuedAt } = input;
 
   if (logger) {
-    logger.info('🔄 Setting next feeding reminder', { petId, enqueuedAt });
+    logger.info('🔄 Pet enrichment job started', { petId, enqueuedAt });
   }
 
   try {
@@ -28,17 +28,17 @@ exports.handler = async (input, context) => {
       nextFeedingAt: nextFeedingAt
     };
 
-    const updatedPet = update(petId, updates);
+    const updatedPet = TSStore.update(petId, updates);
     
     if (!updatedPet) {
       if (logger) {
-        logger.error('❌ Failed to set feeding reminder - pet not found', { petId });
+        logger.error('❌ Pet enrichment job failed - pet not found', { petId });
       }
       return;
     }
 
     if (logger) {
-      logger.info('✅ Next feeding reminder set', { 
+      logger.info('✅ Pet enrichment job completed', { 
         petId, 
         notes: updatedPet.notes?.substring(0, 50) + '...',
         nextFeedingAt: new Date(nextFeedingAt).toISOString()
@@ -47,19 +47,18 @@ exports.handler = async (input, context) => {
 
     if (emit) {
       await emit({
-        topic: 'js.feeding.reminder.completed',
+        topic: 'ts.pet.enrichment.completed',
         data: { 
           petId, 
-          event: 'feeding.reminder.completed',
           completedAt: Date.now(),
           processingTimeMs: Date.now() - enqueuedAt
         }
       });
     }
 
-  } catch (error) {
+  } catch (error: any) {
     if (logger) {
-      logger.error('❌ Feeding reminder job error', { petId, error: error.message });
+      logger.error('❌ Pet enrichment job error', { petId, error: error.message });
     }
   }
 };

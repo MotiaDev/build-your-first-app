@@ -7,7 +7,7 @@ export type Pet = {
   name: string;
   species: "dog" | "cat" | "bird" | "other";
   ageMonths: number;
-  status: "new" | "available" | "pending" | "adopted" | "deleted";
+  status: "new" | "in_quarantine" | "healthy" | "available" | "pending" | "adopted" | "ill" | "under_treatment" | "recovered" | "deleted";
   createdAt: number;
   updatedAt: number;
   notes?: string;
@@ -53,6 +53,19 @@ export const TSStore = {
     db.pets[id] = pet;
     save(db);
     return pet;
+  },
+  updateStatus(id: string, status: Pet["status"]): Pet | null {
+    const db = load();
+    const pet = db.pets[id];
+    if (!pet) return null;
+    const updated: Pet = {
+      ...pet,
+      status,
+      updatedAt: now(),
+    };
+    db.pets[id] = updated;
+    save(db);
+    return updated;
   },
   list(): Pet[] {
     const db = load();
