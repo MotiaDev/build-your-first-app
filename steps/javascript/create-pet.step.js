@@ -7,7 +7,7 @@ exports.config = {
   path: '/js/pets',
   method: 'POST',
   emits: ['pet.created'],
-  flows: ['pets']
+  flows: ['JsPetManagement']
 };
 
 exports.handler = async (req, context) => {

@@ -5,7 +5,7 @@ config = {
     "path": "/py/pets",
     "method": "POST",
     "emits": ["pet.created"],
-    "flows": ["pets"]
+    "flows": ["PyPetManagement"]
 }
 
 async def handler(req, ctx=None):

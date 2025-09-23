@@ -8,7 +8,7 @@ export const config = {
   path: '/ts/pets',
   method: 'POST',
   emits: ['pet.created'],
-  flows: ['pets']
+  flows: ['TsPetManagement']
 };
 
 export const handler = async (req: any, context?: any) => {

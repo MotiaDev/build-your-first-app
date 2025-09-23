@@ -1,5 +1,5 @@
 # steps/python/delete_pet.step.py
-config = { "type":"api", "name":"PyDeletePet", "path":"/py/pets/:id", "method":"DELETE", "emits": [], "flows": ["pets"] }
+config = { "type":"api", "name":"PyDeletePet", "path":"/py/pets/:id", "method":"DELETE", "emits": [], "flows": ["PyPetManagement"] }
 
 async def handler(req, _ctx=None):
     try:

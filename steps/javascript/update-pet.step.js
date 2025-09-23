@@ -1,7 +1,7 @@
 // steps/javascript/update-pet.step.js
 const { update } = require('./js-store');
 
-exports.config = { type:'api', name:'JsUpdatePet', path:'/js/pets/:id', method:'PUT', emits: [], flows: ['pets'] };
+exports.config = { type:'api', name:'JsUpdatePet', path:'/js/pets/:id', method:'PUT', emits: [], flows: ['JsPetManagement'] };
 exports.handler = async (req) => {
   const b = req.body || {};
   const patch = {};
