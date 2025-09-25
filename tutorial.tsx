@@ -2,49 +2,59 @@ import { workbenchXPath, TutorialStep } from '@motiadev/workbench'
 
 export const steps: TutorialStep[] = [
   {
-    title: 'Welcome to Motia',
+    title: 'Pet Management Workflow Tutorial',
     image: {
       height: 200,
       src: 'https://github.com/MotiaDev/motia/raw/main/packages/docs/public/github-readme-banner.png',
     },
     description: () => (
       <p>
-        Motia is an all-in-one framework for modern backend systems. Out of the box support for API endpoints,
-        background jobs, scheduled tasks and agentic workflow orchestration through a unified runtime. Thanks to its
-        event driven architecture you can run tasks in parallel, stream data to clients, or allow for seamless
-        orchestration of flows.
+        Welcome to the Pet Management Workflow Tutorial! This comprehensive guide demonstrates how to build an intelligent 
+        pet management system with Motia, featuring AI-driven decision making, workflow automation, and visible staff action triggers.
         <br />
         <br />
-        Let's start with <b>Workbench</b>, it is a development tool provided by Motia's ecosystem, from here you'll be
-        able to visualize your flows and observe their behavior.
+        You'll learn about:
+        <ul>
+          <li>🤖 <b>AI Agents</b> - Making intelligent decisions for pet health and adoption</li>
+          <li>🔄 <b>Orchestrator</b> - Central workflow control with guard enforcement</li>
+          <li>📋 <b>Staff Automation</b> - Automated task scheduling and management</li>
+          <li>🛡️ <b>Guard Enforcement</b> - Business rule validation and error handling</li>
+        </ul>
         <br />
-        <br />
-        💡 If you are already familiar with Motia, you can skip this tutorial.
+        This tutorial is based on the structure from the{' '}
+        <a href="https://github.com/MotiaDev/motia-examples/blob/main/examples/ai-content-moderation/tutorial.tsx" target="_blank">
+          AI Content Moderation Tutorial
+        </a>
+        .
       </p>
     ),
   },
 
-  // Flows
+  // Pet Management Flow Overview
 
   {
-    elementXpath: workbenchXPath.flows.node('apitrigger'),
-    title: 'API Step',
+    elementXpath: workbenchXPath.flows.node('createpet'),
+    title: 'Pet Creation API',
     link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        Let's evaluate the Step that will allow you to receive traffic from external applications, API Steps will allow
-        you to expose an HTTP endpoint for external traffic.
+        Let's start by examining the Pet Creation API Step. This endpoint allows you to create new pets in the system
+        and automatically triggers the pet lifecycle workflow.
+        <br />
+        <br />
+        When a pet is created, it immediately triggers AI profile enrichment and sets up feeding reminders,
+        demonstrating Motia's event-driven architecture.
       </p>
     ),
     before: [
       { type: 'click', selector: workbenchXPath.links.flows },
-      { type: 'click', selector: workbenchXPath.flows.dropdownFlow('basic-tutorial') },
+      { type: 'click', selector: workbenchXPath.flows.dropdownFlow('TsPetManagement') },
     ],
   },
   {
-    elementXpath: workbenchXPath.flows.previewButton('apitrigger'),
+    elementXpath: workbenchXPath.flows.previewButton('createpet'),
     title: 'Code Preview',
-    description: () => <p>Clicking on this icon will allow you to visualize the source code for a given Step.</p>,
+    description: () => <p>Clicking on this icon will allow you to visualize the source code for the Pet Creation Step.</p>,
     before: [
       {
         type: 'click',
@@ -55,33 +65,36 @@ export const steps: TutorialStep[] = [
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Step Config',
+    title: 'Pet Creation Configuration',
     description: () => (
       <div>
         <p>
-          All Steps are defined by two main components, the <b>configuration</b> and the <b>handler</b>.
+          The Pet Creation API Step demonstrates Motia's API configuration capabilities.
           <br />
           <br />
-          Let's start with the configuration, the common config attributes are
-          <i>type, name, description, and flows</i>.<br />
-          <br />
+          Key configuration attributes:
         </p>
         <ul>
           <li>
-            The <b>type</b> attribute is important since it declares the type of Step primitive
+            <b>type: 'api'</b> - Declares this as an API endpoint
           </li>
           <li>
-            The <b>flows</b> attribute will associate your Step with a given flow or set of flows.
+            <b>path: '/ts/pets'</b> - The HTTP endpoint URL
           </li>
           <li>
-            The <b>name</b> and <b>description</b> attributes will provide context in the visualization and
-            observability tools.
+            <b>method: 'POST'</b> - HTTP method for creating pets
+          </li>
+          <li>
+            <b>emits: ['ts.pet.created']</b> - Emits events to trigger other steps
           </li>
         </ul>
+        <br />
+        When a pet is created, it emits a <b>ts.pet.created</b> event that triggers
+        AI profile enrichment and feeding reminder setup.
       </div>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('apitrigger') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('createpet') },
       { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
     ],
   },
@@ -192,21 +205,25 @@ export const steps: TutorialStep[] = [
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('http-response') }],
   },
 
-  // Event Steps
+  // AI Agents
 
   {
-    elementXpath: workbenchXPath.flows.node('processfoodorder'),
-    title: 'Event Step',
-    link: 'https://www.motia.dev/docs/concepts/steps/event',
+    elementXpath: workbenchXPath.flows.node('healthreviewagent'),
+    title: 'AI Health Review Agent',
+    link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        Now that we have an entry point in our flow, let's focus on subscribing to a <b>topic</b> and performing a
-        specific task.
-        <br /> For this we will look at the <b>Event</b> Step.
-        <b>Event</b> Steps are an essential primitive for Motia's event driven architecture. Let's dive deeper into the
-        anatomy of an Event Step by taking a look at the code visualization tool.
+        Let's explore the AI Health Review Agent! This is where the magic happens - AI agents make intelligent decisions
+        about pet health based on symptoms, age, and other factors.
         <br />
-        💡 <b>Event</b> Steps can only be triggered internally, through topic subscriptions.
+        <br />
+        The Health Review Agent uses OpenAI to analyze pet data and choose from predefined actions:
+        <ul>
+          <li><b>emit.health.treatment_required</b> - Pet needs medical treatment</li>
+          <li><b>emit.health.no_treatment_needed</b> - Pet is healthy</li>
+        </ul>
+        <br />
+        💡 This demonstrates <b>agentic decision making</b> where AI chooses the next action in the workflow.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
@@ -286,20 +303,28 @@ export const steps: TutorialStep[] = [
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('state') }],
   },
 
-  // Cron Steps
+  // Orchestrator
 
   {
-    elementXpath: workbenchXPath.flows.node('stateauditjob'),
-    title: 'Cron Step',
-    link: 'https://www.motia.dev/docs/concepts/steps/cron',
+    elementXpath: workbenchXPath.flows.node('petlifecycleorchestrator'),
+    title: 'Pet Lifecycle Orchestrator',
+    link: 'https://www.motia.dev/docs/concepts/steps/event',
     description: () => (
       <p>
-        Let's do a recap of what you've learned, thus far you've become familiar with three Motia primitives <b>API</b>{' '}
-        and <b>Event</b> Steps.
+        The Pet Lifecycle Orchestrator is the central brain of our system! It manages all pet status transitions
+        and enforces business rules.
         <br />
         <br />
-        You've also started to learn how to navigate around Workbench. Let's wrap up Motia's primitives with the last
-        one the <b>CRON</b> Step. Let's take a deeper look at its definition.
+        Key responsibilities:
+        <ul>
+          <li><b>Status Management</b> - Controls pet lifecycle transitions</li>
+          <li><b>Guard Enforcement</b> - Validates business rules</li>
+          <li><b>Event Emission</b> - Triggers staff actions</li>
+          <li><b>Automatic Progression</b> - Moves pets through stages</li>
+        </ul>
+        <br />
+        💡 The orchestrator ensures data integrity and provides <b>visible workflow</b> by emitting
+        events that trigger specific staff actions.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
@@ -343,34 +368,47 @@ export const steps: TutorialStep[] = [
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
   },
 
-  // // Endpoints
+  // Testing the Pet Management APIs
 
   {
     elementXpath: workbenchXPath.links.endpoints,
-    title: 'Endpoints',
+    title: 'Pet Management Endpoints',
     description: () => (
       <p>
-        Now that we've looked at Motia primitives, let's trigger the API Step from the <b>endpoints</b> section in
-        Workbench.
+        Let's test our Pet Management APIs! The <b>Endpoints</b> section shows all the HTTP endpoints
+        we've created for pet management.
         <br />
         <br />
-        💡 All of your API Steps declare HTTP endpoints that can be reviewed and tested from the <b>Endpoints</b>{' '}
-        section in Workbench.
+        Available endpoints:
+        <ul>
+          <li><b>POST /ts/pets</b> - Create new pets</li>
+          <li><b>POST /ts/pets/:id/health-review</b> - AI health review</li>
+          <li><b>POST /ts/pets/:id/adoption-review</b> - AI adoption review</li>
+          <li><b>PUT /ts/pets/:id</b> - Update pet status</li>
+        </ul>
+        <br />
+        💡 You can test all these endpoints directly from Workbench!
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
   },
   {
-    elementXpath: workbenchXPath.endpoints.endpoint('POST', '/basic-tutorial'),
-    title: 'Endpoints Tool',
+    elementXpath: workbenchXPath.endpoints.endpoint('POST', '/ts/pets'),
+    title: 'Pet Creation Endpoint',
     description: () => (
       <p>
-        This section will display all of the endpoints declared in your API Steps. It will list the HTTP method, the URL
-        path, and the description declared in the Step configuration.
+        Here's the Pet Creation endpoint! You can test creating pets with different characteristics
+        and observe how the system automatically triggers AI enrichment and lifecycle progression.
         <br />
         <br />
-        💡 Clicking on an endpoint from the list will open the endpoint overview which provides documentation on how to
-        use the endpoint and a tool to test the endpoint.
+        Try creating pets with:
+        <ul>
+          <li>Different species (dog, cat, bird, other)</li>
+          <li>Symptoms for health testing</li>
+          <li>Various ages and weights</li>
+        </ul>
+        <br />
+        💡 Watch the logs to see the complete workflow in action!
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.links.endpoints }],
@@ -599,49 +637,52 @@ export const steps: TutorialStep[] = [
   // End of Tutorial
 
   {
-    title: 'Congratulations 🎉',
+    title: 'Congratulations! Pet Management Master 🎉',
     link: 'https://www.motia.dev/docs',
     description: () => (
       <p>
-        You've completed our Motia basics tutorial!
+        You've completed the Pet Management Workflow Tutorial!
         <br />
         <br />
-        You've learned about Motia's primitives, how to navigate around Workbench, and how to use core features from the
-        Motia Framework (State Management, Logging, and Tracing).
+        You've learned how to build an intelligent pet management system with:
+        <ul>
+          <li>🤖 <b>AI Agents</b> - Making intelligent health and adoption decisions</li>
+          <li>🔄 <b>Orchestrator</b> - Central workflow control with guard enforcement</li>
+          <li>📋 <b>Staff Automation</b> - Automated task scheduling and management</li>
+          <li>🛡️ <b>Guard Enforcement</b> - Business rule validation and error handling</li>
+          <li>⚡ <b>Event-Driven Architecture</b> - Seamless workflow orchestration</li>
+        </ul>
+        <br />
+        This demonstrates how Motia transforms simple CRUD APIs into intelligent workflow automation platforms
+        that guide staff through every step of complex processes.
         <br />
         <br />
-        We recommend you give our{' '}
+        Explore more examples in the{' '}
+        <a href="https://github.com/MotiaDev/motia-examples" target="_blank">
+          Motia Examples Repository
+        </a>{' '}
+        or dive deeper into{' '}
         <a href="https://www.motia.dev/docs/getting-started/core-concepts" target="_blank">
-          core concepts
-        </a>{' '}
-        a read if you wish to learn further about Motia's fundamentals.
-        <br />
-        <br />
-        Don't forget to join our{' '}
-        <a href="https://discord.com/invite/nJFfsH5d6v" target="_blank">
-          Discord community
-        </a>{' '}
-        or tag us in socials to show us what you've built with Motia.
-        <br />
-        <br />
-        We are an open source project, so feel free to raise your{' '}
-        <a href="https://github.com/MotiaDev/motia/issues" target="_blank">
-          issues
-        </a>{' '}
-        or{' '}
-        <a href="https://github.com/MotiaDev/motia/discussions" target="_blank">
-          suggestions
-        </a>{' '}
-        in our{' '}
-        <a href="https://github.com/MotiaDev/motia" target="_blank">
-          Github repo
+          Motia's core concepts
         </a>
         .
         <br />
         <br />
-        Thank you for going this far in our tutorial!
+        Join our{' '}
+        <a href="https://discord.com/invite/nJFfsH5d6v" target="_blank">
+          Discord community
+        </a>{' '}
+        to share what you've built with Motia!
+        <br />
+        <br />
+        Thank you for exploring intelligent workflow automation with Motia! 🐾
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
   },
 ]
+
+
+
+
+
