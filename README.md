@@ -9,8 +9,13 @@ A multi-language pet management system built with Motia, demonstrating CRUD oper
 - **Background Job Processing**: Queue-based and cron-based background jobs
 - **Automated Pet Lifecycle**: Orchestrated status transitions from new to available
 - **AI Profile Enrichment**: Automatic pet profile generation using OpenAI
+- **Agentic Decision Making**: AI agents choose routing decisions with structured rationale
+- **Visible Workflow Automation**: Orchestrator triggers specific staff actions for each status change
+- **Treatment Scheduling**: Automatic vet appointment and medication scheduling
+- **Adoption Management**: Automated adoption posting and interview scheduling
+- **Recovery Monitoring**: Treatment progress tracking with follow-up scheduling
 - **Soft Delete Pattern**: 30-day retention with automatic cleanup
-- **Event-Driven Architecture**: Language-isolated event namespaces
+- **Event-Driven Architecture**: Language-isolated event namespaces with visible connections
 - **File-based Storage**: JSON persistence across all implementations
 - **Language Parity**: Identical functionality across all three languages
 - **RESTful APIs**: Standard HTTP methods for all operations
@@ -629,9 +634,11 @@ All create and update operations include validation:
 
 ## Section 4 — Agentic Workflow (AI inside the flow)
 
-The system includes an **AI Profile Enrichment** feature that automatically generates detailed pet profiles using OpenAI's GPT models. This demonstrates how AI agents can be seamlessly integrated into event-driven workflows.
+The system includes both **AI Profile Enrichment** (non-routing) and **True Agentic Decision Making** where LLM agents choose which emits to fire based on pet context. This demonstrates how AI agents can make routing decisions within event-driven workflows.
 
-### How It Works
+### AI Profile Enrichment (Non-Routing)
+
+The original enrichment feature automatically generates detailed pet profiles:
 
 1. **Trigger**: When a pet is created, the `pet.created` event is emitted
 2. **AI Agent Activation**: The AI Profile Enrichment step listens to `pet.created` events
@@ -640,9 +647,94 @@ The system includes an **AI Profile Enrichment** feature that automatically gene
 5. **Data Storage**: The generated profile is stored in the pet record under the `profile` field
 6. **Event Emission**: Events are emitted for `profile_enrichment_started` and `profile_enrichment_completed`
 
-### AI-Generated Profile Fields
+### True Agentic Decision Making (Routing)
 
-The AI agent enriches each pet with:
+The system now includes **Agent Decision Steps** where LLM agents choose from a registry of allowed emits based on pet context. The orchestrator remains the only component that can mutate pet status.
+
+#### How Agent Decision Making Works
+
+1. **RESTful Trigger**: Staff calls `POST /pets/{id}/health-review` or `POST /pets/{id}/adoption-review`
+2. **Context Building**: System builds agent context with pet data (species, age, symptoms, flags, profile)
+3. **Emit Registry**: Agent is shown available emits (tools) with descriptions and orchestrator effects
+4. **LLM Decision**: OpenAI chooses exactly one emit and provides structured rationale
+5. **Emit Firing**: System fires the chosen emit; orchestrator consumes it and applies transitions
+6. **Artifact Storage**: Complete decision artifact stored (inputs, available emits, model output, chosen emit, rationale)
+
+### RESTful Agent Endpoints
+
+#### Health Review Agent
+**Endpoint**: `POST /ts/pets/{id}/health-review` (TypeScript), `POST /js/pets/{id}/health-review` (JavaScript), `POST /py/pets/{id}/health-review` (Python)
+
+**Purpose**: AI agent evaluates pet health and chooses appropriate health action
+
+**Available Emits**:
+| Emit ID | Orchestrator Effect | Description |
+|---------|-------------------|-------------|
+| `emit.health.treatment_required` | `healthy → ill → under_treatment` | Pet requires medical treatment due to health concerns |
+| `emit.health.no_treatment_needed` | `stay healthy` | Pet is healthy and requires no medical intervention |
+
+#### Adoption Review Agent
+**Endpoint**: `POST /ts/pets/{id}/adoption-review` (TypeScript), `POST /js/pets/{id}/adoption-review` (JavaScript), `POST /py/pets/{id}/adoption-review` (Python)
+
+**Purpose**: AI agent evaluates adoption readiness and chooses appropriate adoption action
+
+**Available Emits**:
+| Emit ID | Orchestrator Effect | Description |
+|---------|-------------------|-------------|
+| `emit.adoption.needs_data` | `add needs_data flag (blocks available)` | Pet needs additional data before being available for adoption |
+| `emit.adoption.ready` | `healthy → available (respect guards)` | Pet is ready for adoption and can be made available |
+
+### Guards & Orchestrator Rules
+
+The orchestrator enforces guards and only allows valid transitions:
+
+- **`must_be_healthy`**: Pet must be in healthy status
+- **`no_needs_data_flag`**: Pet cannot have the `needs_data` flag (blocks adoption)
+
+If a chosen emit violates guards, the orchestrator logs rejection and does not mutate status.
+
+### Agent Decision Artifacts
+
+Each agent decision creates a stored artifact:
+
+```json
+{
+  "petId": "pet-123",
+  "agentType": "health-review",
+  "timestamp": 1640995200000,
+  "inputs": {
+    "petId": "pet-123",
+    "species": "dog",
+    "ageMonths": 24,
+    "currentStatus": "healthy",
+    "symptoms": ["coughing", "lethargy"],
+    "flags": [],
+    "profile": { "bio": "...", "breedGuess": "Golden Retriever" }
+  },
+  "availableEmits": [
+    {
+      "id": "emit.health.treatment_required",
+      "description": "Pet requires medical treatment due to health concerns",
+      "orchestratorEffect": "healthy → ill → under_treatment"
+    },
+    {
+      "id": "emit.health.no_treatment_needed", 
+      "description": "Pet is healthy and requires no medical intervention",
+      "orchestratorEffect": "stay healthy"
+    }
+  ],
+  "modelOutput": "{\"chosenEmit\": \"emit.health.treatment_required\", \"rationale\": \"Pet shows concerning symptoms of coughing and lethargy that require veterinary evaluation and treatment.\"}",
+  "parsedDecision": {
+    "chosenEmit": "emit.health.treatment_required",
+    "rationale": "Pet shows concerning symptoms of coughing and lethargy that require veterinary evaluation and treatment."
+  },
+  "success": true
+}
+```
+
+### AI Profile Enrichment Fields
+
+The AI profile enrichment agent enriches each pet with:
 
 - **`bio`**: A warm, engaging 2-3 sentence description appealing to potential adopters
 - **`breedGuess`**: AI's best guess at the breed or breed mix
@@ -717,7 +809,81 @@ To enable AI profile enrichment, you need an OpenAI API key:
 ❌ AI Profile Enrichment failed { petId: 'pet-123', error: 'OpenAI API rate limit exceeded' }
 ```
 
-### Testing AI Enrichment
+### Testing Agentic Decision Making
+
+#### Health Review Agent Testing
+
+```bash
+# 1. Create a pet and wait for it to become healthy
+curl -X POST http://localhost:3000/ts/pets \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Max", "species": "dog", "ageMonths": 36}'
+
+# 2. Add symptoms to the pet (via update)
+curl -X PUT http://localhost:3000/ts/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"symptoms": ["coughing", "lethargy"]}'
+
+# 3. Trigger health review - agent will choose treatment_required
+curl -X POST http://localhost:3000/ts/pets/1/health-review \
+  -H "Content-Type: application/json"
+
+# Expected response:
+{
+  "message": "Health review completed",
+  "petId": "1",
+  "agentDecision": {
+    "chosenEmit": "emit.health.treatment_required",
+    "rationale": "Pet shows concerning symptoms that require veterinary evaluation"
+  },
+  "emitFired": "ts.health.treatment_required"
+}
+
+# 4. Check pet status - should be "under_treatment"
+curl http://localhost:3000/ts/pets/1
+```
+
+#### Adoption Review Agent Testing
+
+```bash
+# 1. Create a healthy pet with complete profile
+curl -X POST http://localhost:3000/ts/pets \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Luna", "species": "cat", "ageMonths": 18}'
+
+# 2. Wait for AI enrichment to complete, then trigger adoption review
+curl -X POST http://localhost:3000/ts/pets/1/adoption-review \
+  -H "Content-Type: application/json"
+
+# Expected response:
+{
+  "message": "Adoption review completed", 
+  "petId": "1",
+  "agentDecision": {
+    "chosenEmit": "emit.adoption.ready",
+    "rationale": "Pet has complete profile and is ready for adoption"
+  },
+  "emitFired": "ts.adoption.ready"
+}
+
+# 3. Check pet status - should be "available"
+curl http://localhost:3000/ts/pets/1
+```
+
+#### Guard Testing
+
+```bash
+# Test guard blocking - add needs_data flag then try adoption
+curl -X PUT http://localhost:3000/ts/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"flags": ["needs_data"]}'
+
+curl -X POST http://localhost:3000/ts/pets/1/adoption-review
+
+# Agent may choose adoption.ready, but orchestrator will block due to needs_data flag
+```
+
+### Testing AI Profile Enrichment
 
 Create a pet and watch the AI enrichment happen automatically:
 
@@ -736,6 +902,22 @@ curl http://localhost:3000/ts/pets/[pet-id]
 ```
 
 The pet record will include the AI-generated `profile` field with personalized bio, breed guess, temperament tags, and adopter hints.
+
+### Key Differences: Enrichment vs Agentic Routing
+
+| Aspect | AI Profile Enrichment | Agentic Decision Making |
+|--------|----------------------|------------------------|
+| **Purpose** | Generate pet profile data | Choose workflow routing decisions |
+| **Trigger** | Automatic on `pet.created` | Manual via RESTful endpoints |
+| **Decision Type** | Data generation (non-routing) | Emit selection (routing) |
+| **LLM Role** | Content creator | Decision maker |
+| **Orchestrator** | Not involved in routing | Consumes chosen emits and applies transitions |
+| **Idempotency** | Overwrites existing profiles | Cached decisions within time window |
+| **Artifacts** | Profile data stored on pet | Decision artifacts stored separately |
+| **Guards** | None | Enforced by orchestrator |
+| **Status Changes** | None | Potential status transitions via orchestrator |
+
+**Enrichment** creates content; **Agentic Routing** makes decisions that drive workflow state changes.
 
 ## Getting Started
 
@@ -813,4 +995,431 @@ This example demonstrates:
 11. **Audit Logging**: Comprehensive event emission for system monitoring
 12. **AI Resilience**: Graceful fallbacks when AI services are unavailable
 
-This is a demonstration project for Motia workflow capabilities, showcasing modern backend patterns including CRUD operations, background job processing, and event-driven architecture.
+## Section 5 — Visible Workflow Extensions (Staff Action Automation)
+
+The system now includes **Visible Workflow Extensions** that transform the orchestrator from a "black hole" into a **visible workflow controller** that guides staff through each step. Instead of silently updating status, the orchestrator now emits events that trigger specific staff actions.
+
+### The Problem: Hidden Workflow
+
+**Before**: When pet status changed, the orchestrator would silently update the status internally, leaving staff unaware of what actions needed to be taken next.
+
+```
+Pet Status Change → Orchestrator → [Silent Status Update] → END
+```
+
+### The Solution: Visible Workflow
+
+**After**: The orchestrator now emits specific events that trigger visible staff actions, making the workflow transparent and actionable.
+
+```
+Pet Status Change → Orchestrator → Next Action Event → Staff Task
+     ↓                    ↓              ↓              ↓
+  healthy → ill    →  Status Update  →  Treatment   →  Schedule Vet
+  ill → under_treatment → Status Update → Treatment → Medication
+  healthy → available → Status Update → Adoption → Post Listing
+  under_treatment → recovered → Status Update → Recovery → Follow-up
+```
+
+### New Workflow Steps
+
+#### 1. Treatment Scheduler
+**Purpose**: Automatically schedules veterinary treatment and medication when pets need medical care
+
+**Trigger**: `treatment.required` event from orchestrator
+**Actions**:
+- Determines treatment urgency based on symptoms
+- Schedules vet appointments (2 hours for urgent, 24 hours for normal)
+- Assigns required staff (veterinarian, nurse)
+- Prescribes appropriate medication
+- Generates medication instructions
+
+**Example Output**:
+```json
+{
+  "petId": "1",
+  "treatmentSchedule": {
+    "scheduledAt": 1640995200000,
+    "urgency": "normal",
+    "treatmentType": "Pain Management",
+    "requiredStaff": ["veterinarian"],
+    "medication": ["Pain Relief (Ibuprofen)"]
+  },
+  "nextSteps": [
+    "Notify veterinary staff",
+    "Prepare treatment room", 
+    "Update pet medication schedule"
+  ]
+}
+```
+
+#### 2. Adoption Posting
+**Purpose**: Creates adoption listings and schedules interviews when pets are ready for adoption
+
+**Trigger**: `adoption.ready` event from orchestrator
+**Actions**:
+- Creates adoption posting with pet details
+- Calculates adoption fees based on age and breed
+- Generates adoption requirements
+- Schedules initial screening interviews
+- Prepares adoption paperwork
+
+**Example Output**:
+```json
+{
+  "petId": "1",
+  "adoptionPosting": {
+    "title": "Buddy - Golden Retriever Available for Adoption",
+    "adoptionFee": 200,
+    "requirements": [
+      "Must be 21 years or older",
+      "Valid photo ID required",
+      "Reference from current veterinarian"
+    ]
+  },
+  "nextSteps": [
+    "Share on social media",
+    "Update shelter website",
+    "Notify adoption coordinators"
+  ]
+}
+```
+
+#### 3. Recovery Monitor
+**Purpose**: Tracks treatment progress and schedules follow-up health checks
+
+**Trigger**: `treatment.started` or `treatment.completed` events from orchestrator
+**Actions**:
+- Creates recovery plans with milestones
+- Schedules monitoring checkpoints
+- Tracks recovery indicators
+- Schedules follow-up appointments
+- Prepares discharge paperwork
+
+**Example Output**:
+```json
+{
+  "petId": "1",
+  "recoveryPlan": {
+    "expectedRecoveryTime": "1-2 weeks",
+    "milestones": [
+      {"day": 1, "milestone": "Initial treatment response"},
+      {"day": 7, "milestone": "Primary healing indicators"}
+    ],
+    "monitoringSchedule": [
+      {"time": "every 2 hours", "check": "vital signs", "priority": "high"}
+    ]
+  }
+}
+```
+
+### Workflow Event Flow
+
+The orchestrator now explicitly emits these events in its configuration:
+
+```javascript
+// All orchestrators now include these emits
+emits: [
+  'lifecycle.transition.completed',
+  'lifecycle.transition.rejected',
+  'treatment.required',        // → Treatment Scheduler
+  'adoption.ready',           // → Adoption Posting  
+  'treatment.completed',      // → Recovery Monitor
+  'health.restored'          // → Health Check Scheduler
+]
+```
+
+### Visual Workflow in Motia Workbench
+
+The Motia Workbench now shows clear connections:
+
+```
+[Agent Steps] → [Orchestrator] → [Staff Action Steps]
+     ↓              ↓                    ↓
+Health Review → Status Update → Treatment Scheduler
+Adoption Review → Status Update → Adoption Posting
+Manual Update → Status Update → Recovery Monitor
+```
+
+### Comprehensive Testing Guide
+
+This guide will walk you through the complete pet management workflow, demonstrating how AI agents, orchestrators, and staff automation work together.
+
+#### Prerequisites
+```bash
+# 1. Start the Motia server
+npm start
+
+# 2. Verify server is running (should see "Server running on port 3000")
+# 3. Keep the server logs open to observe the workflow in action
+```
+
+#### Test 1: Basic Pet Creation & Lifecycle
+**Purpose**: Understand the automatic pet lifecycle progression
+
+```bash
+# Step 1: Create a healthy pet
+curl -X POST http://localhost:3000/ts/pets \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Luna", "species": "cat", "ageMonths": 12}'
+
+# Expected Response: {"id":"X","name":"Luna","species":"cat","ageMonths":12,"status":"new",...}
+# Note the pet ID for subsequent commands
+
+# Step 2: Check pet status after creation
+curl -X GET http://localhost:3000/ts/pets/X
+
+# Expected: Status should be "in_quarantine" (automatic progression from "new")
+# Observe in logs: Feeding reminder setup → AI profile enrichment started → Status: new → in_quarantine
+
+# Step 3: Wait for AI enrichment to complete (check logs)
+# Expected: AI profile enrichment completed with bio, breed guess, temperament tags
+```
+
+#### Test 2: AI Health Review - No Treatment Needed
+**Purpose**: Test AI agent decision making for healthy pets
+
+```bash
+# Step 1: Trigger health review on quarantined pet
+curl -X POST http://localhost:3000/ts/pets/X/health-review
+
+# Expected Response: 
+# {
+#   "message": "Health review completed",
+#   "agentDecision": {
+#     "chosenEmit": "emit.health.no_treatment_needed",
+#     "rationale": "Pet is healthy with no symptoms..."
+#   },
+#   "emitFired": "ts.health.no_treatment_needed"
+# }
+
+# Step 2: Check pet status after health review
+curl -X GET http://localhost:3000/ts/pets/X
+
+# Expected: Status should be "available" (in_quarantine → healthy → available)
+# Observe in logs: 
+# - Health review agent triggered
+# - OpenAI API called and decision made
+# - Orchestrator: Status updated in_quarantine → healthy
+# - Automatic progression: healthy → available
+```
+
+#### Test 3: AI Health Review - Treatment Required
+**Purpose**: Test AI agent decision making for sick pets
+
+```bash
+# Step 1: Create a pet with symptoms
+curl -X POST http://localhost:3000/ts/pets \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Max", 
+    "species": "dog", 
+    "ageMonths": 18,
+    "symptoms": ["coughing", "lethargy", "fever"],
+    "weightKg": 15.5
+  }'
+
+# Expected: Symptoms and weight are now stored in the pet record
+
+# Step 2: Manually set pet to healthy status (simulate initial assessment)
+curl -X PUT http://localhost:3000/ts/pets/Y \
+  -H "Content-Type: application/json" \
+  -d '{"status": "healthy"}'
+
+# Step 3: Trigger health review on symptomatic pet
+curl -X POST http://localhost:3000/ts/pets/Y/health-review
+
+# Expected Response:
+# {
+#   "message": "Health review completed",
+#   "agentDecision": {
+#     "chosenEmit": "emit.health.treatment_required",
+#     "rationale": "Pet showing concerning symptoms: coughing, lethargy, fever..."
+#   },
+#   "emitFired": "ts.health.treatment_required"
+# }
+
+# Step 4: Check pet status progression
+curl -X GET http://localhost:3000/ts/pets/Y
+
+# Expected: Status should be "available" (healthy → ill → under_treatment → recovered → available)
+# Observe in logs:
+# - AI agent correctly identified symptoms
+# - Orchestrator: Status updated healthy → ill
+# - Orchestrator: Emitted ts.treatment.required
+# - Treatment Scheduler: Treatment scheduled (if step exists)
+# - Automatic progression through treatment stages
+```
+
+#### Test 4: AI Adoption Review
+**Purpose**: Test AI agent decision making for adoption readiness
+
+```bash
+# Step 1: Trigger adoption review on available pet
+curl -X POST http://localhost:3000/ts/pets/X/adoption-review
+
+# Expected Response:
+# {
+#   "message": "Adoption review completed",
+#   "agentDecision": {
+#     "chosenEmit": "emit.adoption.ready",
+#     "rationale": "Pet has complete profile and is ready for adoption..."
+#   },
+#   "emitFired": "ts.adoption.ready"
+# }
+
+# Step 2: Check pet status
+curl -X GET http://localhost:3000/ts/pets/X
+
+# Expected: Status remains "available" (already available)
+# Observe in logs:
+# - Adoption review agent triggered
+# - AI analyzed complete profile (bio, breed, temperament)
+# - Orchestrator: Emitted ts.adoption.ready
+# - Adoption Posting: Adoption listing created (if step exists)
+```
+
+#### Test 5: Manual Status Transitions
+**Purpose**: Test orchestrator guard enforcement and manual workflow control
+
+```bash
+# Step 1: Try invalid transition (should be rejected)
+curl -X PUT http://localhost:3000/ts/pets/X \
+  -H "Content-Type: application/json" \
+  -d '{"status": "adopted"}'
+
+# Expected Response: 
+# {"message": "Status change request submitted", "currentStatus": "available", "requestedStatus": "adopted"}
+# Check logs: "Transition rejected: Invalid transition from available to adopted"
+
+# Step 2: Valid transition - mark as pending adoption
+curl -X PUT http://localhost:3000/ts/pets/X \
+  -H "Content-Type: application/json" \
+  -d '{"status": "pending"}'
+
+# Expected: Status should change to "pending"
+# Observe in logs: Orchestrator processed valid transition
+
+# Step 3: Complete adoption
+curl -X PUT http://localhost:3000/ts/pets/X \
+  -H "Content-Type: application/json" \
+  -d '{"status": "adopted"}'
+
+# Expected: Status should change to "adopted"
+```
+
+#### Test 6: Treatment Recovery Flow
+**Purpose**: Test the complete treatment and recovery workflow
+
+```bash
+# Step 1: Create a pet and manually set to under_treatment
+curl -X POST http://localhost:3000/ts/pets \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Bella", "species": "dog", "ageMonths": 36}'
+
+# Step 2: Set to under_treatment status
+curl -X PUT http://localhost:3000/ts/pets/Z \
+  -H "Content-Type: application/json" \
+  -d '{"status": "under_treatment"}'
+
+# Step 3: Mark treatment as completed
+curl -X PUT http://localhost:3000/ts/pets/Z \
+  -H "Content-Type: application/json" \
+  -d '{"status": "recovered"}'
+
+# Expected: Status progression: under_treatment → recovered → healthy → available
+# Observe in logs:
+# - Orchestrator: Status updated under_treatment → recovered
+# - Orchestrator: Emitted ts.treatment.completed
+# - Recovery Monitor: Recovery plan created (if step exists)
+# - Automatic progression: recovered → healthy → available
+```
+
+#### Test 7: Error Handling & Edge Cases
+**Purpose**: Test system resilience and guard enforcement
+
+```bash
+# Step 1: Try health review on adopted pet (should be rejected)
+curl -X POST http://localhost:3000/ts/pets/X/health-review
+
+# Expected: Error message about invalid status
+
+# Step 2: Try adoption review on ill pet (should be rejected)
+curl -X POST http://localhost:3000/ts/pets/Y/adoption-review
+
+# Expected: Error message about invalid status
+
+# Step 3: Try to get non-existent pet
+curl -X GET http://localhost:3000/ts/pets/999
+
+# Expected: 404 error
+```
+
+#### Test 8: Multi-Language Consistency
+**Purpose**: Verify identical behavior across TypeScript, JavaScript, and Python
+
+```bash
+# Test JavaScript implementation
+curl -X POST http://localhost:3000/js/pets \
+  -H "Content-Type: application/json" \
+  -d '{"name": "JS_Pet", "species": "cat", "ageMonths": 6}'
+
+curl -X POST http://localhost:3000/js/pets/JS_PET_ID/health-review
+
+# Test Python implementation  
+curl -X POST http://localhost:3000/py/pets \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Py_Pet", "species": "dog", "ageMonths": 12}'
+
+curl -X POST http://localhost:3000/py/pets/PY_PET_ID/health-review
+
+# Expected: Identical behavior and responses across all languages
+```
+
+#### Test 9: Workflow Visualization
+**Purpose**: Observe the complete workflow in Motia Workbench
+
+1. **Open Motia Workbench** in your browser
+2. **Navigate to the Pet Management workflow**
+3. **Observe visual connections**:
+   - Agent steps connected to orchestrator
+   - Orchestrator connected to staff action steps
+   - Event flow arrows showing data movement
+4. **Trigger events** and watch real-time updates
+5. **Check step logs** to see detailed execution traces
+
+#### Expected Workflow Behavior Summary
+
+| Test Scenario | AI Decision | Orchestrator Action | Staff Action Triggered |
+|---------------|-------------|-------------------|----------------------|
+| Healthy Pet Review | No Treatment Needed | Status: healthy → available | Adoption Posting |
+| Sick Pet Review | Treatment Required | Status: healthy → ill → under_treatment | Treatment Scheduler |
+| Adoption Review | Ready for Adoption | Status: available (unchanged) | Adoption Posting |
+| Treatment Completion | Manual Update | Status: under_treatment → recovered | Recovery Monitor |
+| Invalid Transition | N/A | Transition Rejected | No Action |
+
+#### Key Observations
+
+1. **🤖 AI Intelligence**: Agents make contextual decisions based on pet data
+2. **🔄 Orchestrator Control**: Central authority manages all status transitions
+3. **📋 Staff Automation**: Each status change triggers specific staff tasks
+4. **🛡️ Guard Enforcement**: Invalid transitions are properly rejected
+5. **⚡ Automatic Progression**: Pets move through lifecycle stages automatically
+6. **📊 Complete Audit**: Every decision and action is logged and traceable
+7. **🌐 Language Parity**: Identical behavior across TypeScript, JavaScript, and Python
+
+This comprehensive testing demonstrates how the pet management system transforms from a simple CRUD API into an intelligent workflow automation platform that guides staff through every step of pet care.
+
+### Benefits of Visible Workflow
+
+1. **🚀 Transparency**: Staff can see exactly what actions are triggered by status changes
+2. **📋 Actionable**: Each status change results in specific staff tasks
+3. **🔄 Traceable**: Complete audit trail of decisions and actions
+4. **⚡ Efficient**: Automatic scheduling and task assignment
+5. **🎯 Guided**: Clear next steps for staff at each stage
+6. **📊 Monitorable**: Visible workflow progress in Motia Workbench
+
+This transforms the pet management system from a simple status tracker into a **comprehensive workflow automation platform** that guides staff through every step of pet care.
+
+---
+
+This is a demonstration project for Motia workflow capabilities, showcasing modern backend patterns including CRUD operations, background job processing, event-driven architecture, and visible workflow automation.

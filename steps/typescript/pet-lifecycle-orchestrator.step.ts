@@ -4,13 +4,19 @@ import { TSStore, Pet } from './ts-store';
 type LifecycleEvent = 
   | 'pet.created'
   | 'feeding.reminder.completed'
-  | 'status.update.requested';
+  | 'status.update.requested'
+  | 'health.treatment_required'
+  | 'health.no_treatment_needed'
+  | 'adoption.needs_data'
+  | 'adoption.ready';
 
 type TransitionRule = {
   from: Pet["status"][];
   to: Pet["status"];
   event: LifecycleEvent;
   description: string;
+  guards?: string[];
+  flagAction?: { action: 'add' | 'remove', flag: string };
 };
 
 const TRANSITION_RULES: TransitionRule[] = [
@@ -45,13 +51,13 @@ const TRANSITION_RULES: TransitionRule[] = [
     description: "Staff decision - treatment started"
   },
   {
-    from: ["under_treatment"],
+    from: ["under_treatment", "ill"],
     to: "recovered",
     event: "status.update.requested",
     description: "Staff assessment - treatment completed"
   },
   {
-    from: ["recovered"],
+    from: ["recovered", "new"],
     to: "healthy",
     event: "status.update.requested",
     description: "Staff clearance - pet fully recovered"
@@ -73,6 +79,34 @@ const TRANSITION_RULES: TransitionRule[] = [
     to: "available",
     event: "status.update.requested",
     description: "Adoption application rejected/cancelled"
+  },
+  // Agent-driven health transitions
+  {
+    from: ["healthy", "in_quarantine"],
+    to: "ill",
+    event: "health.treatment_required",
+    description: "Agent assessment - pet requires medical treatment"
+  },
+  {
+    from: ["healthy", "in_quarantine"],
+    to: "healthy",
+    event: "health.no_treatment_needed",
+    description: "Agent assessment - pet remains healthy"
+  },
+  // Agent-driven adoption transitions
+  {
+    from: ["healthy"],
+    to: "healthy",
+    event: "adoption.needs_data",
+    description: "Agent assessment - pet needs additional data before adoption",
+    flagAction: { action: 'add', flag: 'needs_data' }
+  },
+  {
+    from: ["healthy"],
+    to: "available",
+    event: "adoption.ready",
+    description: "Agent assessment - pet ready for adoption",
+    guards: ['no_needs_data_flag']
   }
 ];
 
@@ -81,15 +115,43 @@ export const config = {
   name: 'TsPetLifecycleOrchestrator',
   description: 'Pet lifecycle state management with staff interaction points',
   subscribes: [
-    'ts.pet.created', 
     'ts.feeding.reminder.completed',
-    'ts.pet.status.update.requested'
+    'ts.pet.status.update.requested',
+    'ts.health.treatment_required',
+    'ts.health.no_treatment_needed',
+    'ts.adoption.needs_data',
+    'ts.adoption.ready'
   ],
   emits: [
     'ts.lifecycle.transition.completed',
-    'ts.lifecycle.transition.rejected'
+    'ts.lifecycle.transition.rejected',
+    'ts.treatment.required',
+    'ts.adoption.ready',
+    'ts.treatment.completed',
+    'ts.health.restored'
   ],
   flows: ['TsPetManagement']
+};
+
+// Guard checking functions
+const checkGuards = (pet: Pet, guards: string[]): { passed: boolean, reason?: string } => {
+  for (const guard of guards) {
+    switch (guard) {
+      case 'must_be_healthy':
+        if (pet.status !== 'healthy') {
+          return { passed: false, reason: `Pet must be healthy (current: ${pet.status})` };
+        }
+        break;
+      case 'no_needs_data_flag':
+        if (pet.flags?.includes('needs_data')) {
+          return { passed: false, reason: 'Pet has needs_data flag blocking adoption' };
+        }
+        break;
+      default:
+        return { passed: false, reason: `Unknown guard: ${guard}` };
+    }
+  }
+  return { passed: true };
 };
 
 export const handler = async (input: any, context?: any) => {
@@ -110,7 +172,7 @@ export const handler = async (input: any, context?: any) => {
       return;
     }
 
-    // For status update requests, find the rule based on requested status
+    // Find the appropriate rule based on event type
     let rule;
     if (eventType === 'status.update.requested' && requestedStatus) {
       rule = TRANSITION_RULES.find(r => 
@@ -119,7 +181,7 @@ export const handler = async (input: any, context?: any) => {
         r.to === requestedStatus
       );
     } else {
-      // For other events (like feeding.reminder.completed)
+      // For other events (feeding.reminder.completed, agent emits)
       rule = TRANSITION_RULES.find(r => 
         r.event === eventType && r.from.includes(pet.status)
       );
@@ -156,6 +218,36 @@ export const handler = async (input: any, context?: any) => {
       return;
     }
 
+    // Check guards if present
+    if (rule.guards && rule.guards.length > 0) {
+      const guardResult = checkGuards(pet, rule.guards);
+      if (!guardResult.passed) {
+        if (logger) {
+          logger.warn('⚠️ Transition blocked by guard', {
+            petId,
+            eventType,
+            guard: guardResult.reason,
+            currentStatus: pet.status
+          });
+        }
+
+        if (emit) {
+          await emit({
+            topic: 'ts.lifecycle.transition.rejected',
+            data: {
+              petId,
+              currentStatus: pet.status,
+              requestedStatus: rule.to,
+              eventType,
+              reason: `Guard check failed: ${guardResult.reason}`,
+              timestamp: Date.now()
+            }
+          });
+        }
+        return;
+      }
+    }
+
     // Check for idempotency
     if (pet.status === rule.to) {
       if (logger) {
@@ -170,13 +262,28 @@ export const handler = async (input: any, context?: any) => {
 
     // Apply the transition
     const oldStatus = pet.status;
-    const updatedPet = TSStore.updateStatus(petId, rule.to);
+    let updatedPet = TSStore.updateStatus(petId, rule.to);
     
     if (!updatedPet) {
       if (logger) {
         logger.error('❌ Failed to update pet status', { petId, oldStatus, newStatus: rule.to });
       }
       return;
+    }
+
+    // Apply flag actions if present
+    if (rule.flagAction) {
+      if (rule.flagAction.action === 'add') {
+        updatedPet = TSStore.addFlag(petId, rule.flagAction.flag);
+        if (logger) {
+          logger.info('🏷️ Flag added', { petId, flag: rule.flagAction.flag });
+        }
+      } else if (rule.flagAction.action === 'remove') {
+        updatedPet = TSStore.removeFlag(petId, rule.flagAction.flag);
+        if (logger) {
+          logger.info('🏷️ Flag removed', { petId, flag: rule.flagAction.flag });
+        }
+      }
     }
 
     if (logger) {
@@ -203,6 +310,9 @@ export const handler = async (input: any, context?: any) => {
         }
       });
 
+      // Emit next action events based on status change
+      await emitNextActionEvents(petId, rule.to, oldStatus, updatedPet, emit, logger);
+
       // Check for automatic progressions after successful transition
       await processAutomaticProgression(petId, rule.to, emit, logger);
     }
@@ -213,6 +323,87 @@ export const handler = async (input: any, context?: any) => {
     }
   }
 };
+
+async function emitNextActionEvents(petId: string, newStatus: Pet["status"], oldStatus: Pet["status"], pet: Pet, emit: any, logger: any) {
+  try {
+    // Emit specific next action events based on status change
+    switch (newStatus) {
+      case 'under_treatment':
+        if (oldStatus === 'ill') {
+          await emit({
+            topic: 'ts.treatment.required',
+            data: {
+              petId,
+              symptoms: pet.symptoms || [],
+              urgency: 'normal',
+              profile: pet.profile,
+              timestamp: Date.now()
+            }
+          });
+          if (logger) {
+            logger.info('🏥 Treatment required event emitted', { petId });
+          }
+        }
+        break;
+
+      case 'available':
+        if (oldStatus === 'healthy') {
+          await emit({
+            topic: 'ts.adoption.ready',
+            data: {
+              petId,
+              profile: pet.profile,
+              temperament: pet.profile?.temperamentTags || [],
+              adopterHints: pet.profile?.adopterHints || [],
+              timestamp: Date.now()
+            }
+          });
+          if (logger) {
+            logger.info('🏠 Adoption ready event emitted', { petId });
+          }
+        }
+        break;
+
+      case 'recovered':
+        if (oldStatus === 'under_treatment') {
+          await emit({
+            topic: 'ts.treatment.completed',
+            data: {
+              petId,
+              treatmentType: 'general_recovery',
+              treatmentStatus: 'completed',
+              timestamp: Date.now()
+            }
+          });
+          if (logger) {
+            logger.info('✅ Treatment completed event emitted', { petId });
+          }
+        }
+        break;
+
+      case 'healthy':
+        if (oldStatus === 'recovered') {
+          await emit({
+            topic: 'ts.health.restored',
+            data: {
+              petId,
+              recoveryComplete: true,
+              nextSteps: ['Schedule routine health check', 'Consider adoption readiness'],
+              timestamp: Date.now()
+            }
+          });
+          if (logger) {
+            logger.info('💚 Health restored event emitted', { petId });
+          }
+        }
+        break;
+    }
+  } catch (error: any) {
+    if (logger) {
+      logger.error('❌ Failed to emit next action events', { petId, newStatus, error: error.message });
+    }
+  }
+}
 
 async function processAutomaticProgression(petId: string, currentStatus: Pet["status"], emit: any, logger: any) {
   // Define automatic progressions
@@ -240,11 +431,37 @@ async function processAutomaticProgression(petId: string, currentStatus: Pet["st
     );
 
     if (rule) {
+      // Check guards for automatic progression
+      const pet = TSStore.get(petId);
+      if (pet && rule.guards && rule.guards.length > 0) {
+        const guardResult = checkGuards(pet, rule.guards);
+        if (!guardResult.passed) {
+          if (logger) {
+            logger.warn('⚠️ Automatic progression blocked by guard', {
+              petId,
+              currentStatus,
+              targetStatus: progression.to,
+              guard: guardResult.reason
+            });
+          }
+          return;
+        }
+      }
+
       // Apply the automatic transition immediately
       const oldStatus = currentStatus;
-      const updatedPet = TSStore.updateStatus(petId, rule.to);
+      let updatedPet = TSStore.updateStatus(petId, rule.to);
       
       if (updatedPet) {
+        // Apply flag actions if present
+        if (rule.flagAction) {
+          if (rule.flagAction.action === 'add') {
+            updatedPet = TSStore.addFlag(petId, rule.flagAction.flag);
+          } else if (rule.flagAction.action === 'remove') {
+            updatedPet = TSStore.removeFlag(petId, rule.flagAction.flag);
+          }
+        }
+
         if (logger) {
           logger.info('✅ Automatic progression completed', {
             petId,

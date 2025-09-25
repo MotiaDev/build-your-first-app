@@ -20,7 +20,13 @@ export const handler = async (req: any, context?: any) => {
   if (!name || !speciesOk || !ageOk) {
     return { status: 400, body: { message: 'Invalid payload: {name, species, ageMonths}' } };
   }
-  const pet = TSStore.create({ name, species: b.species, ageMonths: Number(b.ageMonths) });
+  const pet = TSStore.create({ 
+    name, 
+    species: b.species, 
+    ageMonths: Number(b.ageMonths),
+    weightKg: typeof b.weightKg === 'number' ? b.weightKg : undefined,
+    symptoms: Array.isArray(b.symptoms) ? b.symptoms : undefined
+  });
   
   if (logger) {
     logger.info('🐾 Pet created', { petId: pet.id, name: pet.name, species: pet.species, status: pet.status });

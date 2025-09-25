@@ -22,6 +22,9 @@ export type Pet = {
   deletedAt?: number;
   purgeAt?: number;
   profile?: PetProfile;
+  weightKg?: number;
+  symptoms?: string[];
+  flags?: string[];
 };
 
 const DATA_DIR = path.join(process.cwd(), ".data");
@@ -46,7 +49,7 @@ function save(db: DbShape): void {
 const now = () => Date.now();
 
 export const TSStore = {
-  create(input: { name: string; species: Pet["species"]; ageMonths: number }): Pet {
+  create(input: { name: string; species: Pet["species"]; ageMonths: number; weightKg?: number; symptoms?: string[] }): Pet {
     const db = load();
     const id = String(db.seq++);
     const pet: Pet = {
@@ -54,6 +57,8 @@ export const TSStore = {
       name: input.name.trim(),
       species: input.species,
       ageMonths: Math.max(0, Math.floor(input.ageMonths)),
+      weightKg: input.weightKg,
+      symptoms: input.symptoms,
       status: "new",
       createdAt: now(),
       updatedAt: now(),
@@ -143,5 +148,36 @@ export const TSStore = {
     return Object.values(db.pets).filter(
       pet => pet.status === "deleted" && pet.purgeAt && pet.purgeAt <= now
     );
+  },
+  addFlag(id: string, flag: string): Pet | null {
+    const db = load();
+    const pet = db.pets[id];
+    if (!pet) return null;
+    const flags = pet.flags || [];
+    if (!flags.includes(flag)) {
+      flags.push(flag);
+    }
+    const updated: Pet = {
+      ...pet,
+      flags,
+      updatedAt: now(),
+    };
+    db.pets[id] = updated;
+    save(db);
+    return updated;
+  },
+  removeFlag(id: string, flag: string): Pet | null {
+    const db = load();
+    const pet = db.pets[id];
+    if (!pet) return null;
+    const flags = (pet.flags || []).filter(f => f !== flag);
+    const updated: Pet = {
+      ...pet,
+      flags,
+      updatedAt: now(),
+    };
+    db.pets[id] = updated;
+    save(db);
+    return updated;
   },
 };

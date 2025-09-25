@@ -33,13 +33,13 @@ const TRANSITION_RULES = [
     description: 'Staff decision - treatment started'
   },
   {
-    from: ['under_treatment'],
+    from: ['under_treatment', 'ill'],
     to: 'recovered',
     event: 'status.update.requested',
     description: 'Staff assessment - treatment completed'
   },
   {
-    from: ['recovered'],
+    from: ['recovered', 'new'],
     to: 'healthy',
     event: 'status.update.requested',
     description: 'Staff clearance - pet fully recovered'
@@ -61,6 +61,34 @@ const TRANSITION_RULES = [
     to: 'available',
     event: 'status.update.requested',
     description: 'Adoption application rejected/cancelled'
+  },
+  // Agent-driven health transitions
+  {
+    from: ['healthy', 'in_quarantine'],
+    to: 'ill',
+    event: 'health.treatment_required',
+    description: 'Agent assessment - pet requires medical treatment'
+  },
+  {
+    from: ['healthy', 'in_quarantine'],
+    to: 'healthy',
+    event: 'health.no_treatment_needed',
+    description: 'Agent assessment - pet remains healthy'
+  },
+  // Agent-driven adoption transitions
+  {
+    from: ['healthy'],
+    to: 'healthy',
+    event: 'adoption.needs_data',
+    description: 'Agent assessment - pet needs additional data before adoption',
+    flagAction: { action: 'add', flag: 'needs_data' }
+  },
+  {
+    from: ['healthy'],
+    to: 'available',
+    event: 'adoption.ready',
+    description: 'Agent assessment - pet ready for adoption',
+    guards: ['no_needs_data_flag']
   }
 ];
 
@@ -69,15 +97,40 @@ exports.config = {
   name: 'JsPetLifecycleOrchestrator',
   description: 'Pet lifecycle state management with staff interaction points',
   subscribes: [
-    'js.pet.created', 
     'js.feeding.reminder.completed',
-    'js.pet.status.update.requested'
+    'js.pet.status.update.requested',
+    'js.health.treatment_required',
+    'js.health.no_treatment_needed',
+    'js.adoption.needs_data',
+    'js.adoption.ready'
   ],
   emits: [
     'js.lifecycle.transition.completed',
-    'js.lifecycle.transition.rejected'
+    'js.lifecycle.transition.rejected',
+    'js.treatment.required',
+    'js.adoption.ready',
+    'js.treatment.completed',
+    'js.health.restored'
   ],
   flows: ['JsPetManagement']
+};
+
+// Guard checking functions
+const checkGuards = (pet, guards) => {
+  for (const guard of guards) {
+    if (guard === 'must_be_healthy') {
+      if (pet.status !== 'healthy') {
+        return { passed: false, reason: `Pet must be healthy (current: ${pet.status})` };
+      }
+    } else if (guard === 'no_needs_data_flag') {
+      if (pet.flags && pet.flags.includes('needs_data')) {
+        return { passed: false, reason: 'Pet has needs_data flag blocking adoption' };
+      }
+    } else {
+      return { passed: false, reason: `Unknown guard: ${guard}` };
+    }
+  }
+  return { passed: true };
 };
 
 exports.handler = async (input, context) => {
@@ -144,8 +197,38 @@ exports.handler = async (input, context) => {
       return;
     }
 
+    // Check guards if present
+    if (rule.guards) {
+      const guardResult = checkGuards(pet, rule.guards);
+      if (!guardResult.passed) {
+        if (logger) {
+          logger.warn('⚠️ Transition blocked by guard', {
+            petId,
+            eventType,
+            guard: guardResult.reason,
+            currentStatus: pet.status
+          });
+        }
+
+        if (emit) {
+          await emit({
+            topic: 'js.lifecycle.transition.rejected',
+            data: {
+              petId,
+              currentStatus: pet.status,
+              requestedStatus: rule.to,
+              eventType,
+              reason: `Guard check failed: ${guardResult.reason}`,
+              timestamp: Date.now()
+            }
+          });
+        }
+        return;
+      }
+    }
+
     // Check for idempotency
-    if (pet.status === rule.to) {
+    if (pet.status === rule.to && !rule.flagAction) {
       if (logger) {
         logger.info('✅ Already in target status', { 
           petId, 
@@ -165,6 +248,22 @@ exports.handler = async (input, context) => {
         logger.error('❌ Failed to update pet status', { petId, oldStatus, newStatus: rule.to });
       }
       return;
+    }
+
+    // Apply flag actions if present
+    if (rule.flagAction) {
+      const { action, flag } = rule.flagAction;
+      if (action === 'add') {
+        addFlag(petId, flag);
+        if (logger) {
+          logger.info('🏷️ Flag added by orchestrator', { petId, flag });
+        }
+      } else if (action === 'remove') {
+        removeFlag(petId, flag);
+        if (logger) {
+          logger.info('🏷️ Flag removed by orchestrator', { petId, flag });
+        }
+      }
     }
 
     if (logger) {
@@ -191,6 +290,9 @@ exports.handler = async (input, context) => {
         }
       });
 
+      // Emit next action events based on status change
+      await emitNextActionEvents(petId, rule.to, oldStatus, updatedPet, emit, logger);
+
       // Check for automatic progressions after successful transition
       await processAutomaticProgression(petId, rule.to, emit, logger);
     }
@@ -201,6 +303,87 @@ exports.handler = async (input, context) => {
     }
   }
 };
+
+async function emitNextActionEvents(petId, newStatus, oldStatus, pet, emit, logger) {
+  try {
+    // Emit specific next action events based on status change
+    switch (newStatus) {
+      case 'under_treatment':
+        if (oldStatus === 'ill') {
+          await emit({
+            topic: 'js.treatment.required',
+            data: {
+              petId,
+              symptoms: pet.symptoms || [],
+              urgency: 'normal',
+              profile: pet.profile,
+              timestamp: Date.now()
+            }
+          });
+          if (logger) {
+            logger.info('🏥 Treatment required event emitted', { petId });
+          }
+        }
+        break;
+
+      case 'available':
+        if (oldStatus === 'healthy') {
+          await emit({
+            topic: 'js.adoption.ready',
+            data: {
+              petId,
+              profile: pet.profile,
+              temperament: pet.profile?.temperamentTags || [],
+              adopterHints: pet.profile?.adopterHints || [],
+              timestamp: Date.now()
+            }
+          });
+          if (logger) {
+            logger.info('🏠 Adoption ready event emitted', { petId });
+          }
+        }
+        break;
+
+      case 'recovered':
+        if (oldStatus === 'under_treatment') {
+          await emit({
+            topic: 'js.treatment.completed',
+            data: {
+              petId,
+              treatmentType: 'general_recovery',
+              treatmentStatus: 'completed',
+              timestamp: Date.now()
+            }
+          });
+          if (logger) {
+            logger.info('✅ Treatment completed event emitted', { petId });
+          }
+        }
+        break;
+
+      case 'healthy':
+        if (oldStatus === 'recovered') {
+          await emit({
+            topic: 'js.health.restored',
+            data: {
+              petId,
+              recoveryComplete: true,
+              nextSteps: ['Schedule routine health check', 'Consider adoption readiness'],
+              timestamp: Date.now()
+            }
+          });
+          if (logger) {
+            logger.info('💚 Health restored event emitted', { petId });
+          }
+        }
+        break;
+    }
+  } catch (error) {
+    if (logger) {
+      logger.error('❌ Failed to emit next action events', { petId, newStatus, error: error.message });
+    }
+  }
+}
 
 async function processAutomaticProgression(petId, currentStatus, emit, logger) {
   // Define automatic progressions
