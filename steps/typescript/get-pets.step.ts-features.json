@@ -1,0 +1,60 @@
+{
+  "stepName": "TsGetPets",
+  "stepType": "api",
+  "description": "Retrieves all pets from the system with optional filtering",
+  "endpoint": {
+    "method": "GET",
+    "path": "/ts/pets",
+    "description": "Fetches list of all pets with optional query parameters"
+  },
+  "features": [
+    {
+      "title": "Pet Collection Retrieval",
+      "description": "Fetches all pets from the system",
+      "details": [
+        "Retrieves complete list of pets from TypeScript store",
+        "Returns array of pet objects with all fields",
+        "Includes system-generated fields for each pet",
+        "Preserves all pet data including profiles, symptoms, and flags"
+      ]
+    },
+    {
+      "title": "Query Parameters Support",
+      "description": "Supports optional filtering and pagination",
+      "details": [
+        "Accepts optional query parameters for filtering",
+        "Can filter by status, species, or other criteria",
+        "Supports pagination parameters if needed",
+        "Returns filtered results based on query criteria"
+      ]
+    },
+    {
+      "title": "Response Format",
+      "description": "Standardized array response format",
+      "details": [
+        "Returns HTTP 200 for successful retrieval",
+        "Response body contains array of pet objects",
+        "Each pet object includes complete information",
+        "Consistent with single pet retrieval format"
+      ]
+    }
+  ],
+  "workflowIntegration": {
+    "triggers": ["External API calls", "Frontend applications"],
+    "emits": [],
+    "flow": "TsPetManagement"
+  },
+  "inputSchema": {
+    "required": [],
+    "optional": ["Query parameters for filtering"],
+    "validation": {
+      "queryParams": "Optional filtering parameters"
+    }
+  },
+  "outputSchema": {
+    "success": {
+      "status": 200,
+      "body": "Array of complete pet objects"
+    }
+  }
+}

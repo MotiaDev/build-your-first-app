@@ -1,0 +1,95 @@
+{
+  "stepName": "TsCreatePet",
+  "stepType": "api",
+  "description": "Creates a new pet in the system and triggers initial workflow events",
+  "endpoint": {
+    "method": "POST",
+    "path": "/ts/pets",
+    "description": "Creates a new pet with basic information"
+  },
+  "features": [
+    {
+      "title": "Pet Creation",
+      "description": "Creates a new pet record with validated input data including name, species, age, and optional weight and symptoms",
+      "details": [
+        "Validates required fields: name (string), species (dog/cat/bird/other), ageMonths (number)",
+        "Accepts optional fields: weightKg (number), symptoms (array)",
+        "Generates unique pet ID and sets initial status to 'new'",
+        "Stores pet data in TypeScript store"
+      ]
+    },
+    {
+      "title": "Event Emission",
+      "description": "Emits workflow events to trigger downstream processing",
+      "details": [
+        "Emits 'ts.pet.created' event with pet creation data",
+        "Emits 'ts.feeding.reminder.enqueued' event to trigger feeding reminder setup",
+        "Events contain petId, name, species, and timestamp information"
+      ]
+    },
+    {
+      "title": "Input Validation",
+      "description": "Comprehensive validation of incoming pet data",
+      "details": [
+        "Validates name is non-empty string",
+        "Validates species is one of: dog, cat, bird, other",
+        "Validates ageMonths is a finite number",
+        "Returns 400 error with descriptive message for invalid data",
+        "Handles optional weightKg and symptoms fields gracefully"
+      ]
+    },
+    {
+      "title": "Response Format",
+      "description": "Returns structured response with created pet data",
+      "details": [
+        "Returns HTTP 201 status for successful creation",
+        "Response body contains complete pet object with generated ID",
+        "Includes all input data plus system-generated fields (id, status, timestamps)"
+      ]
+    },
+    {
+      "title": "Logging",
+      "description": "Structured logging for monitoring and debugging",
+      "details": [
+        "Logs pet creation with key details (petId, name, species, status)",
+        "Uses emoji prefix for easy log identification",
+        "Includes structured data for log analysis"
+      ]
+    }
+  ],
+  "workflowIntegration": {
+    "triggers": ["External API calls"],
+    "emits": [
+      {
+        "topic": "ts.pet.created",
+        "description": "Triggers AI profile enrichment and lifecycle orchestration"
+      },
+      {
+        "topic": "ts.feeding.reminder.enqueued", 
+        "description": "Triggers background job to set up feeding reminders"
+      }
+    ],
+    "flow": "TsPetManagement"
+  },
+  "inputSchema": {
+    "required": ["name", "species", "ageMonths"],
+    "optional": ["weightKg", "symptoms"],
+    "validation": {
+      "name": "Non-empty string",
+      "species": "One of: dog, cat, bird, other",
+      "ageMonths": "Finite number",
+      "weightKg": "Number (optional)",
+      "symptoms": "Array of strings (optional)"
+    }
+  },
+  "outputSchema": {
+    "success": {
+      "status": 201,
+      "body": "Complete pet object with system-generated fields"
+    },
+    "error": {
+      "status": 400,
+      "body": "Error message with validation details"
+    }
+  }
+}

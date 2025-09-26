@@ -1,0 +1,96 @@
+{
+  "stepName": "TsSetNextFeedingReminder",
+  "stepType": "event",
+  "description": "Background job that sets up feeding reminders and welcome messages for new pets",
+  "features": [
+    {
+      "title": "Feeding Reminder Setup",
+      "description": "Sets up feeding schedules and reminder systems for pets",
+      "details": [
+        "Calculates next feeding time (24 hours from creation)",
+        "Sets feeding reminder timestamps and schedules",
+        "Creates feeding schedule entries for pet care",
+        "Manages feeding reminder notifications and alerts"
+      ]
+    },
+    {
+      "title": "Welcome Message Creation",
+      "description": "Adds welcome messages and initial care instructions",
+      "details": [
+        "Adds welcome notes to new pet records",
+        "Provides initial care instructions and information",
+        "Sets up basic pet care guidelines",
+        "Creates personalized welcome messages"
+      ]
+    },
+    {
+      "title": "Event-Driven Processing",
+      "description": "Automatically triggered by pet creation workflow",
+      "details": [
+        "Subscribes to 'ts.feeding.reminder.enqueued' events",
+        "Processes feeding reminder requests automatically",
+        "Emits feeding reminder completion events",
+        "Provides workflow progress tracking"
+      ]
+    },
+    {
+      "title": "Background Job Processing",
+      "description": "Handles asynchronous background processing tasks",
+      "details": [
+        "Processes jobs without blocking main workflow",
+        "Handles job queuing and execution",
+        "Manages job retry logic and error handling",
+        "Provides job status tracking and monitoring"
+      ]
+    },
+    {
+      "title": "Data Updates",
+      "description": "Updates pet records with feeding and care information",
+      "details": [
+        "Updates pet record with nextFeedingAt timestamp",
+        "Adds welcome notes and care instructions",
+        "Maintains data consistency across the system",
+        "Preserves original pet data while adding new information"
+      ]
+    },
+    {
+      "title": "Error Handling",
+      "description": "Handles errors in feeding reminder setup process",
+      "details": [
+        "Manages missing pet data gracefully",
+        "Handles update failures and retries",
+        "Logs errors with structured data for monitoring",
+        "Ensures workflow continues despite individual failures"
+      ]
+    }
+  ],
+  "workflowIntegration": {
+    "subscribes": [
+      {
+        "topic": "ts.feeding.reminder.enqueued",
+        "description": "Triggered when feeding reminders are queued for new pets"
+      }
+    ],
+    "emits": [
+      {
+        "topic": "ts.feeding.reminder.completed",
+        "description": "Indicates feeding reminder setup has completed"
+      }
+    ],
+    "flow": "TsPetManagement"
+  },
+  "inputSchema": {
+    "required": ["petId", "enqueuedAt"],
+    "validation": {
+      "petId": "Valid pet ID from creation event",
+      "enqueuedAt": "Timestamp when job was enqueued"
+    }
+  },
+  "outputSchema": {
+    "updates": {
+      "nextFeedingAt": "timestamp (24 hours from now)",
+      "notes": "string (welcome message)",
+      "careInstructions": "object"
+    }
+  }
+}

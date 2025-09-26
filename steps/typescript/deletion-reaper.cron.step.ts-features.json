@@ -1,0 +1,110 @@
+{
+  "stepName": "TsDeletionReaper",
+  "stepType": "cron",
+  "description": "Scheduled cron job that permanently removes soft-deleted pets after their purge date",
+  "features": [
+    {
+      "title": "Scheduled Cleanup",
+      "description": "Runs on a cron schedule to clean up deleted pets",
+      "details": [
+        "Executes daily at 2:00 AM (0 2 * * * cron schedule)",
+        "Scans for pets marked as deleted past their purge date",
+        "Permanently removes eligible pets from the system",
+        "Maintains system storage efficiency and data hygiene"
+      ]
+    },
+    {
+      "title": "Soft Delete Processing",
+      "description": "Processes pets that have been soft deleted",
+      "details": [
+        "Identifies pets with status 'deleted'",
+        "Checks purgeAt timestamp against current time",
+        "Processes only pets past their purge deadline",
+        "Respects data retention policies and compliance"
+      ]
+    },
+    {
+      "title": "Permanent Deletion",
+      "description": "Performs permanent removal of expired deleted pets",
+      "details": [
+        "Permanently removes pet records from the system",
+        "Cleans up associated data and references",
+        "Maintains referential integrity during deletion",
+        "Ensures complete data removal for privacy compliance"
+      ]
+    },
+    {
+      "title": "Audit Trail",
+      "description": "Maintains comprehensive audit trail for deletions",
+      "details": [
+        "Logs all permanent deletions with timestamps",
+        "Records deletion statistics and metrics",
+        "Maintains audit records for compliance",
+        "Provides deletion history and tracking"
+      ]
+    },
+    {
+      "title": "Batch Processing",
+      "description": "Processes multiple deletions efficiently",
+      "details": [
+        "Handles batch deletion of multiple pets",
+        "Processes deletions in efficient batches",
+        "Manages memory usage during large deletions",
+        "Provides progress tracking for large operations"
+      ]
+    },
+    {
+      "title": "Error Handling",
+      "description": "Handles errors during deletion process",
+      "details": [
+        "Manages deletion failures gracefully",
+        "Retries failed deletions with backoff",
+        "Logs errors with structured data for monitoring",
+        "Continues processing despite individual failures"
+      ]
+    },
+    {
+      "title": "Statistics Reporting",
+      "description": "Provides comprehensive deletion statistics",
+      "details": [
+        "Reports total pets scanned for deletion",
+        "Tracks successful and failed deletions",
+        "Provides performance metrics and timing",
+        "Enables monitoring and alerting capabilities"
+      ]
+    }
+  ],
+  "workflowIntegration": {
+    "schedule": "0 2 * * *",
+    "description": "Runs daily at 2:00 AM",
+    "emits": [
+      {
+        "topic": "ts.deletion.reaper.completed",
+        "description": "Indicates deletion reaper job has completed"
+      },
+      {
+        "topic": "ts.pet.permanently_deleted",
+        "description": "Emitted for each pet permanently deleted"
+      }
+    ],
+    "flow": "TsPetManagement"
+  },
+  "inputSchema": {
+    "required": [],
+    "description": "Cron job triggered by schedule, no input required"
+  },
+  "outputSchema": {
+    "statistics": {
+      "totalScanned": "number",
+      "purgedCount": "number", 
+      "failedCount": "number",
+      "executionTimeMs": "number",
+      "timestamp": "string"
+    }
+  },
+  "retentionPolicy": {
+    "softDeletePeriod": "30 days",
+    "purgeDelay": "Time between soft delete and permanent removal",
+    "compliance": "Supports data retention and privacy requirements"
+  }
+}

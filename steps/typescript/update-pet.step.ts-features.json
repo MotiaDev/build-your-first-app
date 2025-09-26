@@ -1,0 +1,90 @@
+{
+  "stepName": "TsUpdatePet",
+  "stepType": "api",
+  "description": "Updates an existing pet's information and status",
+  "endpoint": {
+    "method": "PUT",
+    "path": "/ts/pets/:id",
+    "description": "Updates pet details and status by unique identifier"
+  },
+  "features": [
+    {
+      "title": "Pet Information Update",
+      "description": "Updates pet data and status in the system",
+      "details": [
+        "Updates existing pet record with new information",
+        "Supports partial updates (only provided fields)",
+        "Validates update data before applying changes",
+        "Maintains data integrity and consistency"
+      ]
+    },
+    {
+      "title": "Status Management",
+      "description": "Handles pet status transitions with validation",
+      "details": [
+        "Updates pet status with proper validation",
+        "Ensures status transitions follow business rules",
+        "Tracks status change history and timestamps",
+        "Supports staff-driven status updates"
+      ]
+    },
+    {
+      "title": "Event Emission",
+      "description": "Emits events for status changes and updates",
+      "details": [
+        "Emits 'ts.status.update.requested' for status changes",
+        "Triggers lifecycle orchestration for status transitions",
+        "Includes update context and change details",
+        "Enables workflow automation based on updates"
+      ]
+    },
+    {
+      "title": "Error Handling",
+      "description": "Comprehensive validation and error handling",
+      "details": [
+        "Validates pet exists before updating",
+        "Returns 404 for non-existent pets",
+        "Validates update data format and constraints",
+        "Provides clear error messages for invalid updates"
+      ]
+    },
+    {
+      "title": "Response Format",
+      "description": "Returns updated pet information",
+      "details": [
+        "Returns HTTP 200 for successful updates",
+        "Response body contains updated pet object",
+        "Includes all fields including updated values",
+        "Shows before/after state for status changes"
+      ]
+    }
+  ],
+  "workflowIntegration": {
+    "triggers": ["External API calls", "Staff actions"],
+    "emits": [
+      {
+        "topic": "ts.status.update.requested",
+        "description": "Triggers lifecycle orchestration for status transitions"
+      }
+    ],
+    "flow": "TsPetManagement"
+  },
+  "inputSchema": {
+    "required": ["id (path parameter)"],
+    "optional": ["All pet fields for partial updates"],
+    "validation": {
+      "id": "Valid pet ID that exists in the system",
+      "updateFields": "Valid pet data fields"
+    }
+  },
+  "outputSchema": {
+    "success": {
+      "status": 200,
+      "body": "Updated pet object with all fields"
+    },
+    "error": {
+      "status": "404/400",
+      "body": "Error message with validation details"
+    }
+  }
+}

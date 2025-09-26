@@ -1,0 +1,99 @@
+{
+  "stepName": "TsAdoptionReviewAgent",
+  "stepType": "api",
+  "description": "AI-powered adoption review agent that evaluates pet readiness for adoption",
+  "endpoint": {
+    "method": "POST",
+    "path": "/ts/pets/:id/adoption-review",
+    "description": "Triggers AI adoption readiness assessment for a specific pet"
+  },
+  "features": [
+    {
+      "title": "AI Adoption Assessment",
+      "description": "Uses OpenAI to evaluate pet readiness for adoption",
+      "details": [
+        "Integrates with OpenAI API for intelligent adoption analysis",
+        "Considers pet's health status, profile, and adoption criteria",
+        "Makes data-driven decisions about adoption readiness",
+        "Provides detailed rationale for adoption decisions"
+      ]
+    },
+    {
+      "title": "Adoption Decision Making",
+      "description": "Agent framework that determines adoption workflow actions",
+      "details": [
+        "Evaluates pet against adoption readiness criteria",
+        "Chooses between needs_data or ready adoption outcomes",
+        "Uses structured decision framework with predefined options",
+        "Includes confidence scoring and reasoning explanations"
+      ]
+    },
+    {
+      "title": "Status Validation",
+      "description": "Ensures adoption reviews are only performed on appropriate pets",
+      "details": [
+        "Validates pet exists and is retrievable",
+        "Checks pet status allows for adoption review",
+        "Returns appropriate error messages for invalid states",
+        "Provides clear feedback on adoption eligibility"
+      ]
+    },
+    {
+      "title": "Event-Driven Workflow",
+      "description": "Emits events based on AI decisions to trigger adoption actions",
+      "details": [
+        "Emits 'ts.adoption.needs_data' for pets requiring more information",
+        "Emits 'ts.adoption.ready' for pets ready for adoption posting",
+        "Events include agent decision details and context",
+        "Triggers appropriate adoption workflow branches"
+      ]
+    },
+    {
+      "title": "Error Handling",
+      "description": "Comprehensive error handling with fallback responses",
+      "details": [
+        "Handles OpenAI API failures gracefully",
+        "Provides detailed error messages for debugging",
+        "Returns appropriate status codes with helpful suggestions",
+        "Logs errors with structured data for monitoring"
+      ]
+    }
+  ],
+  "workflowIntegration": {
+    "triggers": ["External API calls", "Manual adoption assessments"],
+    "emits": [
+      {
+        "topic": "ts.adoption.needs_data",
+        "description": "Triggers data collection workflow for incomplete pet profiles"
+      },
+      {
+        "topic": "ts.adoption.ready",
+        "description": "Triggers adoption posting workflow for ready pets"
+      }
+    ],
+    "flow": "TsPetManagement"
+  },
+  "inputSchema": {
+    "required": ["id (path parameter)"],
+    "validation": {
+      "id": "Valid pet ID that exists in the system",
+      "pet.status": "Must be in a state that allows adoption review"
+    }
+  },
+  "outputSchema": {
+    "success": {
+      "status": 200,
+      "body": {
+        "message": "Adoption review completed",
+        "petId": "string",
+        "agentDecision": "object with chosenEmit and rationale",
+        "emitFired": "string (topic name)",
+        "artifact": "object with timestamp and success status"
+      }
+    },
+    "error": {
+      "status": "400/404/500",
+      "body": "Error message with details and suggestions"
+    }
+  }
+}
