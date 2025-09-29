@@ -1,0 +1,42 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Configuration for a simple GET API endpoint to list all pets.",
+    "lines": [
+      "5-12"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "GET API Step",
+    "description": "Definition of a GET endpoint for retrieving all pets",
+    "lines": [
+      "8-9"
+    ]
+  },
+  {
+    "id": "no-emissions",
+    "title": "No Events Emitted",
+    "description": "This step doesn't emit any events as it's a simple read operation.",
+    "lines": [
+      "10"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler",
+    "description": "Simple handler that retrieves and returns all pets from the store.",
+    "lines": [
+      "14-16"
+    ]
+  },
+  {
+    "id": "data-retrieval",
+    "title": "Data Retrieval",
+    "description": "Fetch all pets from the TSStore and return them with a 200 status.",
+    "lines": [
+      "15"
+    ]
+  }
+]

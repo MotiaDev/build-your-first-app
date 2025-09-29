@@ -1,0 +1,42 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Configuration for a GET API endpoint to retrieve a specific pet by ID using path parameters.",
+    "lines": [
+      "5-12"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "GET API Step",
+    "description": "Definition of a GET endpoint with path parameter for retrieving a specific pet",
+    "lines": [
+      "8-9"
+    ]
+  },
+  {
+    "id": "path-parameters",
+    "title": "Path Parameters",
+    "description": "Using path parameters (:id) to identify which specific pet to retrieve",
+    "lines": [
+      "8"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler",
+    "description": "Handler that processes get requests for a specific pet by ID.",
+    "lines": [
+      "14-17"
+    ]
+  },
+  {
+    "id": "get-operation",
+    "title": "Get Operation",
+    "description": "Retrieve the specific pet from storage and return appropriate response based on whether it exists.",
+    "lines": [
+      "15-16"
+    ]
+  }
+]

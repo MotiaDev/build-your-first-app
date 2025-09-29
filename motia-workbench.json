@@ -25,33 +25,6 @@
     }
   },
   {
-    "id": "TsPetManagement",
-    "config": {
-      "steps/typescript/create-pet.step.ts": {
-        "x": -800,
-        "y": 100,
-        "sourceHandlePosition": "right"
-      },
-      "steps/typescript/get-pets.step.ts": {
-        "x": -800,
-        "y": 300
-      },
-      "steps/typescript/get-pet.step.ts": {
-        "x": -600,
-        "y": 300
-      },
-      "steps/typescript/update-pet.step.ts": {
-        "x": -400,
-        "y": 300,
-        "sourceHandlePosition": "top"
-      },
-      "steps/typescript/delete-pet.step.ts": {
-        "x": -200,
-        "y": 300
-      }
-    }
-  },
-  {
     "id": "JsPetManagement",
     "config": {
       "steps/javascript/create-pet.step.js": {
@@ -104,5 +77,32 @@
         "y": 300
       }
     }
-  } 
+  },
+  {
+    "id": "TsPetManagement",
+    "config": {
+      "steps/typescript/update-pet.step.ts": {
+        "x": -400,
+        "y": 300,
+        "sourceHandlePosition": "top"
+      },
+      "steps/typescript/get-pets.step.ts": {
+        "x": -800,
+        "y": 300
+      },
+      "steps/typescript/get-pet.step.ts": {
+        "x": -600,
+        "y": 300
+      },
+      "steps/typescript/delete-pet.step.ts": {
+        "x": -200,
+        "y": 300
+      },
+      "steps/typescript/create-pet.step.ts": {
+        "x": -1025,
+        "y": 294,
+        "sourceHandlePosition": "right"
+      }
+    }
+  }
 ]

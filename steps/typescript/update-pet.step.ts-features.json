@@ -1,0 +1,50 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Configuration for a PUT API endpoint to update existing pets with path parameters.",
+    "lines": [
+      "5-12"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "PUT API Step",
+    "description": "Definition of a PUT endpoint with path parameter for updating specific pets",
+    "lines": [
+      "8-9"
+    ]
+  },
+  {
+    "id": "path-parameters",
+    "title": "Path Parameters",
+    "description": "Using path parameters (:id) to identify which pet to update",
+    "lines": [
+      "8"
+    ]
+  },
+  {
+    "id": "selective-update",
+    "title": "Selective Update Logic",
+    "description": "Build a patch object with only the valid fields provided in the request body.",
+    "lines": [
+      "15-20"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler",
+    "description": "Handler that processes update requests, validates input, and applies changes to the pet record.",
+    "lines": [
+      "14-24"
+    ]
+  },
+  {
+    "id": "conditional-response",
+    "title": "Conditional Response",
+    "description": "Return different responses based on whether the pet was found and updated successfully.",
+    "lines": [
+      "22-23"
+    ]
+  }
+]

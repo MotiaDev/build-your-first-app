@@ -27,22 +27,22 @@ export const steps: TutorialStep[] = [
   // Flows
 
   {
-    elementXpath: workbenchXPath.flows.node('apitrigger'),
+    elementXpath: workbenchXPath.flows.node('tscreatepet'),
     title: 'API Step',
     link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        Let's evaluate the Step that will allow you to receive traffic from external applications, API Steps will allow
-        you to expose an HTTP endpoint for external traffic.
+        Let's evaluate the Step that will allow you to receive traffic from external applications. This API Step allows
+        you to create new pets by exposing an HTTP endpoint for external traffic.
       </p>
     ),
     before: [
       { type: 'click', selector: workbenchXPath.links.flows },
-      { type: 'click', selector: workbenchXPath.flows.dropdownFlow('basic-tutorial') },
+      { type: 'click', selector: workbenchXPath.flows.dropdownFlow('TsPetManagement') },
     ],
   },
   {
-    elementXpath: workbenchXPath.flows.previewButton('apitrigger'),
+    elementXpath: workbenchXPath.flows.previewButton('tscreatepet'),
     title: 'Code Preview',
     description: () => <p>Clicking on this icon will allow you to visualize the source code for a given Step.</p>,
     before: [
@@ -62,14 +62,15 @@ export const steps: TutorialStep[] = [
           All Steps are defined by two main components, the <b>configuration</b> and the <b>handler</b>.
           <br />
           <br />
-          Let's start with the configuration, the common config attributes are
-          <i>type, name, description, and flows</i>.<br />
-          <br />
+        Let's start with the configuration, the common config attributes are
+        <i> type, name, description, and flows</i>.
+        <br />
+        <br />
         </p>
         <ul>
-          <li>
-            The <b>type</b> attribute is important since it declares the type of Step primitive
-          </li>
+        <li>
+          The <b>type</b> attribute is important since it declares the type of Step
+        </li>
           <li>
             The <b>flows</b> attribute will associate your Step with a given flow or set of flows.
           </li>
@@ -81,7 +82,7 @@ export const steps: TutorialStep[] = [
       </div>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('apitrigger') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tscreatepet') },
       { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
     ],
   },
@@ -90,8 +91,9 @@ export const steps: TutorialStep[] = [
     title: 'API Step Configuration',
     description: () => (
       <p>
-        There are specific configuration attributes for an API Step, let's start with the <b>method</b> attribute. This
+        There are specific configuration attributes for an API Step. Let's start with the <b>method</b> attribute. This
         will declare the type of HTTP method used to talk to your API Step.
+        <br />
         <br />
         Through the <b>path</b> attribute you'll declare the url path used to trigger your API Step
       </p>
@@ -100,32 +102,31 @@ export const steps: TutorialStep[] = [
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Request Body',
+    title: 'Request Validation',
     link: 'https://zod.dev',
     description: () => (
       <p>
-        The <b>bodySchema</b> attribute will define the shape of the request body.
+        This step demonstrates how to validate incoming request data to ensure it meets expected requirements.
         <br />
         <br />
-        <i>💡 Both the request body and response payload are defined by zod schemas</i>
+        <i>💡 Input validation is crucial for API security and data integrity</i>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('request-body') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('request-validation') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Response Payload',
+    title: 'HTTP Response',
     link: 'https://zod.dev',
     description: () => (
       <p>
-        Through the <b>responseSchema</b> attribute you can declare the different type of http responses based on the
-        http status code.
+        The handler returns appropriate HTTP responses with proper status codes and response data.
         <br />
         <br />
-        <i>💡 Both the request body and response payload are defined by zod schemas</i>
+        <i>💡 Proper HTTP responses help clients understand the result of their requests</i>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('response-payload') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('http-response') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -152,7 +153,8 @@ export const steps: TutorialStep[] = [
         <br />
         Handlers are essential for the execution of your Step. For API Steps, the handler will receive the request
         object as the first argument, followed by a second argument that provides access to the <b>logger</b>,{' '}
-        <b>event emitter</b>, <b>state manager</b>, and <b>trace id</b>.<br />
+        <b>event emitter</b>, and <b>trace id</b>.<br />
+        <br />
         <br />
         💡 We will cover these in depth further down the tutorial.
       </p>
@@ -185,159 +187,171 @@ export const steps: TutorialStep[] = [
       <p>
         Now let's wrap our API Step and return a response.
         <br />
-        <br /> You simply need to return an object that complies with one of the <b>responseSchema</b> definitions
+        <br />
+        <br />
+        You simply need to return an object that complies with one of the <b>responseSchema</b> definitions
         declared in your Step configuration.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('http-response') }],
   },
 
-  // Event Steps
+  // GET API Step
 
   {
-    elementXpath: workbenchXPath.flows.node('processfoodorder'),
-    title: 'Event Step',
-    link: 'https://www.motia.dev/docs/concepts/steps/event',
+    elementXpath: workbenchXPath.flows.node('tslistpets'),
+    title: 'List Pets API Step',
+    link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        Now that we have an entry point in our flow, let's focus on subscribing to a <b>topic</b> and performing a
-        specific task.
-        <br /> For this we will look at the <b>Event</b> Step.
-        <b>Event</b> Steps are an essential primitive for Motia's event driven architecture. Let's dive deeper into the
-        anatomy of an Event Step by taking a look at the code visualization tool.
+        Now let's look at another API Step that demonstrates different functionality. This step allows you to
+        retrieve all pets from the system.
         <br />
-        💡 <b>Event</b> Steps can only be triggered internally, through topic subscriptions.
+        <br />
+        This demonstrates a simple GET endpoint that doesn't require any request body or complex processing.
+        <br />
+        <br />
+        💡 Different API Steps can have different HTTP methods and serve different purposes in your application.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Event Step',
-    link: 'https://www.motia.dev/docs/concepts/steps/event',
+    title: 'List Pets API Step',
+    link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        Now that we have an entry point in our flow, let's focus on subscribing to a <b>topic</b> and performing a
-        specific task.
+        This step shows how to implement a simple GET API endpoint.
         <br /> <br />
-        For this we will look at the <b>Event</b> Step.
+        Unlike the create pet step, this one doesn't require any request validation or complex processing.
         <br /> <br />
-        <b>Event</b> Steps are an essential primitive for Motia's event driven architecture. Let's dive deeper into the
-        anatomy of an Event Step by taking a look at the code visualization tool.
+        It simply retrieves all pets from the store and returns them to the client.
         <br /> <br />
-        💡 <b>Event</b> Steps can only be triggered internally, through topic subscriptions.
+        💡 GET endpoints are typically used for retrieving data without modifying the system state.
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('processfoodorder') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tslistpets') },
       { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
     ],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Event Step Input',
+    title: 'No Events Emitted',
     description: () => (
       <p>
-        <b>Event</b> Steps like other primitives are composed by a configuration and a handler.
+        Notice that this step doesn't emit any events, unlike the CREATE step.
         <br />
         <br />
-        <b>Event</b> Steps have a specific attribute from their config, the <b>input</b> attribute, which declares the
-        data structure provided by the topic it is subscribed to.
+        This is because GET operations are typically simple read operations that don't need to trigger other processes.
         <br />
         <br />
-        The <b>input</b> attributes is defined as a zod schema, think of the <b>input</b> attributes as a contract for
-        other Steps that emit the topics that your Step subscribes to.
+        The empty emits array indicates this step is focused purely on data retrieval.
         <br />
-        <br /> 💡 <b>Multiple Steps can subscribe to the same topic, but their input schema must be the same.</b>
+        <br /> 💡 <b>GET endpoints are usually the end of a flow rather than triggering other steps.</b>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('input-schema') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('no-emissions') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Event Step Handler',
+    title: 'List Pets Handler',
     description: () => (
       <p>
-        Let's take a look at the <b>Event</b> Step Handler.
+        Let's take a look at the <b>List Pets</b> Step Handler.
         <br />
         <br />
-        The handler will seem familiar other primitive Step Handlers, but notice that the first argument holds the data
-        provided for the topic or topics your Step subscribes to.
+        The handler is very simple for this GET endpoint - it just calls the store's list method and returns the data.
         <br />
         <br />
-        💡 The first argument will match the structure of your input schema, defined in the <b>Event</b> Step config.
+        💡 GET endpoints typically have simpler handlers since they don't need complex validation or data processing.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
   },
-  {
-    elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Storing Data in State',
-    link: 'https://www.motia.dev/docs/concepts/state-management',
-    description: () => (
-      <p>
-        Let's take a closer look at storing data in state.
-        <br />
-        <br />
-        In this example we are persisting the result of a third party HTTP request in <b>State</b>, scoping it to a
-        group id named "orders".
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('state') }],
-  },
 
-  // Cron Steps
+  // UPDATE API Step
 
   {
-    elementXpath: workbenchXPath.flows.node('stateauditjob'),
-    title: 'Cron Step',
-    link: 'https://www.motia.dev/docs/concepts/steps/cron',
+    elementXpath: workbenchXPath.flows.node('tsupdatepet'),
+    title: 'Update Pet API Step',
+    link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        Let's do a recap of what you've learned, thus far you've become familiar with three Motia primitives <b>API</b>{' '}
-        and <b>Event</b> Steps.
+        Let's do a recap of what you've learned, thus far you've become familiar with <b>CREATE</b> and{' '}
+        <b>READ</b> API operations.
         <br />
         <br />
-        You've also started to learn how to navigate around Workbench. Let's wrap up Motia's primitives with the last
-        one the <b>CRON</b> Step. Let's take a deeper look at its definition.
+        You've also started to learn how to navigate around Workbench. Let's complete the CRUD operations by looking at the
+        <b>UPDATE</b> operation. Let's take a deeper look at its definition.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Cron Schedule',
-    link: 'https://www.motia.dev/docs/concepts/steps/cron',
+    title: 'Update Configuration',
+    link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        <b>CRON</b> Steps are similar to the other primitives, they are composed by a configuration and a handler.
+        <b>UPDATE</b> Steps are similar to the other API Step types, they are composed by a configuration and a handler.
         <br />
         <br />
-        The <b>CRON</b> Step config has a distinct attribute, the <b>cron</b> attribute, through this attribute you will
-        define the cron schedule for your Step.
+        The <b>UPDATE</b> Step config uses a <b>PUT</b> method and includes path parameters to identify which resource to update.
         <br />
         <br />
-        For instance, in this example the cron schedule is configured to execute the Step handler every 5 minutes. Let's
-        take a look at the handler definition.
+        Let's look at the specific configuration for update operations.
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('stateauditjob') },
-      { type: 'click', selector: workbenchXPath.flows.feature('cron-configuration') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tsupdatepet') },
+      { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') },
     ],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Cron Step Handler',
+    title: 'Path Parameters',
+    link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        The <b>CRON</b> Step handler only receives one argument, which is the Motia context, if you recall the Motia
-        context gives you access to utilities to emit <i>topics</i>, <i>log</i>, <i>manage state</i>, and it provides
-        the <i>trace id</i> associated to your Step's execution.
+        Notice how this step uses <b>:id</b> in the path to capture the pet ID that should be updated.
         <br />
         <br />
-        In this CRON Step example we are evaluating orders persisted in state, and emitting warnings through a topic for
-        each order that hasn't been processed and has a shipping date in the past.
+        Path parameters allow you to identify specific resources in RESTful APIs. The <b>:id</b> will be available in the handler as <b>req.pathParams.id</b>.
+        <br />
+        <br />
+        💡 <b>Path parameters are essential for resource identification in UPDATE and DELETE operations.</b>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('path-parameters') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Selective Update Logic',
+    description: () => (
+      <p>
+        This step demonstrates selective updating - only the fields provided in the request body are updated.
+        <br />
+        <br />
+        The handler builds a patch object with only valid fields, leaving other pet properties unchanged.
+        <br />
+        <br />
+        💡 <b>Selective updates prevent accidentally clearing data when clients send partial updates.</b>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('selective-update') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Update Step Handler',
+    description: () => (
+      <p>
+        The <b>UPDATE</b> Step handler receives the request object which includes both the request body and path parameters.
+        <br />
+        <br />
+        In this UPDATE Step example we are selectively updating pet properties based on what's provided in the request body,
+        using the pet ID from the path parameters to identify which pet to update.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
@@ -350,7 +364,7 @@ export const steps: TutorialStep[] = [
     title: 'Endpoints',
     description: () => (
       <p>
-        Now that we've looked at Motia primitives, let's trigger the API Step from the <b>endpoints</b> section in
+        Now that we've looked at different API Step types, let's trigger the API Step from the <b>endpoints</b> section in
         Workbench.
         <br />
         <br />
@@ -361,7 +375,7 @@ export const steps: TutorialStep[] = [
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
   },
   {
-    elementXpath: workbenchXPath.endpoints.endpoint('POST', '/basic-tutorial'),
+    elementXpath: workbenchXPath.endpoints.endpoint('POST', '/ts/pets'),
     title: 'Endpoints Tool',
     description: () => (
       <p>
@@ -387,7 +401,7 @@ export const steps: TutorialStep[] = [
         endpoint in the <b>Call</b> Tab.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.endpoints.endpoint('POST', '/basic-tutorial') }],
+    before: [{ type: 'click', selector: workbenchXPath.endpoints.endpoint('POST', '/ts/pets') }],
   },
   {
     elementXpath: workbenchXPath.endpoints.callPanel,
@@ -404,37 +418,47 @@ export const steps: TutorialStep[] = [
         sample request payload.
         <br />
         <br />
-        <pre className="code-preview">
-          <code className="language-bash">
-            curl -X POST http://localhost:3000/basic-tutorial \<br />
-            {'  '}-H "Content-Type: application/json" \<br />
-            {'  '}-d '
-            {JSON.stringify({
-              pet: { name: 'Jack', photoUrl: 'https://images.dog.ceo/breeds/pug/n02110958_13560.jpg' },
-              foodOrder: { id: 'food-order-1', quantity: 0 },
-            })}
-            '
-          </code>
-        </pre>
+        <br />
+        <code style={{ 
+          display: 'block', 
+          backgroundColor: 'var(--color-bg-secondary)', 
+          color: 'var(--color-text-primary)',
+          padding: '10px', 
+          borderRadius: '4px', 
+          whiteSpace: 'pre',
+          border: '1px solid var(--color-border)'
+        }}>
+          {`curl -X POST http://localhost:3000/ts/pets \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({
+    name: 'Jack',
+    species: 'dog',
+    ageMonths: 24,
+  }, null, 2)}'`}
+        </code>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.endpoints.callTab }],
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.callTab },
+    ],
   },
   {
     elementXpath: workbenchXPath.endpoints.playButton,
     title: 'API Endpoint Test',
     description: () => (
       <p>
-        Once you've filled the request payload, you can click on the <b>Play</b> button to trigger an HTTP request
+        The tutorial has automatically filled in a sample request payload for you. You can click on the <b>Play</b> button to trigger an HTTP request
         against your API endpoint.
       </p>
     ),
     before: [
+      { type: 'click', selector: workbenchXPath.endpoints.callTab },
       {
         type: 'fill-editor',
         content: {
-          pet: { name: 'Jack', photoUrl: 'https://images.dog.ceo/breeds/pug/n02110958_13560.jpg' },
-          foodOrder: { id: 'food-order-1', quantity: 0 },
+          name: 'Jack',
+          species: 'dog',
+          ageMonths: 24,
         },
       },
     ],
@@ -444,6 +468,246 @@ export const steps: TutorialStep[] = [
     title: 'Test Result',
     description: () => <p>Once your request has been resolved, you will see the response from here.</p>,
     before: [{ type: 'click', selector: workbenchXPath.endpoints.playButton }],
+  },
+
+  // Test GET Single Pet Endpoint
+
+  {
+    elementXpath: workbenchXPath.endpoints.endpoint('GET', '/ts/pets/:id'),
+    title: 'Get Single Pet',
+    description: () => (
+      <p>
+        Now let's test the GET endpoint to retrieve a specific pet by ID. This demonstrates how path parameters work in GET requests.
+        <br />
+        <br />
+        Click on the GET /ts/pets/:id endpoint to test fetching a single pet.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'GET with Path Parameters',
+    description: () => (
+      <p>
+        This GET endpoint uses path parameters to identify which specific pet to retrieve.
+        <br />
+        <br />
+        Notice the <b>:id</b> in the path - this allows clients to request specific resources.
+        <br />
+        <br />
+        💡 <b>GET endpoints with path parameters are perfect for retrieving individual resources.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.endpoint('GET', '/ts/pets/:id') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tsgetpet') },
+      { type: 'click', selector: workbenchXPath.flows.feature('path-parameters') },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'GET Handler Logic',
+    description: () => (
+      <p>
+        The GET handler demonstrates simple resource retrieval logic.
+        <br />
+        <br />
+        It uses the path parameter to find the specific pet and returns either the pet data or a 404 error.
+        <br />
+        <br />
+        <code style={{ 
+          display: 'block', 
+          backgroundColor: 'var(--color-bg-secondary)', 
+          color: 'var(--color-text-primary)',
+          padding: '10px', 
+          borderRadius: '4px', 
+          whiteSpace: 'pre',
+          border: '1px solid var(--color-border)'
+        }}>
+          {`curl http://localhost:3000/ts/pets/1`}
+        </code>
+        <br />
+        💡 <b>Always return proper HTTP status codes (200 for found, 404 for not found).</b>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('get-operation') }],
+  },
+
+  // Test GET All Pets Endpoint
+
+  {
+    elementXpath: workbenchXPath.endpoints.endpoint('GET', '/ts/pets'),
+    title: 'Test GET All Pets',
+    description: () => (
+      <p>
+        Now let's test the GET endpoint to retrieve all pets. This endpoint returns a list of all pets in the system.
+        <br />
+        <br />
+        Click on the GET /ts/pets endpoint to test the list functionality.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.playButton,
+    title: 'Test GET Request',
+    description: () => (
+      <p>
+        GET requests are simple - no request body needed! Just click the <b>Play</b> button to retrieve all pets.
+        <br />
+        <br />
+        <code style={{ 
+          display: 'block', 
+          backgroundColor: 'var(--color-bg-secondary)', 
+          color: 'var(--color-text-primary)',
+          padding: '10px', 
+          borderRadius: '4px', 
+          whiteSpace: 'pre',
+          border: '1px solid var(--color-border)'
+        }}>
+          {`curl http://localhost:3000/ts/pets`}
+        </code>
+        <br />
+        💡 This should return the pet you just created in the previous step.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.endpoint('GET', '/ts/pets') },
+      { type: 'click', selector: workbenchXPath.endpoints.callTab },
+    ],
+  },
+
+  // Test PUT Endpoint
+
+  {
+    elementXpath: workbenchXPath.endpoints.endpoint('PUT', '/ts/pets/:id'),
+    title: 'Test UPDATE Endpoint',
+    description: () => (
+      <p>
+        Now let's test the PUT endpoint to update a pet. This endpoint requires both a path parameter (pet ID) and a request body.
+        <br />
+        <br />
+        Click on the PUT /ts/pets/:id endpoint to test the update functionality.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.callPanel,
+    title: 'UPDATE Request Body',
+    description: () => (
+      <p>
+        For UPDATE operations, you only need to provide the fields you want to change. The handler will selectively update only those fields.
+        <br />
+        <br />
+        Example update payload:
+        <br />
+        <br />
+        <code style={{ 
+          display: 'block', 
+          backgroundColor: 'var(--color-bg-secondary)', 
+          color: 'var(--color-text-primary)',
+          padding: '10px', 
+          borderRadius: '4px', 
+          whiteSpace: 'pre',
+          border: '1px solid var(--color-border)'
+        }}>
+          {`curl -X PUT http://localhost:3000/ts/pets/1 \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({
+    name: 'Updated Jack',
+    status: 'available',
+    ageMonths: 30,
+  }, null, 2)}'`}
+        </code>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.endpoint('PUT', '/ts/pets/:id') },
+      { type: 'click', selector: workbenchXPath.endpoints.callTab },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.playButton,
+    title: 'Test PUT Request',
+    description: () => (
+      <p>
+        Enter the pet ID in the path parameter field (try "1" if you created a pet earlier) and provide update data in the request body using the example above.
+        <br />
+        <br />
+        💡 Try updating the pet's name, status, or age to see how selective updates work.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.callTab },
+    ],
+  },
+
+  // Test DELETE Endpoint
+
+  {
+    elementXpath: workbenchXPath.endpoints.endpoint('DELETE', '/ts/pets/:id'),
+    title: 'Test DELETE Endpoint',
+    description: () => (
+      <p>
+        Finally, let's test the DELETE endpoint to remove a pet. This endpoint only requires a path parameter.
+        <br />
+        <br />
+        Click on the DELETE /ts/pets/:id endpoint to test the delete functionality.
+        <br />
+        <br />
+        💡 <b>DELETE operations are destructive - use them carefully in production!</b>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'DELETE Operation',
+    description: () => (
+      <p>
+        DELETE endpoints are the simplest - they just need to identify which resource to remove using path parameters.
+        <br />
+        <br />
+        The handler returns either 204 No Content (success) or 404 Not Found (pet doesn't exist).
+        <br />
+        <br />
+        <code style={{ 
+          display: 'block', 
+          backgroundColor: 'var(--color-bg-secondary)', 
+          color: 'var(--color-text-primary)',
+          padding: '10px', 
+          borderRadius: '4px', 
+          whiteSpace: 'pre',
+          border: '1px solid var(--color-border)'
+        }}>
+          {`curl -X DELETE http://localhost:3000/ts/pets/1`}
+        </code>
+        <br />
+        💡 <b>DELETE operations should be idempotent - safe to call multiple times.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.endpoint('DELETE', '/ts/pets/:id') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tsdeletepet') },
+      { type: 'click', selector: workbenchXPath.flows.feature('delete-operation') },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.playButton,
+    title: 'Test DELETE Request',
+    description: () => (
+      <p>
+        DELETE requests only need the resource ID in the path parameter (try "1"). No request body required.
+        <br />
+        <br />
+        Click the <b>Play</b> button to delete the pet (you can create another one later to test again).
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.callTab },
+    ],
   },
 
   // Tracing
@@ -561,40 +825,6 @@ export const steps: TutorialStep[] = [
     ),
   },
 
-  // States
-
-  {
-    elementXpath: workbenchXPath.links.states,
-    title: 'State Management',
-    description: () => (
-      <p>
-        Ok now that we've seen the observability tools, let's take a look at the <b>State Management Tool</b>.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.links.states }],
-  },
-  {
-    elementXpath: workbenchXPath.states.container,
-    title: 'State Management Tool',
-    description: () => (
-      <p>
-        This is your <b>State Management Tool</b>, from here you will be able to see all of your persisted state
-        key/value pairs.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.states.row(1) }],
-  },
-  {
-    elementXpath: workbenchXPath.sidebarContainer,
-    title: 'State Details',
-    description: () => (
-      <p>
-        This section presents the details for a given state key, from here you will be able to manage the value assigned
-        to the selected state key.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.links.states }],
-  },
 
   // End of Tutorial
 
@@ -606,12 +836,11 @@ export const steps: TutorialStep[] = [
         You've completed our Motia basics tutorial!
         <br />
         <br />
-        You've learned about Motia's primitives, how to navigate around Workbench, and how to use core features from the
-        Motia Framework (State Management, Logging, and Tracing).
+        You've learned about Motia's Step types, how to navigate around Workbench, and how to build a complete CRUD API using different HTTP methods.
         <br />
         <br />
         We recommend you give our{' '}
-        <a href="https://www.motia.dev/docs/getting-started/core-concepts" target="_blank">
+        <a href="https://www.motia.dev/docs/concepts" target="_blank">
           core concepts
         </a>{' '}
         a read if you wish to learn further about Motia's fundamentals.

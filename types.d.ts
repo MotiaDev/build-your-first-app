@@ -17,15 +17,15 @@ declare module 'motia' {
     'TsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
   }
 }

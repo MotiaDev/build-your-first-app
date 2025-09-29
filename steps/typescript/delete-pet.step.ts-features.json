@@ -1,0 +1,42 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Configuration for a DELETE API endpoint to remove pets using path parameters.",
+    "lines": [
+      "5-12"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "DELETE API Step",
+    "description": "Definition of a DELETE endpoint with path parameter for removing specific pets",
+    "lines": [
+      "8-9"
+    ]
+  },
+  {
+    "id": "path-parameters",
+    "title": "Path Parameters",
+    "description": "Using path parameters (:id) to identify which pet to delete",
+    "lines": [
+      "8"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler", 
+    "description": "Handler that processes delete requests and removes the specified pet from the store.",
+    "lines": [
+      "14-17"
+    ]
+  },
+  {
+    "id": "delete-operation",
+    "title": "Delete Operation",
+    "description": "Remove the pet from storage and return appropriate response based on success or failure.",
+    "lines": [
+      "15-16"
+    ]
+  }
+]
