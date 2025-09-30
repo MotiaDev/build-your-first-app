@@ -27,111 +27,103 @@
   {
     "id": "TsPetManagement",
     "config": {
-      "steps/typescript/create-pet.step.ts": {
-        "x": -800,
-        "y": 100,
-        "sourceHandlePosition": "right"
-      },
-      "steps/typescript/get-pets.step.ts": {
-        "x": -800,
-        "y": 300
-      },
-      "steps/typescript/get-pet.step.ts": {
-        "x": -600,
-        "y": 300
-      },
       "steps/typescript/update-pet.step.ts": {
-        "x": -400,
-        "y": 300,
+        "x": -817,
+        "y": 592,
         "sourceHandlePosition": "top"
       },
+      "steps/typescript/get-pets.step.ts": {
+        "x": -1025,
+        "y": 443
+      },
+      "steps/typescript/get-pet.step.ts": {
+        "x": -1026,
+        "y": 589
+      },
       "steps/typescript/delete-pet.step.ts": {
-        "x": -200,
-        "y": 300
+        "x": -607,
+        "y": 594
+      },
+      "steps/typescript/create-pet.step.ts": {
+        "x": -1025,
+        "y": 294,
+        "sourceHandlePosition": "right"
       },
       "steps/typescript/set-next-feeding-reminder.job.step.ts": {
-        "x": -513,
-        "y": 122,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
+        "x": -519,
+        "y": 294
       },
       "steps/typescript/deletion-reaper.cron.step.ts": {
-        "x": 100,
-        "y": 200
+        "x": -379,
+        "y": 526
       }
     }
   },
   {
     "id": "JsPetManagement",
     "config": {
-      "steps/javascript/create-pet.step.js": {
-        "x": -800,
-        "y": 100,
-        "sourceHandlePosition": "right"
-      },
-      "steps/javascript/get-pets.step.js": {
-        "x": -800,
-        "y": 300
-      },
-      "steps/javascript/get-pet.step.js": {
-        "x": -600,
-        "y": 300
-      },
       "steps/javascript/update-pet.step.js": {
-        "x": -400,
-        "y": 300,
+        "x": -1145,
+        "y": 768,
         "sourceHandlePosition": "top"
       },
-      "steps/javascript/delete-pet.step.js": {
-        "x": -200,
-        "y": 300
+      "steps/javascript/get-pets.step.js": {
+        "x": -1137,
+        "y": 472
       },
-      "steps/javascript/set-next-feeding-reminder.job.step.js": {
-        "x": -512,
-        "y": 120,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
+      "steps/javascript/get-pet.step.js": {
+        "x": -1147,
+        "y": 621
+      },
+      "steps/javascript/delete-pet.step.js": {
+        "x": -914,
+        "y": 760
+      },
+      "steps/javascript/create-pet.step.js": {
+        "x": -1139,
+        "y": 324,
+        "sourceHandlePosition": "right"
       },
       "steps/javascript/deletion-reaper.cron.step.js": {
-        "x": 100,
-        "y": 200
+        "x": -667,
+        "y": 696
+      },
+      "steps/javascript/set-next-feeding-reminder.job.step.js": {
+        "x": -657,
+        "y": 322
       }
     }
   },
   {
     "id": "PyPetManagement",
     "config": {
-      "steps/python/create_pet.step.py": {
-        "x": -800,
-        "y": 100,
-        "sourceHandlePosition": "right"
+      "steps/python/create_pet_step.py": {
+        "x": -695,
+        "y": -3
       },
-      "steps/python/get_pets.step.py": {
-        "x": -800,
-        "y": 300
+      "steps/python/delete_pet_step.py": {
+        "x": -482,
+        "y": 423
       },
-      "steps/python/get_pet.step.py": {
-        "x": -600,
-        "y": 300
+      "steps/python/get_pet_step.py": {
+        "x": -700,
+        "y": 420
       },
-      "steps/python/update_pet.step.py": {
-        "x": -400,
-        "y": 300,
-        "sourceHandlePosition": "top"
+      "steps/python/get_pets_step.py": {
+        "x": -693,
+        "y": 270
       },
-      "steps/python/delete_pet.step.py": {
-        "x": -200,
-        "y": 300
+      "steps/python/update_pet_step.py": {
+        "x": -690,
+        "y": 135
       },
-      "steps/python/set_next_feeding_reminder.job.step.py": {
-        "x": -509,
-        "y": 116,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
+      "steps/python/set_next_feeding_reminder.job_step.py": {
+        "x": -232,
+        "y": -6
       },
-      "steps/python/deletion_reaper.cron.step.py": {
-        "x": 100,
-        "y": 200
+      "steps/python/deletion_reaper.cron_step.py": {
+        "x": -239,
+        "y": 365
       }
     }
   }

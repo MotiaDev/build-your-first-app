@@ -10,16 +10,27 @@ export const steps: TutorialStep[] = [
     description: () => (
       <p>
         Motia is an all-in-one framework for modern backend systems. Out of the box support for API endpoints,
-        background jobs, scheduled tasks and agentic workflow orchestration through a unified runtime. Thanks to its
-        event driven architecture you can run tasks in parallel, stream data to clients, or allow for seamless
-        orchestration of flows.
+        background jobs, scheduled tasks and agentic workflow orchestration through a unified runtime.
+        <br />
+        <br />
+        This tutorial is an <b>extension of the CRUD API tutorial</b> that adds <b>workflow orchestration</b> capabilities.
+        You'll learn how to build complete workflows that combine API endpoints with <b>async background jobs</b> and <b>scheduled cron jobs</b>.
+        <br />
+        <br />
+        The workflow includes:
+        <br />
+        • <b>CRUD API endpoints</b> for pet management (Create, Read, Update, Delete)
+        <br />
+        • <b>Async background jobs</b> for feeding reminders (triggered by events)
+        <br />
+        • <b>Scheduled cron jobs</b> for data cleanup (time-based execution)
         <br />
         <br />
         Let's start with <b>Workbench</b>, it is a development tool provided by Motia's ecosystem, from here you'll be
-        able to visualize your flows and observe their behavior.
+        able to visualize your complete workflow and test the orchestration.
         <br />
         <br />
-        💡 If you are already familiar with Motia, you can skip this tutorial.
+        💡 If you haven't completed the basic CRUD tutorial yet, we recommend starting there first.
       </p>
     ),
   },
@@ -27,22 +38,29 @@ export const steps: TutorialStep[] = [
   // Flows
 
   {
-    elementXpath: workbenchXPath.flows.node('apitrigger'),
+    elementXpath: workbenchXPath.flows.node('tscreatepet'),
     title: 'API Step',
     link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        Let's evaluate the Step that will allow you to receive traffic from external applications, API Steps will allow
-        you to expose an HTTP endpoint for external traffic.
+        Let's start with the <b>CREATE</b> operation in our CRUD API. This API Step allows
+        you to create new pets by exposing an HTTP POST endpoint for external traffic.
+        <br />
+        <br />
+        This step also demonstrates <b>workflow orchestration</b> - when a pet is created, it automatically triggers
+        background jobs for feeding reminders and other automated processes.
+        <br />
+        <br />
+        💡 <b>This is the entry point of our complete workflow that combines CRUD operations with background processing.</b>
       </p>
     ),
     before: [
       { type: 'click', selector: workbenchXPath.links.flows },
-      { type: 'click', selector: workbenchXPath.flows.dropdownFlow('basic-tutorial') },
+      { type: 'click', selector: workbenchXPath.flows.dropdownFlow('TsPetManagement') },
     ],
   },
   {
-    elementXpath: workbenchXPath.flows.previewButton('apitrigger'),
+    elementXpath: workbenchXPath.flows.previewButton('tscreatepet'),
     title: 'Code Preview',
     description: () => <p>Clicking on this icon will allow you to visualize the source code for a given Step.</p>,
     before: [
@@ -195,18 +213,20 @@ export const steps: TutorialStep[] = [
   // Event Steps
 
   {
-    elementXpath: workbenchXPath.flows.node('processfoodorder'),
+    elementXpath: workbenchXPath.flows.node('tssetnextfeedingreminder'),
     title: 'Event Step',
     link: 'https://www.motia.dev/docs/concepts/steps/event',
     description: () => (
       <p>
-        Now that we have an entry point in our flow, let's focus on subscribing to a <b>topic</b> and performing a
-        specific task.
-        <br /> For this we will look at the <b>Event</b> Step.
-        <b>Event</b> Steps are an essential primitive for Motia's event driven architecture. Let's dive deeper into the
-        anatomy of an Event Step by taking a look at the code visualization tool.
+        Now let's explore <b>async background jobs</b> in our pet management workflow. After a pet is created, 
+        we need to set up automated feeding reminders.
         <br />
-        💡 <b>Event</b> Steps can only be triggered internally, through topic subscriptions.
+        <br />
+        For this we will look at the <b>Event Step</b> that handles feeding reminder scheduling.
+        <b>Event Steps</b> are essential for Motia's event-driven architecture and enable background processing.
+        <br />
+        <br />
+        💡 <b>Event Steps are triggered by internal events, making them perfect for background jobs and workflow orchestration.</b>
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
@@ -217,19 +237,20 @@ export const steps: TutorialStep[] = [
     link: 'https://www.motia.dev/docs/concepts/steps/event',
     description: () => (
       <p>
-        Now that we have an entry point in our flow, let's focus on subscribing to a <b>topic</b> and performing a
-        specific task.
+        Let's examine how this <b>async background job</b> works. This Event Step subscribes to the 
+        feeding reminder event that gets emitted when a pet is created.
         <br /> <br />
-        For this we will look at the <b>Event</b> Step.
+        The <b>Event Step</b> then processes the background job by setting up automated feeding schedules
+        based on the pet's age, species, and health status.
         <br /> <br />
-        <b>Event</b> Steps are an essential primitive for Motia's event driven architecture. Let's dive deeper into the
-        anatomy of an Event Step by taking a look at the code visualization tool.
+        This demonstrates how <b>Event Steps</b> enable background processing and workflow orchestration
+        in response to API operations.
         <br /> <br />
-        💡 <b>Event</b> Steps can only be triggered internally, through topic subscriptions.
+        💡 <b>Background jobs allow you to perform complex, time-consuming tasks without blocking API responses.</b>
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('processfoodorder') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tssetnextfeedingreminder') },
       { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
     ],
   },
@@ -289,17 +310,20 @@ export const steps: TutorialStep[] = [
   // Cron Steps
 
   {
-    elementXpath: workbenchXPath.flows.node('stateauditjob'),
+    elementXpath: workbenchXPath.flows.node('tsdeletionreaper'),
     title: 'Cron Step',
     link: 'https://www.motia.dev/docs/concepts/steps/cron',
     description: () => (
       <p>
-        Let's do a recap of what you've learned, thus far you've become familiar with three Motia primitives <b>API</b>{' '}
-        and <b>Event</b> Steps.
+        Now let's explore <b>scheduled cron jobs</b> in our pet management workflow. So far you've learned about 
+        <b>CRUD API endpoints</b> and <b>async background jobs</b>.
         <br />
         <br />
-        You've also started to learn how to navigate around Workbench. Let's wrap up Motia's primitives with the last
-        one the <b>CRON</b> Step. Let's take a deeper look at its definition.
+        The <b>CRON</b> Step allows you to schedule tasks that run automatically at specified intervals.
+        In our pet management system, we use cron jobs for data cleanup and maintenance tasks.
+        <br />
+        <br />
+        💡 <b>Cron jobs are perfect for scheduled maintenance, cleanup, and recurring tasks that don't depend on user actions.</b>
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
@@ -317,12 +341,15 @@ export const steps: TutorialStep[] = [
         define the cron schedule for your Step.
         <br />
         <br />
-        For instance, in this example the cron schedule is configured to execute the Step handler every 5 minutes. Let's
-        take a look at the handler definition.
+        In our pet management system, the deletion reaper cron job runs periodically to clean up soft-deleted pets.
+        This ensures data cleanup happens automatically without manual intervention.
+        <br />
+        <br />
+        Let's take a look at the handler definition to see how it processes the cleanup.
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('stateauditjob') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tsdeletionreaper') },
       { type: 'click', selector: workbenchXPath.flows.feature('cron-configuration') },
     ],
   },
@@ -336,8 +363,11 @@ export const steps: TutorialStep[] = [
         the <i>trace id</i> associated to your Step's execution.
         <br />
         <br />
-        In this CRON Step example we are evaluating orders persisted in state, and emitting warnings through a topic for
-        each order that hasn't been processed and has a shipping date in the past.
+        In our deletion reaper cron job, we are checking for pets that have been soft-deleted and have passed their
+        purge date. The handler removes these pets permanently from the system and logs the cleanup activities.
+        <br />
+        <br />
+        💡 <b>This demonstrates how cron jobs can automate maintenance tasks that need to run on a schedule.</b>
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
@@ -603,18 +633,29 @@ export const steps: TutorialStep[] = [
     link: 'https://www.motia.dev/docs',
     description: () => (
       <p>
-        You've completed our Motia basics tutorial!
+        You've completed our Motia Workflow Orchestration tutorial! 🎉
         <br />
         <br />
-        You've learned about Motia's primitives, how to navigate around Workbench, and how to use core features from the
-        Motia Framework (State Management, Logging, and Tracing).
+        You've learned how to build a complete pet management system that combines:
+        <br />
+        • <b>CRUD API endpoints</b> for pet management (Create, Read, Update, Delete)
+        <br />
+        • <b>Async background jobs</b> for feeding reminders and automated processes
+        <br />
+        • <b>Scheduled cron jobs</b> for data cleanup and maintenance
+        <br />
+        • <b>Event-driven architecture</b> for workflow orchestration
+        <br />
+        <br />
+        You've also learned how to navigate Workbench, test workflows, and monitor execution
+        through tracing and logging.
         <br />
         <br />
         We recommend you give our{' '}
-        <a href="https://www.motia.dev/docs/getting-started/core-concepts" target="_blank">
+        <a href="https://www.motia.dev/docs/concepts" target="_blank">
           core concepts
         </a>{' '}
-        a read if you wish to learn further about Motia's fundamentals.
+        a read if you wish to learn further about Motia's advanced features like AI agents and streaming.
         <br />
         <br />
         Don't forget to join our{' '}
@@ -639,7 +680,7 @@ export const steps: TutorialStep[] = [
         .
         <br />
         <br />
-        Thank you for going this far in our tutorial!
+        Thank you for completing our workflow orchestration tutorial!
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
