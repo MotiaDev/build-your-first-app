@@ -1,0 +1,99 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration", 
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "2-9"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "API Step",
+    "description": "Definition of an API endpoint for creating pets",
+    "lines": [
+      "5-6"
+    ]
+  },
+  {
+    "id": "async-handler",
+    "title": "Async Handler",
+    "description": "Python handlers are async functions that can handle asynchronous operations",
+    "lines": [
+      "11"
+    ]
+  },
+  {
+    "id": "context-extraction",
+    "title": "Context Extraction",
+    "description": "Extract logger and emit functions from the context safely",
+    "lines": [
+      "12-13"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Dynamic import of the pet store module with error handling",
+    "lines": [
+      "15-23"
+    ]
+  },
+  {
+    "id": "request-validation",
+    "title": "Request Validation",
+    "description": "Validate incoming request data to ensure it meets the expected format and constraints.",
+    "lines": [
+      "29-36"
+    ]
+  },
+  {
+    "id": "data-processing",
+    "title": "Data Processing",
+    "description": "Process the validated data and create a new pet record in the store.",
+    "lines": [
+      "37"
+    ]
+  },
+  {
+    "id": "event-driven-architecture",
+    "title": "Emits",
+    "description": "We can define the events that this step will emit, this is how we can trigger other Motia Steps.",
+    "lines": [
+      "7",
+      "47-57"
+    ]
+  },
+  {
+    "id": "workflow-integration",
+    "title": "Workflow Integration",
+    "description": "This step triggers background jobs by emitting events that other steps subscribe to",
+    "lines": [
+      "53-57"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler",
+    "description": "The handler is the function that will be executed when the step is triggered. This one receives the request and creates a new pet.",
+    "lines": [
+      "11-59"
+    ]
+  },
+  {
+    "id": "logger",
+    "title": "Logger",
+    "description": "The logger is a utility that allows you to log messages. It is available in the handler function and automatically ties to the trace id of the request.",
+    "lines": [
+      "39-45"
+    ]
+  },
+  {
+    "id": "http-response",
+    "title": "HTTP Response",
+    "description": "The handler returns a response to the client with the created pet data and appropriate status code.",
+    "lines": [
+      "59"
+    ]
+  }
+]

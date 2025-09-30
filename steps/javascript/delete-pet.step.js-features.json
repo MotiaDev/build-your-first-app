@@ -1,0 +1,83 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration", 
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "DELETE API Step",
+    "description": "Definition of a DELETE API endpoint for soft deleting a pet",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Import required functions from the store module",
+    "lines": [
+      "2"
+    ]
+  },
+  {
+    "id": "path-parameters",
+    "title": "Path Parameters",
+    "description": "Using path parameters to capture the pet ID from the URL",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "soft-deletion",
+    "title": "Soft Deletion",
+    "description": "Perform a soft delete instead of permanent removal, scheduling the pet for purging",
+    "lines": [
+      "9"
+    ]
+  },
+  {
+    "id": "conditional-response",
+    "title": "Conditional Response",
+    "description": "Return different responses based on whether the deletion was successful",
+    "lines": [
+      "11-13"
+    ]
+  },
+  {
+    "id": "event-driven-architecture",
+    "title": "Emits",
+    "description": "Emit events when a pet is soft deleted to trigger background cleanup processes",
+    "lines": [
+      "4",
+      "23-32"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler",
+    "description": "The handler function that executes when the DELETE request is made",
+    "lines": [
+      "5-42"
+    ]
+  },
+  {
+    "id": "logger",
+    "title": "Logger",
+    "description": "Log the soft deletion with details about the purge schedule",
+    "lines": [
+      "15-21"
+    ]
+  },
+  {
+    "id": "http-response",
+    "title": "HTTP Response",
+    "description": "Returns appropriate HTTP status codes: 202 for accepted, 404 for not found",
+    "lines": [
+      "34-41"
+    ]
+  }
+]

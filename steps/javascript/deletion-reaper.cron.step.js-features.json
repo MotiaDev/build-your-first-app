@@ -1,0 +1,105 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration", 
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "4-11"
+    ]
+  },
+  {
+    "id": "cron-step",
+    "title": "Cron Step",
+    "description": "This is a scheduled step that runs automatically based on a cron expression",
+    "lines": [
+      "5"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Import required functions from the store module",
+    "lines": [
+      "2"
+    ]
+  },
+  {
+    "id": "cron-schedule",
+    "title": "Cron Schedule",
+    "description": "Define when the cron job should run using standard cron syntax",
+    "lines": [
+      "8"
+    ]
+  },
+  {
+    "id": "event-emission",
+    "title": "Event Emission",
+    "description": "Emit events when pets are purged and when the reaper job completes",
+    "lines": [
+      "9",
+      "56-67",
+      "83-92"
+    ]
+  },
+  {
+    "id": "data-scanning",
+    "title": "Data Scanning",
+    "description": "Scan the store for pets that are ready to be permanently deleted",
+    "lines": [
+      "19"
+    ]
+  },
+  {
+    "id": "batch-processing",
+    "title": "Batch Processing",
+    "description": "Process multiple pets in a batch operation for efficiency",
+    "lines": [
+      "39-73"
+    ]
+  },
+  {
+    "id": "conditional-execution",
+    "title": "Conditional Execution",
+    "description": "Handle cases where no pets need to be purged",
+    "lines": [
+      "21-37"
+    ]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Handle errors gracefully and log them for monitoring",
+    "lines": [
+      "94-98"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler",
+    "description": "The handler function that executes when the cron schedule triggers",
+    "lines": [
+      "13-99"
+    ]
+  },
+  {
+    "id": "logger",
+    "title": "Logger",
+    "description": "Log cron job progress, pet purging details, and completion statistics",
+    "lines": [
+      "15-16",
+      "22-24",
+      "47-54",
+      "75-81"
+    ]
+  },
+  {
+    "id": "statistics-tracking",
+    "title": "Statistics Tracking",
+    "description": "Track and report statistics about the purging process",
+    "lines": [
+      "39",
+      "75-81",
+      "83-92"
+    ]
+  }
+]

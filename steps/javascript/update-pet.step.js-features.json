@@ -1,0 +1,90 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration", 
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "PUT API Step",
+    "description": "Definition of a PUT API endpoint for updating an existing pet",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Import required functions from the store module",
+    "lines": [
+      "2"
+    ]
+  },
+  {
+    "id": "path-parameters",
+    "title": "Path Parameters",
+    "description": "Using path parameters to capture the pet ID from the URL",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "request-body-parsing",
+    "title": "Request Body Parsing",
+    "description": "Extract and parse the request body to get update data",
+    "lines": [
+      "6"
+    ]
+  },
+  {
+    "id": "conditional-updates",
+    "title": "Conditional Updates",
+    "description": "Only update fields that are provided and valid in the request",
+    "lines": [
+      "7-11"
+    ]
+  },
+  {
+    "id": "data-validation",
+    "title": "Data Validation",
+    "description": "Validate each field before including it in the update",
+    "lines": [
+      "8-11"
+    ]
+  },
+  {
+    "id": "data-update",
+    "title": "Data Update",
+    "description": "Update the pet in the store with the validated changes",
+    "lines": [
+      "12"
+    ]
+  },
+  {
+    "id": "conditional-response",
+    "title": "Conditional Response",
+    "description": "Return different responses based on whether the update was successful",
+    "lines": [
+      "13"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler",
+    "description": "The handler function that executes when the PUT request is made",
+    "lines": [
+      "5-14"
+    ]
+  },
+  {
+    "id": "http-response",
+    "title": "HTTP Response",
+    "description": "Returns appropriate HTTP status codes: 200 for success, 404 for not found",
+    "lines": [
+      "13"
+    ]
+  }
+]

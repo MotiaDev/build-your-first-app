@@ -1,0 +1,98 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration", 
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "2"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "PUT API Step",
+    "description": "Definition of a PUT API endpoint for updating an existing pet",
+    "lines": [
+      "2"
+    ]
+  },
+  {
+    "id": "async-handler",
+    "title": "Async Handler",
+    "description": "Python handlers are async functions that can handle asynchronous operations",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Dynamic import of the pet store module with error handling",
+    "lines": [
+      "5-11"
+    ]
+  },
+  {
+    "id": "path-parameters",
+    "title": "Path Parameters",
+    "description": "Using path parameters to capture the pet ID from the URL",
+    "lines": [
+      "12"
+    ]
+  },
+  {
+    "id": "request-body-parsing",
+    "title": "Request Body Parsing",
+    "description": "Extract and parse the request body to get update data",
+    "lines": [
+      "13"
+    ]
+  },
+  {
+    "id": "conditional-updates",
+    "title": "Conditional Updates",
+    "description": "Only update fields that are provided and valid in the request",
+    "lines": [
+      "14-20"
+    ]
+  },
+  {
+    "id": "data-validation",
+    "title": "Data Validation",
+    "description": "Validate each field before including it in the update",
+    "lines": [
+      "15-20"
+    ]
+  },
+  {
+    "id": "data-update",
+    "title": "Data Update",
+    "description": "Update the pet in the store with the validated changes",
+    "lines": [
+      "21"
+    ]
+  },
+  {
+    "id": "conditional-response",
+    "title": "Conditional Response",
+    "description": "Return different responses based on whether the update was successful",
+    "lines": [
+      "22"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler",
+    "description": "The handler function that executes when the PUT request is made",
+    "lines": [
+      "4-22"
+    ]
+  },
+  {
+    "id": "http-response",
+    "title": "HTTP Response",
+    "description": "Returns appropriate HTTP status codes: 200 for success, 404 for not found",
+    "lines": [
+      "22"
+    ]
+  }
+]

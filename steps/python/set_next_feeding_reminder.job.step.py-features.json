@@ -1,0 +1,108 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration", 
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "3-10"
+    ]
+  },
+  {
+    "id": "event-step",
+    "title": "Event Step",
+    "description": "This is an event-driven step that responds to events emitted by other steps",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "subscription",
+    "title": "Event Subscription",
+    "description": "Subscribe to events from other steps to trigger this background job",
+    "lines": [
+      "7"
+    ]
+  },
+  {
+    "id": "event-emission",
+    "title": "Event Emission",
+    "description": "Emit events when the background job completes to notify other parts of the system",
+    "lines": [
+      "8",
+      "58-66"
+    ]
+  },
+  {
+    "id": "async-handler",
+    "title": "Async Handler",
+    "description": "Python handlers are async functions that can handle asynchronous operations",
+    "lines": [
+      "12"
+    ]
+  },
+  {
+    "id": "context-extraction",
+    "title": "Context Extraction",
+    "description": "Extract logger and emit functions from the context safely",
+    "lines": [
+      "13-14"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Dynamic import of the pet store module with error handling",
+    "lines": [
+      "16-25"
+    ]
+  },
+  {
+    "id": "input-processing",
+    "title": "Input Processing",
+    "description": "Extract and process input data from the triggering event",
+    "lines": [
+      "27-28"
+    ]
+  },
+  {
+    "id": "background-processing",
+    "title": "Background Processing",
+    "description": "Perform background tasks like calculating feeding schedules and updating pet records",
+    "lines": [
+      "34-43"
+    ]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Handle errors gracefully and log them for monitoring",
+    "lines": [
+      "68-70"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler",
+    "description": "The handler function that executes when the subscribed event is received",
+    "lines": [
+      "12-71"
+    ]
+  },
+  {
+    "id": "logger",
+    "title": "Logger",
+    "description": "Log background job progress and completion for monitoring and debugging",
+    "lines": [
+      "30-32",
+      "50-56"
+    ]
+  },
+  {
+    "id": "workflow-integration",
+    "title": "Workflow Integration",
+    "description": "Integrate with the broader pet management workflow by emitting completion events",
+    "lines": [
+      "58-66"
+    ]
+  }
+]

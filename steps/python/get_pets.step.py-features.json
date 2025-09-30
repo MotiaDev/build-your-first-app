@@ -1,0 +1,66 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration", 
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "2"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "GET API Step",
+    "description": "Definition of a GET API endpoint for listing all pets",
+    "lines": [
+      "2"
+    ]
+  },
+  {
+    "id": "async-handler",
+    "title": "Async Handler",
+    "description": "Python handlers are async functions that can handle asynchronous operations",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Dynamic import of the pet store module with error handling",
+    "lines": [
+      "5-11"
+    ]
+  },
+  {
+    "id": "simple-handler",
+    "title": "Simple Handler",
+    "description": "A straightforward handler that doesn't require request parameters",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "data-listing",
+    "title": "Data Listing",
+    "description": "Retrieve all pets from the store and return them as a list",
+    "lines": [
+      "12"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler",
+    "description": "The handler function that executes when the GET request is made",
+    "lines": [
+      "4-12"
+    ]
+  },
+  {
+    "id": "http-response",
+    "title": "HTTP Response",
+    "description": "Returns a successful response with the list of pets",
+    "lines": [
+      "12"
+    ]
+  }
+]

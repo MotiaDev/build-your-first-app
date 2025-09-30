@@ -1,0 +1,92 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration", 
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "4-11"
+    ]
+  },
+  {
+    "id": "event-step",
+    "title": "Event Step",
+    "description": "This is an event-driven step that responds to events emitted by other steps",
+    "lines": [
+      "5"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Import required functions from the store module",
+    "lines": [
+      "2"
+    ]
+  },
+  {
+    "id": "subscription",
+    "title": "Event Subscription",
+    "description": "Subscribe to events from other steps to trigger this background job",
+    "lines": [
+      "8"
+    ]
+  },
+  {
+    "id": "event-emission",
+    "title": "Event Emission",
+    "description": "Emit events when the background job completes to notify other parts of the system",
+    "lines": [
+      "9",
+      "48-57"
+    ]
+  },
+  {
+    "id": "input-processing",
+    "title": "Input Processing",
+    "description": "Extract and process input data from the triggering event",
+    "lines": [
+      "15"
+    ]
+  },
+  {
+    "id": "background-processing",
+    "title": "Background Processing",
+    "description": "Perform background tasks like calculating feeding schedules and updating pet records",
+    "lines": [
+      "22-31"
+    ]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Handle errors gracefully and log them for monitoring",
+    "lines": [
+      "59-63"
+    ]
+  },
+  {
+    "id": "handler",
+    "title": "Handler",
+    "description": "The handler function that executes when the subscribed event is received",
+    "lines": [
+      "13-64"
+    ]
+  },
+  {
+    "id": "logger",
+    "title": "Logger",
+    "description": "Log background job progress and completion for monitoring and debugging",
+    "lines": [
+      "17-19",
+      "40-46"
+    ]
+  },
+  {
+    "id": "workflow-integration",
+    "title": "Workflow Integration",
+    "description": "Integrate with the broader pet management workflow by emitting completion events",
+    "lines": [
+      "48-57"
+    ]
+  }
+]
