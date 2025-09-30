@@ -10,13 +10,15 @@ export const steps: TutorialStep[] = [
     description: () => (
       <p>
         Motia is an all-in-one framework for modern backend systems. Out of the box support for API endpoints,
-        background jobs, scheduled tasks and agentic workflow orchestration through a unified runtime. Thanks to its
-        event driven architecture you can run tasks in parallel, stream data to clients, or allow for seamless
-        orchestration of flows.
+        background jobs, scheduled tasks and agentic workflow orchestration through a unified runtime.
+        <br />
+        <br />
+        This tutorial focuses on building <b>CRUD API endpoints</b> - the fundamental building blocks of most web applications.
+        You'll learn how to create, read, update, and delete resources using Motia's API Steps.
         <br />
         <br />
         Let's start with <b>Workbench</b>, it is a development tool provided by Motia's ecosystem, from here you'll be
-        able to visualize your flows and observe their behavior.
+        able to visualize your API endpoints and test them interactively.
         <br />
         <br />
         💡 If you are already familiar with Motia, you can skip this tutorial.
@@ -32,8 +34,11 @@ export const steps: TutorialStep[] = [
     link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        Let's evaluate the Step that will allow you to receive traffic from external applications. This API Step allows
-        you to create new pets by exposing an HTTP endpoint for external traffic.
+        Let's start with the <b>CREATE</b> operation in our CRUD API. This API Step allows
+        you to create new pets by exposing an HTTP POST endpoint for external traffic.
+        <br />
+        <br />
+        This is the first step in building a complete CRUD API - you'll create, read, update, and delete pet resources.
       </p>
     ),
     before: [
@@ -140,6 +145,9 @@ export const steps: TutorialStep[] = [
         <br />
         <br />
         Through the <b>emits</b>, you can specify a list of topics that your Step emits for others to <i>subscribe</i>.
+        <br />
+        <br />
+        💡 <b>For this CRUD tutorial, we're focusing on simple API endpoints without complex event flows.</b>
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('event-driven-architecture') }],
@@ -204,14 +212,14 @@ export const steps: TutorialStep[] = [
     link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        Now let's look at another API Step that demonstrates different functionality. This step allows you to
+        Now let's explore the <b>READ</b> operation in our CRUD API. This step allows you to
         retrieve all pets from the system.
         <br />
         <br />
         This demonstrates a simple GET endpoint that doesn't require any request body or complex processing.
         <br />
         <br />
-        💡 Different API Steps can have different HTTP methods and serve different purposes in your application.
+        💡 <b>READ operations (GET) are typically the simplest in CRUD APIs - they just retrieve data without modifying it.</b>
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
@@ -279,12 +287,14 @@ export const steps: TutorialStep[] = [
     link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        Let's do a recap of what you've learned, thus far you've become familiar with <b>CREATE</b> and{' '}
-        <b>READ</b> API operations.
+        Let's continue with the <b>UPDATE</b> operation in our CRUD API. So far you've learned about <b>CREATE</b> and{' '}
+        <b>READ</b> operations.
         <br />
         <br />
-        You've also started to learn how to navigate around Workbench. Let's complete the CRUD operations by looking at the
-        <b>UPDATE</b> operation. Let's take a deeper look at its definition.
+        Now let's explore the <b>UPDATE</b> operation, which allows you to modify existing pet records.
+        <br />
+        <br />
+        💡 <b>UPDATE operations use PUT/PATCH HTTP methods and typically require both path parameters and request body.</b>
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
@@ -364,12 +374,12 @@ export const steps: TutorialStep[] = [
     title: 'Endpoints',
     description: () => (
       <p>
-        Now that we've looked at different API Step types, let's trigger the API Step from the <b>endpoints</b> section in
+        Now that we've explored the different CRUD API Step types, let's test our API endpoints from the <b>endpoints</b> section in
         Workbench.
         <br />
         <br />
         💡 All of your API Steps declare HTTP endpoints that can be reviewed and tested from the <b>Endpoints</b>{' '}
-        section in Workbench.
+        section. This is perfect for testing your complete CRUD API.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
@@ -717,12 +727,15 @@ export const steps: TutorialStep[] = [
     title: 'Tracing',
     description: () => (
       <p>
-        Great! You have triggered your first flow, now let's take a look at our example flow behavior using Workbench's
+        Great! You have tested your CRUD API endpoints, now let's take a look at the execution traces using Workbench's
         observability tools.
         <br />
         <br />
-        Let's start with <b>tracing</b>, in this section you will be able to see all of your flow executions grouped by{' '}
+        Let's start with <b>tracing</b>, in this section you will be able to see all of your API endpoint executions grouped by{' '}
         <b>trace id</b>.
+        <br />
+        <br />
+        💡 <b>Each API call creates a trace that you can follow through the system for debugging and monitoring.</b>
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.links.tracing }],
@@ -783,7 +796,10 @@ export const steps: TutorialStep[] = [
     title: 'Logs',
     description: () => (
       <p>
-        Let's take a look at your execution logs, click on this tab will take you to the <b>Logs Tool</b>.
+        Let's take a look at your API execution logs, click on this tab will take you to the <b>Logs Tool</b>.
+        <br />
+        <br />
+        💡 <b>Logs help you debug your CRUD API endpoints and monitor their performance.</b>
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.links.logs }],
@@ -833,17 +849,28 @@ export const steps: TutorialStep[] = [
     link: 'https://www.motia.dev/docs',
     description: () => (
       <p>
-        You've completed our Motia basics tutorial!
+        You've completed our Motia CRUD API tutorial! 🎉
         <br />
         <br />
-        You've learned about Motia's Step types, how to navigate around Workbench, and how to build a complete CRUD API using different HTTP methods.
+        You've learned how to build a complete CRUD API using Motia's API Steps:
+        <br />
+        • <b>CREATE</b> - POST endpoints for creating new resources
+        <br />
+        • <b>READ</b> - GET endpoints for retrieving data (single and list)
+        <br />
+        • <b>UPDATE</b> - PUT endpoints for modifying existing resources
+        <br />
+        • <b>DELETE</b> - DELETE endpoints for removing resources
+        <br />
+        <br />
+        You also learned how to navigate Workbench, test API endpoints, and monitor execution traces and logs.
         <br />
         <br />
         We recommend you give our{' '}
         <a href="https://www.motia.dev/docs/concepts" target="_blank">
           core concepts
         </a>{' '}
-        a read if you wish to learn further about Motia's fundamentals.
+        a read if you wish to learn further about Motia's advanced features like event-driven architecture and background jobs.
         <br />
         <br />
         Don't forget to join our{' '}
@@ -868,7 +895,7 @@ export const steps: TutorialStep[] = [
         .
         <br />
         <br />
-        Thank you for going this far in our tutorial!
+        Thank you for completing our CRUD API tutorial!
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],

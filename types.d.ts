@@ -16,7 +16,7 @@ declare module 'motia' {
     'TsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'TsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsCreatePet': ApiRouteHandler<{ name: string; species: 'dog' | 'cat' | 'bird' | 'other'; ageMonths: unknown }, unknown, never>
     'JsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
