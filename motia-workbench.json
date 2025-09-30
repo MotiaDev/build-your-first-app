@@ -27,69 +27,69 @@
   {
     "id": "PyPetManagement",
     "config": {
-      "steps/python/update_pet.step.py": {
+      "steps/python/update_pet_step.py": {
         "x": -1020,
         "y": -94,
         "sourceHandlePosition": "top"
       },
-      "steps/python/treatment_scheduler.step.py": {
+      "steps/python/treatment_scheduler_step.py": {
         "x": -384,
         "y": 10
       },
-      "steps/python/set_next_feeding_reminder.job.step.py": {
+      "steps/python/set_next_feeding_reminder.job_step.py": {
         "x": -1666,
         "y": 630,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/python/recovery_monitor.step.py": {
+      "steps/python/recovery_monitor_step.py": {
         "x": 37,
         "y": 325
       },
-      "steps/python/pet_lifecycle_orchestrator.step.py": {
+      "steps/python/pet_lifecycle_orchestrator_step.py": {
         "x": -939,
         "y": 432,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/python/health_review_agent.step.py": {
+      "steps/python/health_review_agent_step.py": {
         "x": -1661,
         "y": 355,
         "sourceHandlePosition": "right"
       },
-      "steps/python/get_pets.step.py": {
+      "steps/python/get_pets_step.py": {
         "x": 864,
         "y": 44
       },
-      "steps/python/get_pet.step.py": {
+      "steps/python/get_pet_step.py": {
         "x": 1044,
         "y": 35
       },
-      "steps/python/deletion_reaper.cron.step.py": {
+      "steps/python/deletion_reaper.cron_step.py": {
         "x": 1256,
         "y": 32
       },
-      "steps/python/delete_pet.step.py": {
+      "steps/python/delete_pet_step.py": {
         "x": 635,
         "y": 42
       },
-      "steps/python/create_pet.step.py": {
+      "steps/python/create_pet_step.py": {
         "x": -2376,
         "y": 332,
         "sourceHandlePosition": "right"
       },
-      "steps/python/ai_profile_enrichment.step.py": {
+      "steps/python/ai_profile_enrichment_step.py": {
         "x": -1654,
         "y": 88,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/python/adoption_review_agent.step.py": {
+      "steps/python/adoption_review_agent_step.py": {
         "x": -939,
         "y": 759,
         "sourceHandlePosition": "right"
       },
-      "steps/python/adoption_posting.step.py": {
+      "steps/python/adoption_posting_step.py": {
         "x": -363,
         "y": 591
       }
@@ -167,6 +167,15 @@
     }
   },
   {
+    "id": "pets",
+    "config": {
+      "steps/typescript/postcreate-lite.job.step.ts": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
     "id": "TsPetManagement",
     "config": {
       "steps/typescript/update-pet.step.ts": {
@@ -178,14 +187,6 @@
         "x": -53,
         "y": -470
       },
-      "steps/typescript/simple-stream.step.ts": {
-        "x": 58,
-        "y": 183
-      },
-      "steps/typescript/simple-stream-processor.step.ts": {
-        "x": 374,
-        "y": 181
-      },
       "steps/typescript/set-next-feeding-reminder.job.step.ts": {
         "x": -1637,
         "y": 296,
@@ -195,10 +196,6 @@
       "steps/typescript/recovery-monitor.step.ts": {
         "x": 124,
         "y": -59
-      },
-      "steps/typescript/pet-status-stream.step.ts": {
-        "x": 383,
-        "y": 906
       },
       "steps/typescript/pet-lifecycle-orchestrator.step.ts": {
         "x": -538,

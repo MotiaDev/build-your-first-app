@@ -14,12 +14,8 @@ declare module 'motia' {
   interface Handlers {
     'TsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.pet.status.update.requested'; data: never }>
     'TsTreatmentScheduler': EventHandler<never, never>
-    'TsSimpleStream': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.simple.stream.started'; data: never }>
-    'TsSimpleStreamProcessor': EventHandler<never, never>
     'TsSetNextFeedingReminder': EventHandler<never, { topic: 'ts.feeding.reminder.completed'; data: never }>
     'TsRecoveryMonitor': EventHandler<never, never>
-    'TsPetEnrichment': EventHandler<never, never>
-    'TsPetStatusStream': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.pet.status.update.requested'; data: never }>
     'TsPetLifecycleOrchestrator': EventHandler<never, { topic: 'ts.treatment.required'; data: never } | { topic: 'ts.adoption.ready'; data: never } | { topic: 'ts.treatment.completed'; data: never }>
     'TsHealthReviewAgent': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.health.treatment_required'; data: never } | { topic: 'ts.health.no_treatment_needed'; data: never }>
     'TsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
@@ -30,20 +26,6 @@ declare module 'motia' {
     'TsAiProfileEnrichment': EventHandler<never, never>
     'TsAdoptionReviewAgent': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.adoption.needs_data'; data: never } | { topic: 'ts.adoption.ready'; data: never }>
     'TsAdoptionPosting': EventHandler<never, never>
-    'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.pet.status.update.requested'; data: never }>
-    'PyTreatmentScheduler': EventHandler<never, never>
-    'PySetNextFeedingReminder': EventHandler<never, { topic: 'py.feeding.reminder.completed'; data: never }>
-    'PyRecoveryMonitor': EventHandler<never, never>
-    'PyPetLifecycleOrchestrator': EventHandler<never, { topic: 'py.treatment.required'; data: never } | { topic: 'py.adoption.ready'; data: never } | { topic: 'py.treatment.completed'; data: never }>
-    'PyHealthReviewAgent': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.health.treatment_required'; data: never } | { topic: 'py.health.no_treatment_needed'; data: never }>
-    'PyListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyDeletionReaper': CronHandler<never>
-    'PyDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.pet.created'; data: never } | { topic: 'py.feeding.reminder.enqueued'; data: never }>
-    'PyAiProfileEnrichment': EventHandler<never, never>
-    'PyAdoptionReviewAgent': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.adoption.needs_data'; data: never } | { topic: 'py.adoption.ready'; data: never }>
-    'PyAdoptionPosting': EventHandler<never, never>
     'JsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'js.pet.status.update.requested'; data: never }>
     'JsTreatmentScheduler': EventHandler<never, never>
     'JsSetNextFeedingReminder': EventHandler<never, { topic: 'js.feeding.reminder.completed'; data: never }>
@@ -58,5 +40,19 @@ declare module 'motia' {
     'JsAiProfileEnrichment': EventHandler<never, never>
     'JsAdoptionReviewAgent': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'js.adoption.needs_data'; data: never } | { topic: 'js.adoption.ready'; data: never }>
     'JsAdoptionPosting': EventHandler<never, never>
+    'PyAdoptionPosting': EventHandler<never, never>
+    'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.pet.created'; data: never } | { topic: 'py.feeding.reminder.enqueued'; data: never }>
+    'PyHealthReviewAgent': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.health.treatment_required'; data: never } | { topic: 'py.health.no_treatment_needed'; data: never }>
+    'PyAdoptionReviewAgent': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.adoption.needs_data'; data: never } | { topic: 'py.adoption.ready'; data: never }>
+    'PySetNextFeedingReminder': EventHandler<never, { topic: 'py.feeding.reminder.completed'; data: never }>
+    'PyDeletionReaper': CronHandler<never>
+    'PyAiProfileEnrichment': EventHandler<never, never>
+    'PyDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyPetLifecycleOrchestrator': EventHandler<never, { topic: 'py.treatment.required'; data: never } | { topic: 'py.adoption.ready'; data: never } | { topic: 'py.treatment.completed'; data: never }>
+    'PyRecoveryMonitor': EventHandler<never, never>
+    'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.pet.status.update.requested'; data: never }>
+    'PyTreatmentScheduler': EventHandler<never, never>
   }
 }
