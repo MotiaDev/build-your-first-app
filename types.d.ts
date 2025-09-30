@@ -8,15 +8,18 @@ import { EventHandler, ApiRouteHandler, ApiResponse, MotiaStream, CronHandler } 
 
 declare module 'motia' {
   interface FlowContextStateStreams {
-    
+    'petCreation': MotiaStream<{ message: string }>
   }
 
   interface Handlers {
     'TsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.pet.status.update.requested'; data: never }>
     'TsTreatmentScheduler': EventHandler<never, never>
+    'TsSimpleStream': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.simple.stream.started'; data: never }>
+    'TsSimpleStreamProcessor': EventHandler<never, never>
     'TsSetNextFeedingReminder': EventHandler<never, { topic: 'ts.feeding.reminder.completed'; data: never }>
     'TsRecoveryMonitor': EventHandler<never, never>
     'TsPetEnrichment': EventHandler<never, never>
+    'TsPetStatusStream': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.pet.status.update.requested'; data: never }>
     'TsPetLifecycleOrchestrator': EventHandler<never, { topic: 'ts.treatment.required'; data: never } | { topic: 'ts.adoption.ready'; data: never } | { topic: 'ts.treatment.completed'; data: never }>
     'TsHealthReviewAgent': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.health.treatment_required'; data: never } | { topic: 'ts.health.no_treatment_needed'; data: never }>
     'TsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>

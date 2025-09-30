@@ -1,5 +1,5 @@
 {
-  "stepName": "TsSetNextFeedingReminder",
+  "stepName": "PySetNextFeedingReminder",
   "stepType": "event",
   "description": "Sets the next feeding reminder for a pet and updates its status with real-time streaming updates",
   "features": [
@@ -47,7 +47,7 @@
       "title": "Event-Driven Processing",
       "description": "Automatically triggered by pet creation workflow",
       "details": [
-        "Subscribes to 'ts.feeding.reminder.enqueued' events",
+        "Subscribes to 'py.feeding.reminder.enqueued' events",
         "Processes feeding reminder requests automatically",
         "Emits feeding reminder completion events",
         "Provides workflow progress tracking"
@@ -87,17 +87,17 @@
   "workflowIntegration": {
     "subscribes": [
       {
-        "topic": "ts.feeding.reminder.enqueued",
+        "topic": "py.feeding.reminder.enqueued",
         "description": "Triggered when feeding reminders are queued for new pets"
       }
     ],
     "emits": [
       {
-        "topic": "ts.feeding.reminder.completed",
+        "topic": "py.feeding.reminder.completed",
         "description": "Indicates feeding reminder setup has completed"
       }
     ],
-    "flow": "TsPetManagement"
+    "flow": "PyPetManagement"
   },
   "inputSchema": {
     "required": ["petId", "enqueuedAt", "traceId"],
@@ -119,3 +119,5 @@
     }
   }
 }
+
+

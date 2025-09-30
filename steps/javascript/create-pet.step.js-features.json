@@ -1,10 +1,10 @@
 {
-  "stepName": "TsCreatePet",
+  "stepName": "JsCreatePet",
   "stepType": "api",
   "description": "Creates a new pet in the system with real-time streaming updates using Motia's native Streams API",
   "endpoint": {
     "method": "POST",
-    "path": "/ts/pets",
+    "path": "/js/pets",
     "description": "Creates a new pet with basic information and returns stream result for real-time updates"
   },
   "features": [
@@ -15,15 +15,15 @@
         "Validates required fields: name (string), species (dog/cat/bird/other), ageMonths (number)",
         "Accepts optional fields: weightKg (number), symptoms (array)",
         "Generates unique pet ID and sets initial status to 'new'",
-        "Stores pet data in TypeScript store"
+        "Stores pet data in JavaScript store"
       ]
     },
     {
       "title": "Event Emission",
       "description": "Emits workflow events to trigger downstream processing",
       "details": [
-        "Emits 'ts.pet.created' event with pet creation data",
-        "Emits 'ts.feeding.reminder.enqueued' event to trigger feeding reminder setup",
+        "Emits 'js.pet.created' event with pet creation data",
+        "Emits 'js.feeding.reminder.enqueued' event to trigger feeding reminder setup",
         "Events contain petId, name, species, and traceId information"
       ]
     },
@@ -63,15 +63,15 @@
     "triggers": ["External API calls"],
     "emits": [
       {
-        "topic": "ts.pet.created",
+        "topic": "js.pet.created",
         "description": "Triggers AI profile enrichment and lifecycle orchestration"
       },
       {
-        "topic": "ts.feeding.reminder.enqueued", 
+        "topic": "js.feeding.reminder.enqueued", 
         "description": "Triggers background job to set up feeding reminders and status updates"
       }
     ],
-    "flow": "TsPetManagement"
+    "flow": "JsPetManagement"
   },
   "inputSchema": {
     "required": ["name", "species", "ageMonths"],
@@ -111,3 +111,5 @@
     }
   ]
 }
+
+

@@ -1,10 +1,10 @@
 {
-  "stepName": "TsCreatePet",
+  "stepName": "PyCreatePet",
   "stepType": "api",
   "description": "Creates a new pet in the system with real-time streaming updates using Motia's native Streams API",
   "endpoint": {
     "method": "POST",
-    "path": "/ts/pets",
+    "path": "/py/pets",
     "description": "Creates a new pet with basic information and returns stream result for real-time updates"
   },
   "features": [
@@ -15,15 +15,15 @@
         "Validates required fields: name (string), species (dog/cat/bird/other), ageMonths (number)",
         "Accepts optional fields: weightKg (number), symptoms (array)",
         "Generates unique pet ID and sets initial status to 'new'",
-        "Stores pet data in TypeScript store"
+        "Stores pet data in Python store"
       ]
     },
     {
       "title": "Event Emission",
       "description": "Emits workflow events to trigger downstream processing",
       "details": [
-        "Emits 'ts.pet.created' event with pet creation data",
-        "Emits 'ts.feeding.reminder.enqueued' event to trigger feeding reminder setup",
+        "Emits 'py.pet.created' event with pet creation data",
+        "Emits 'py.feeding.reminder.enqueued' event to trigger feeding reminder setup",
         "Events contain petId, name, species, and traceId information"
       ]
     },
@@ -33,7 +33,7 @@
       "details": [
         "Validates name is non-empty string",
         "Validates species is one of: dog, cat, bird, other",
-        "Validates ageMonths is a finite number",
+        "Validates ageMonths is a valid number",
         "Returns 400 error with descriptive message for invalid data",
         "Handles optional weightKg and symptoms fields gracefully"
       ]
@@ -63,15 +63,15 @@
     "triggers": ["External API calls"],
     "emits": [
       {
-        "topic": "ts.pet.created",
+        "topic": "py.pet.created",
         "description": "Triggers AI profile enrichment and lifecycle orchestration"
       },
       {
-        "topic": "ts.feeding.reminder.enqueued", 
+        "topic": "py.feeding.reminder.enqueued", 
         "description": "Triggers background job to set up feeding reminders and status updates"
       }
     ],
-    "flow": "TsPetManagement"
+    "flow": "PyPetManagement"
   },
   "inputSchema": {
     "required": ["name", "species", "ageMonths"],
@@ -79,7 +79,7 @@
     "validation": {
       "name": "Non-empty string",
       "species": "One of: dog, cat, bird, other",
-      "ageMonths": "Finite number",
+      "ageMonths": "Valid number",
       "weightKg": "Number (optional)",
       "symptoms": "Array of strings (optional)"
     }
@@ -111,3 +111,5 @@
     }
   ]
 }
+
+

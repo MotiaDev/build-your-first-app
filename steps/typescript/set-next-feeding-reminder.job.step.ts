@@ -11,7 +11,7 @@ export const config = {
 };
 
 export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
+  const { emit, logger, streams, traceId } = context || {};
   const { petId, enqueuedAt } = input;
 
   if (logger) {
@@ -22,10 +22,11 @@ export const handler = async (input: any, context?: any) => {
     // Calculate next feeding time (24 hours from now)
     const nextFeedingAt = Date.now() + (24 * 60 * 60 * 1000);
     
-    // Fill in non-critical details
+    // Fill in non-critical details and change status to in_quarantine
     const updates = {
       notes: 'Welcome to our pet store! We\'ll take great care of this pet.',
-      nextFeedingAt: nextFeedingAt
+      nextFeedingAt: nextFeedingAt,
+      status: 'in_quarantine'
     };
 
     const updatedPet = TSStore.update(petId, updates);
@@ -43,6 +44,36 @@ export const handler = async (input: any, context?: any) => {
         notes: updatedPet.notes?.substring(0, 50) + '...',
         nextFeedingAt: new Date(nextFeedingAt).toISOString()
       });
+    }
+
+    // Stream status updates using the simple pattern
+    if (streams?.petCreation && traceId) {
+      await streams.petCreation.set(traceId, 'message', { 
+        message: `Pet ${updatedPet.name} entered quarantine period` 
+      });
+
+      // Check symptoms and stream appropriate updates
+      if (!updatedPet.symptoms || updatedPet.symptoms.length === 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await streams.petCreation.set(traceId, 'message', { 
+          message: `Health check passed for ${updatedPet.name} - no symptoms found` 
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await streams.petCreation.set(traceId, 'message', { 
+          message: `${updatedPet.name} is healthy and ready for adoption! ✅` 
+        });
+      } else {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await streams.petCreation.set(traceId, 'message', { 
+          message: `Health check failed for ${updatedPet.name} - symptoms detected: ${updatedPet.symptoms.join(', ')}` 
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await streams.petCreation.set(traceId, 'message', { 
+          message: `${updatedPet.name} needs medical treatment ❌` 
+        });
+      }
     }
 
     if (emit) {

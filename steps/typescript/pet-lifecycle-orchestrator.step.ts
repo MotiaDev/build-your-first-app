@@ -155,7 +155,7 @@ const checkGuards = (pet: Pet, guards: string[]): { passed: boolean, reason?: st
 };
 
 export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
+  const { emit, logger, streams, traceId } = context || {};
   const { petId, event: eventType, requestedStatus, automatic } = input;
 
   if (logger) {
@@ -294,6 +294,26 @@ export const handler = async (input: any, context?: any) => {
         eventType,
         description: rule.description,
         timestamp: Date.now()
+      });
+    }
+
+    // Stream the status change
+    if (streams?.petCreation && traceId) {
+      await streams.petCreation.set(traceId, rule.to, {
+        entityId: petId,
+        type: "pet",
+        phase: rule.to,
+        message: rule.description,
+        timestamp: Date.now(),
+        reason: `${oldStatus} → ${rule.to}`,
+        data: {
+          petId,
+          status: rule.to,
+          oldStatus,
+          eventType,
+          automatic: automatic || false,
+          description: rule.description
+        }
       });
     }
 
@@ -469,6 +489,26 @@ async function processAutomaticProgression(petId: string, currentStatus: Pet["st
             newStatus: rule.to,
             description: progression.description,
             timestamp: Date.now()
+          });
+        }
+
+        // Stream the automatic progression
+        if (streams?.petCreation && traceId) {
+          await streams.petCreation.set(traceId, rule.to, {
+            entityId: petId,
+            type: "pet",
+            phase: rule.to,
+            message: progression.description,
+            timestamp: Date.now(),
+            reason: `Automatic: ${oldStatus} → ${rule.to}`,
+            data: {
+              petId,
+              status: rule.to,
+              oldStatus,
+              eventType: 'status.update.requested',
+              automatic: true,
+              description: progression.description
+            }
           });
         }
 

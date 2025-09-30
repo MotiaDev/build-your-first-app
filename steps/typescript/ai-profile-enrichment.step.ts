@@ -11,14 +11,21 @@ export const config = {
 };
 
 export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
+  const { emit, logger, streams, traceId } = context || {};
   const { petId, name, species } = input;
 
   if (logger) {
     logger.info('🤖 AI Profile Enrichment started', { petId, name, species });
   }
 
-  // Emit enrichment started event
+  // Stream enrichment started event
+  if (streams && traceId) {
+    await streams.petCreation.set(traceId, 'enrichment_started', { 
+      type: "enrichment.started" 
+    });
+  }
+
+  // Emit enrichment started event (for backward compatibility)
   if (emit) {
     await emit({
       topic: 'ts.pet.profile_enrichment_started',
@@ -50,7 +57,11 @@ Please provide a JSON response with these fields:
 
 Keep it positive, realistic, and adoption-focused.`;
 
-    // Call OpenAI API
+    // Stream progress for each field as we generate them
+    const enrichmentFields = ['bio', 'breedGuess', 'temperamentTags', 'adopterHints'];
+    const enrichedProfile: any = {};
+
+    // Call OpenAI API with streaming to show progress
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -103,6 +114,23 @@ Keep it positive, realistic, and adoption-focused.`;
       }
     }
 
+    // Stream each field as it's processed
+    for (const field of enrichmentFields) {
+      // Simulate processing time for each field
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      const value = profile[field as keyof PetProfile];
+      
+      // Stream progress for this field
+      if (streams && traceId) {
+        await streams.petCreation.set(traceId, `progress_${field}`, { 
+          type: "enrichment.progress", 
+          field, 
+          value 
+        });
+      }
+    }
+
     // Update pet with AI-generated profile
     const updatedPet = TSStore.updateProfile(petId, profile);
     
@@ -122,7 +150,15 @@ Keep it positive, realistic, and adoption-focused.`;
       });
     }
 
-    // Emit enrichment completed event
+    // Stream enrichment completed event
+    if (streams && traceId) {
+      await streams.petCreation.set(traceId, 'completed', { 
+        type: "enrichment.completed", 
+        profile 
+      });
+    }
+
+    // Emit enrichment completed event (for backward compatibility)
     if (emit) {
       await emit({
         topic: 'ts.pet.profile_enrichment_completed',
@@ -153,6 +189,15 @@ Keep it positive, realistic, and adoption-focused.`;
 
     // Still update with fallback profile
     TSStore.updateProfile(petId, fallbackProfile);
+
+    // Stream fallback profile completion
+    if (streams && traceId) {
+      await streams.petCreation.set(traceId, 'completed', { 
+        type: "enrichment.completed", 
+        profile: fallbackProfile,
+        error: error.message
+      });
+    }
 
     // Emit completed event even on error (with fallback profile)
     if (emit) {
