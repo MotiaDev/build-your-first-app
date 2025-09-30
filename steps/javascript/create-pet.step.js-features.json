@@ -4,7 +4,7 @@
     "title": "Step Configuration", 
     "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
     "lines": [
-      "5-12"
+      "4-11"
     ]
   },
   {
@@ -12,7 +12,15 @@
     "title": "API Step",
     "description": "Definition of an API endpoint for creating pets",
     "lines": [
-      "8-9"
+      "7-8"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Import required functions from the store module",
+    "lines": [
+      "2"
     ]
   },
   {
@@ -20,7 +28,7 @@
     "title": "Request Validation",
     "description": "Validate incoming request data to ensure it meets the expected format and constraints.",
     "lines": [
-      "16-22"
+      "16-21"
     ]
   },
   {
@@ -28,7 +36,7 @@
     "title": "Data Processing",
     "description": "Process the validated data and create a new pet record in the store.",
     "lines": [
-      "23"
+      "22"
     ]
   },
   {
@@ -36,8 +44,8 @@
     "title": "Emits",
     "description": "We can define the events that this step will emit, this is how we can trigger other Motia Steps.",
     "lines": [
-      "10",
-      "29-34"
+      "9",
+      "28-33"
     ]
   },
   {
@@ -45,7 +53,7 @@
     "title": "Handler",
     "description": "The handler is the function that will be executed when the step is triggered. This one receives the request and creates a new pet.",
     "lines": [
-      "14-37"
+      "13-36"
     ]
   },
   {
@@ -53,7 +61,7 @@
     "title": "Logger",
     "description": "The logger is a utility that allows you to log messages. It is available in the handler function and automatically ties to the trace id of the request.",
     "lines": [
-      "25-27"
+      "24-26"
     ]
   },
   {
@@ -61,7 +69,7 @@
     "title": "HTTP Response",
     "description": "The handler returns a response to the client with the created pet data and appropriate status code.",
     "lines": [
-      "36"
+      "35"
     ]
   }
 ]

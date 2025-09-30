@@ -4,7 +4,7 @@
     "title": "Step Configuration", 
     "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
     "lines": [
-      "5-12"
+      "4"
     ]
   },
   {
@@ -12,7 +12,15 @@
     "title": "GET API Step",
     "description": "Definition of a GET API endpoint for listing all pets",
     "lines": [
-      "8-9"
+      "4"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Import required functions from the store module",
+    "lines": [
+      "2"
     ]
   },
   {
@@ -20,7 +28,7 @@
     "title": "Simple Handler",
     "description": "A straightforward handler that doesn't require request parameters",
     "lines": [
-      "14"
+      "5"
     ]
   },
   {
@@ -28,7 +36,7 @@
     "title": "Data Listing",
     "description": "Retrieve all pets from the store and return them as a list",
     "lines": [
-      "15"
+      "5"
     ]
   },
   {
@@ -36,7 +44,7 @@
     "title": "Handler",
     "description": "The handler function that executes when the GET request is made",
     "lines": [
-      "14-16"
+      "5"
     ]
   },
   {
@@ -44,7 +52,7 @@
     "title": "HTTP Response",
     "description": "Returns a successful response with the list of pets",
     "lines": [
-      "15"
+      "5"
     ]
   }
 ]

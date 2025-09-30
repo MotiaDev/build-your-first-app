@@ -4,7 +4,7 @@
     "title": "Step Configuration", 
     "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
     "lines": [
-      "5-12"
+      "4"
     ]
   },
   {
@@ -12,7 +12,15 @@
     "title": "PUT API Step",
     "description": "Definition of a PUT API endpoint for updating an existing pet",
     "lines": [
-      "8-9"
+      "4"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Import required functions from the store module",
+    "lines": [
+      "2"
     ]
   },
   {
@@ -20,7 +28,7 @@
     "title": "Path Parameters",
     "description": "Using path parameters to capture the pet ID from the URL",
     "lines": [
-      "8"
+      "4"
     ]
   },
   {
@@ -28,7 +36,7 @@
     "title": "Request Body Parsing",
     "description": "Extract and parse the request body to get update data",
     "lines": [
-      "15"
+      "6"
     ]
   },
   {
@@ -36,7 +44,7 @@
     "title": "Conditional Updates",
     "description": "Only update fields that are provided and valid in the request",
     "lines": [
-      "16-21"
+      "7-11"
     ]
   },
   {
@@ -44,7 +52,7 @@
     "title": "Data Validation",
     "description": "Validate each field before including it in the update",
     "lines": [
-      "17-20"
+      "8-11"
     ]
   },
   {
@@ -52,7 +60,7 @@
     "title": "Data Update",
     "description": "Update the pet in the store with the validated changes",
     "lines": [
-      "22"
+      "12"
     ]
   },
   {
@@ -60,7 +68,7 @@
     "title": "Conditional Response",
     "description": "Return different responses based on whether the update was successful",
     "lines": [
-      "23"
+      "13"
     ]
   },
   {
@@ -68,7 +76,7 @@
     "title": "Handler",
     "description": "The handler function that executes when the PUT request is made",
     "lines": [
-      "14-24"
+      "5-14"
     ]
   },
   {
@@ -76,7 +84,7 @@
     "title": "HTTP Response",
     "description": "Returns appropriate HTTP status codes: 200 for success, 404 for not found",
     "lines": [
-      "23"
+      "13"
     ]
   }
 ]

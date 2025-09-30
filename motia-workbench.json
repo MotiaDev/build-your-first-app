@@ -25,60 +25,6 @@
     }
   },
   {
-    "id": "JsPetManagement",
-    "config": {
-      "steps/javascript/create-pet.step.js": {
-        "x": -800,
-        "y": 100,
-        "sourceHandlePosition": "right"
-      },
-      "steps/javascript/get-pets.step.js": {
-        "x": -800,
-        "y": 300
-      },
-      "steps/javascript/get-pet.step.js": {
-        "x": -600,
-        "y": 300
-      },
-      "steps/javascript/update-pet.step.js": {
-        "x": -400,
-        "y": 300,
-        "sourceHandlePosition": "top"
-      },
-      "steps/javascript/delete-pet.step.js": {
-        "x": -200,
-        "y": 300
-      }
-    }
-  },
-  {
-    "id": "PyPetManagement",
-    "config": {
-      "steps/python/create_pet.step.py": {
-        "x": -800,
-        "y": 100,
-        "sourceHandlePosition": "right"
-      },
-      "steps/python/get_pets.step.py": {
-        "x": -800,
-        "y": 300
-      },
-      "steps/python/get_pet.step.py": {
-        "x": -600,
-        "y": 300
-      },
-      "steps/python/update_pet.step.py": {
-        "x": -400,
-        "y": 300,
-        "sourceHandlePosition": "top"
-      },
-      "steps/python/delete_pet.step.py": {
-        "x": -200,
-        "y": 300
-      }
-    }
-  },
-  {
     "id": "TsPetManagement",
     "config": {
       "steps/typescript/update-pet.step.ts": {
@@ -102,6 +48,58 @@
         "x": -1025,
         "y": 294,
         "sourceHandlePosition": "right"
+      }
+    }
+  },
+  {
+    "id": "JsPetManagement",
+    "config": {
+      "steps/javascript/update-pet.step.js": {
+        "x": -400,
+        "y": 300,
+        "sourceHandlePosition": "top"
+      },
+      "steps/javascript/get-pets.step.js": {
+        "x": -800,
+        "y": 300
+      },
+      "steps/javascript/get-pet.step.js": {
+        "x": -600,
+        "y": 300
+      },
+      "steps/javascript/delete-pet.step.js": {
+        "x": -200,
+        "y": 300
+      },
+      "steps/javascript/create-pet.step.js": {
+        "x": -994,
+        "y": 298,
+        "sourceHandlePosition": "right"
+      }
+    }
+  },
+  {
+    "id": "PyPetManagement",
+    "config": {
+      "steps/python/update_pet_step.py": {
+        "x": -561,
+        "y": 182
+      },
+      "steps/python/get_pets_step.py": {
+        "x": -355,
+        "y": 183
+      },
+      "steps/python/get_pet_step.py": {
+        "x": -172,
+        "y": 185
+      },
+      "steps/python/delete_pet_step.py": {
+        "x": 35,
+        "y": 186
+      },
+      "steps/python/create_pet_step.py": {
+        "x": -763,
+        "y": 181
       }
     }
   }

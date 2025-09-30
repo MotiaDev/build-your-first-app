@@ -4,7 +4,7 @@
     "title": "Step Configuration", 
     "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
     "lines": [
-      "5-12"
+      "4"
     ]
   },
   {
@@ -12,7 +12,15 @@
     "title": "DELETE API Step",
     "description": "Definition of a DELETE API endpoint for removing a pet",
     "lines": [
-      "8-9"
+      "4"
+    ]
+  },
+  {
+    "id": "module-imports",
+    "title": "Module Imports",
+    "description": "Import required functions from the store module",
+    "lines": [
+      "2"
     ]
   },
   {
@@ -20,7 +28,7 @@
     "title": "Path Parameters",
     "description": "Using path parameters to capture the pet ID from the URL",
     "lines": [
-      "8"
+      "4"
     ]
   },
   {
@@ -28,7 +36,7 @@
     "title": "Data Deletion",
     "description": "Remove a pet from the store using the provided ID",
     "lines": [
-      "15"
+      "6"
     ]
   },
   {
@@ -36,7 +44,7 @@
     "title": "Conditional Response",
     "description": "Return different responses based on whether the deletion was successful",
     "lines": [
-      "16"
+      "7"
     ]
   },
   {
@@ -44,7 +52,7 @@
     "title": "Handler",
     "description": "The handler function that executes when the DELETE request is made",
     "lines": [
-      "14-17"
+      "5-8"
     ]
   },
   {
@@ -52,7 +60,7 @@
     "title": "HTTP Response",
     "description": "Returns appropriate HTTP status codes: 204 for successful deletion, 404 for not found",
     "lines": [
-      "16"
+      "7"
     ]
   }
 ]
