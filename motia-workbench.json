@@ -25,105 +25,89 @@
     }
   },
   {
-    "id": "TsPetManagement",
-    "config": {
-      "steps/typescript/update-pet.step.ts": {
-        "x": -817,
-        "y": 592,
-        "sourceHandlePosition": "top"
-      },
-      "steps/typescript/get-pets.step.ts": {
-        "x": -1025,
-        "y": 443
-      },
-      "steps/typescript/get-pet.step.ts": {
-        "x": -1026,
-        "y": 589
-      },
-      "steps/typescript/delete-pet.step.ts": {
-        "x": -607,
-        "y": 594
-      },
-      "steps/typescript/create-pet.step.ts": {
-        "x": -1025,
-        "y": 294,
-        "sourceHandlePosition": "right"
-      },
-      "steps/typescript/set-next-feeding-reminder.job.step.ts": {
-        "x": -519,
-        "y": 294
-      },
-      "steps/typescript/deletion-reaper.cron.step.ts": {
-        "x": -379,
-        "y": 526
-      }
-    }
-  },
-  {
     "id": "JsPetManagement",
     "config": {
       "steps/javascript/update-pet.step.js": {
-        "x": -1145,
-        "y": 768,
+        "x": -400,
+        "y": 300,
         "sourceHandlePosition": "top"
       },
       "steps/javascript/get-pets.step.js": {
-        "x": -1137,
-        "y": 472
+        "x": -800,
+        "y": 300
       },
       "steps/javascript/get-pet.step.js": {
-        "x": -1147,
-        "y": 621
+        "x": -600,
+        "y": 300
       },
       "steps/javascript/delete-pet.step.js": {
-        "x": -914,
-        "y": 760
+        "x": -200,
+        "y": 300
       },
       "steps/javascript/create-pet.step.js": {
-        "x": -1139,
-        "y": 324,
+        "x": -994,
+        "y": 298,
         "sourceHandlePosition": "right"
-      },
-      "steps/javascript/deletion-reaper.cron.step.js": {
-        "x": -667,
-        "y": 696
-      },
-      "steps/javascript/set-next-feeding-reminder.job.step.js": {
-        "x": -657,
-        "y": 322
       }
     }
   },
   {
     "id": "PyPetManagement",
     "config": {
-      "steps/python/create_pet_step.py": {
-        "x": -695,
-        "y": -3
-      },
-      "steps/python/delete_pet_step.py": {
-        "x": -482,
-        "y": 423
-      },
-      "steps/python/get_pet_step.py": {
-        "x": -700,
-        "y": 420
+      "steps/python/update_pet_step.py": {
+        "x": -561,
+        "y": 182
       },
       "steps/python/get_pets_step.py": {
-        "x": -693,
-        "y": 270
+        "x": -355,
+        "y": 183
       },
-      "steps/python/update_pet_step.py": {
-        "x": -690,
-        "y": 135
+      "steps/python/get_pet_step.py": {
+        "x": -172,
+        "y": 185
       },
-      "steps/python/set_next_feeding_reminder.job_step.py": {
-        "x": -232,
-        "y": -6
+      "steps/python/delete_pet_step.py": {
+        "x": 35,
+        "y": 186
       },
-      "steps/python/deletion_reaper.cron_step.py": {
-        "x": -239,
-        "y": 365
+      "steps/python/create_pet_step.py": {
+        "x": -763,
+        "y": 181
+      }
+    }
+  },
+  {
+    "id": "TsPetManagement",
+    "config": {
+      "steps/typescript/update-pet.step.ts": {
+        "x": -400,
+        "y": 300,
+        "sourceHandlePosition": "top"
+      },
+      "steps/typescript/get-pets.step.ts": {
+        "x": -800,
+        "y": 300
+      },
+      "steps/typescript/get-pet.step.ts": {
+        "x": -600,
+        "y": 300
+      },
+      "steps/typescript/delete-pet.step.ts": {
+        "x": -200,
+        "y": 300
+      },
+      "steps/typescript/create-pet.step.ts": {
+        "x": -1025,
+        "y": 294,
+        "sourceHandlePosition": "right"
+      },
+      "steps/typescript/deletion-reaper.cron.step.ts": {
+        "x": 55,
+        "y": 271
+      },
+      "steps/typescript/set-next-feeding-reminder.job.step.ts": {
+        "x": -825,
+        "y": 817
       }
     }
   }

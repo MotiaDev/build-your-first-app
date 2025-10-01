@@ -417,7 +417,7 @@ export const steps: TutorialStep[] = [
         endpoint in the <b>Call</b> Tab.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.endpoints.endpoint('POST', '/basic-tutorial') }],
+    before: [{ type: 'click', selector: workbenchXPath.endpoints.endpoint('POST', '/ts/pets') }],
   },
   {
     elementXpath: workbenchXPath.endpoints.callPanel,
@@ -436,12 +436,13 @@ export const steps: TutorialStep[] = [
         <br />
         <pre className="code-preview">
           <code className="language-bash">
-            curl -X POST http://localhost:3000/basic-tutorial \<br />
+            curl -X POST http://localhost:3000/ts/pets \<br />
             {'  '}-H "Content-Type: application/json" \<br />
             {'  '}-d '
             {JSON.stringify({
-              pet: { name: 'Jack', photoUrl: 'https://images.dog.ceo/breeds/pug/n02110958_13560.jpg' },
-              foodOrder: { id: 'food-order-1', quantity: 0 },
+              name: 'Jack',
+              species: 'dog',
+              ageMonths: 24,
             })}
             '
           </code>
@@ -460,13 +461,14 @@ export const steps: TutorialStep[] = [
       </p>
     ),
     before: [
-      {
-        type: 'fill-editor',
-        content: {
-          pet: { name: 'Jack', photoUrl: 'https://images.dog.ceo/breeds/pug/n02110958_13560.jpg' },
-          foodOrder: { id: 'food-order-1', quantity: 0 },
+        {
+          type: 'fill-editor',
+          content: {
+            name: 'Jack',
+            species: 'dog',
+            ageMonths: 24,
+          },
         },
-      },
     ],
   },
   {
@@ -474,6 +476,89 @@ export const steps: TutorialStep[] = [
     title: 'Test Result',
     description: () => <p>Once your request has been resolved, you will see the response from here.</p>,
     before: [{ type: 'click', selector: workbenchXPath.endpoints.playButton }],
+  },
+
+  // UPDATE API Test with Background Job
+
+  {
+    elementXpath: workbenchXPath.endpoints.endpoint('PUT', '/ts/pets/:id'),
+    title: 'UPDATE API with Background Job',
+    description: () => (
+      <p>
+        Now let's test the <b>UPDATE</b> operation that demonstrates background job functionality.
+        <br />
+        <br />
+        When you update a pet's status, it can trigger background jobs for status-based workflows.
+        This shows how UPDATE operations can also orchestrate complex background processes.
+        <br />
+        <br />
+        💡 <b>UPDATE operations can trigger background jobs based on the changes made.</b>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.callPanel,
+    title: 'UPDATE Request with Path Parameter and Body',
+    description: () => (
+      <p>
+        For UPDATE operations, you need to provide both the pet ID in the path parameter and the fields you want to change in the request body.
+        <br />
+        <br />
+        The tutorial will automatically fill in both the path parameter and request body for you.
+        <br />
+        <br />
+        💡 <b>This UPDATE will change the pet status, which can trigger background job workflows.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.endpoint('PUT', '/ts/pets/:id') },
+      { type: 'click', selector: workbenchXPath.endpoints.callTab },
+      {
+        type: 'fill-editor',
+        content: {
+          id: '1',
+          status: 'available',
+          name: 'Updated Buddy'
+        },
+      },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'UPDATE Response with Background Job',
+    description: () => (
+      <p>
+        Click the <b>Play</b> button to update the pet and trigger any associated background jobs.
+        <br />
+        <br />
+        You'll see the updated pet information returned, and background jobs may be triggered based on the status change.
+        <br />
+        <br />
+        💡 <b>UPDATE operations can trigger background workflows when certain fields are changed.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.playButton }
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'UPDATE and Background Job Execution',
+    description: () => (
+      <p>
+        Excellent! The UPDATE endpoint successfully updated the pet and may have triggered background jobs.
+        <br />
+        <br />
+        You can see the updated pet object with the modified fields. Check the logs to see if any background jobs were triggered by the status change.
+        <br />
+        <br />
+        💡 <b>UPDATE operations demonstrate how API changes can orchestrate background workflows.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.closePanelButton }
+    ],
   },
 
   // Tracing
@@ -624,6 +709,205 @@ export const steps: TutorialStep[] = [
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.links.states }],
+  },
+
+  // Background Jobs Showcase
+
+  {
+    elementXpath: workbenchXPath.flows.node('tssetnextfeedingreminder'),
+    title: 'Background Job - Feeding Reminder',
+    link: 'https://www.motia.dev/docs/concepts/steps/event',
+    description: () => (
+      <p>
+        Now let's explore the <b>background job</b> that gets triggered when a pet is created.
+        <br />
+        <br />
+        The <b>Set Next Feeding Reminder</b> job automatically schedules feeding reminders based on the pet's age and species.
+        This demonstrates how API operations can trigger background processing workflows.
+        <br />
+        <br />
+        💡 <b>Background jobs are triggered by events and run asynchronously without blocking the API response.</b>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+  },
+  {
+    elementXpath: workbenchXPath.flows.previewButton('tssetnextfeedingreminder'),
+    title: 'Background Job Configuration',
+    description: () => (
+      <p>
+        This background job subscribes to the <b>ts.pet.created</b> event that gets emitted when a new pet is created.
+        <br />
+        <br />
+        The job calculates the appropriate feeding schedule based on the pet's age and species, then schedules future reminders.
+        <br />
+        <br />
+        💡 <b>Event-driven background jobs enable complex workflow orchestration.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tssetnextfeedingreminder') },
+      { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.flows.previewButton('tssetnextfeedingreminder'),
+    title: 'Background Job Handler',
+    description: () => (
+      <p>
+        The background job handler receives the pet creation event and processes it asynchronously.
+        <br />
+        <br />
+        It determines the feeding schedule, creates reminder events, and updates the pet's status accordingly.
+        <br />
+        <br />
+        💡 <b>Background jobs can perform complex business logic without affecting API response times.</b>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
+  },
+
+  // Cron Job Showcase
+
+  {
+    elementXpath: workbenchXPath.flows.node('tsdeletionreaper'),
+    title: 'Cron Job - Deletion Reaper',
+    link: 'https://www.motia.dev/docs/concepts/steps/cron',
+    description: () => (
+      <p>
+        Finally, let's examine the <b>scheduled cron job</b> that runs periodically for data cleanup.
+        <br />
+        <br />
+        The <b>Deletion Reaper</b> cron job runs on a schedule to permanently remove pets that have been soft-deleted
+        and have passed their purge date.
+        <br />
+        <br />
+        💡 <b>Cron jobs run on a schedule and are perfect for maintenance tasks and data cleanup.</b>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+  },
+  {
+    elementXpath: workbenchXPath.flows.previewButton('tsdeletionreaper'),
+    title: 'Cron Job Schedule',
+    description: () => (
+      <p>
+        This cron job is configured to run periodically to clean up old soft-deleted pets.
+        <br />
+        <br />
+        The schedule ensures that deleted pets are permanently removed after a grace period,
+        keeping the database clean and organized.
+        <br />
+        <br />
+        💡 <b>Cron jobs are ideal for automated maintenance and cleanup operations.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tsdeletionreaper') },
+      { type: 'click', selector: workbenchXPath.flows.feature('cron-configuration') },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.flows.previewButton('tsdeletionreaper'),
+    title: 'Cron Job Handler',
+    description: () => (
+      <p>
+        The cron job handler scans for pets that need permanent deletion and removes them from the system.
+        <br />
+        <br />
+        It logs the cleanup activities and ensures data integrity during the deletion process.
+        <br />
+        <br />
+        💡 <b>Cron jobs handle time-based operations that don't depend on user actions.</b>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
+  },
+
+  // Workflow Demonstration
+
+  {
+    elementXpath: workbenchXPath.endpoints.endpoint('POST', '/ts/pets'),
+    title: 'Complete Workflow Test',
+    description: () => (
+      <p>
+        Let's test the complete workflow by creating a new pet and observing how it triggers background jobs.
+        <br />
+        <br />
+        When you create a pet, you'll see:
+        <br />
+        • The API returns the created pet immediately
+        <br />
+        • Background jobs are triggered asynchronously
+        <br />
+        • Feeding reminders are scheduled automatically
+        <br />
+        <br />
+        💡 <b>This demonstrates the power of event-driven architecture for workflow orchestration.</b>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.callPanel,
+    title: 'Create Pet to Trigger Workflow',
+    description: () => (
+      <p>
+        Create a new pet to see the complete workflow in action. The tutorial will automatically fill in test data.
+        <br />
+        <br />
+        After creating the pet, check the logs and tracing to see how the background jobs are triggered.
+        <br />
+        <br />
+        💡 <b>Watch how the workflow orchestrates multiple steps automatically.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.endpoint('POST', '/ts/pets') },
+      { type: 'click', selector: workbenchXPath.endpoints.callTab },
+      {
+        type: 'fill-editor',
+        content: {
+          name: 'Workflow Test Pet',
+          species: 'dog',
+          ageMonths: 12,
+        },
+      },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'Workflow Execution',
+    description: () => (
+      <p>
+        Click the <b>Play</b> button to create the pet and trigger the complete workflow.
+        <br />
+        <br />
+        You'll see the pet creation response, and then can check the logs to see background jobs executing.
+        <br />
+        <br />
+        💡 <b>The workflow demonstrates how API operations can trigger complex background processing.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.playButton }
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.bottomPanel,
+    title: 'Check Background Job Execution',
+    description: () => (
+      <p>
+        Now check the <b>Logs</b> tab to see the background jobs that were triggered by the pet creation.
+        <br />
+        <br />
+        You should see log entries showing the feeding reminder job being executed automatically.
+        <br />
+        <br />
+        💡 <b>This demonstrates how event-driven architecture enables complex workflow orchestration.</b>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.links.logs }],
   },
 
   // End of Tutorial
