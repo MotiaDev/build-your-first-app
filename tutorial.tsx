@@ -80,14 +80,14 @@ export const steps: TutorialStep[] = [
           All Steps are defined by two main components, the <b>configuration</b> and the <b>handler</b>.
           <br />
           <br />
-          Let's start with the configuration, the common config attributes are
+        Let's start with the configuration, the common config attributes are
           <i>type, name, description, and flows</i>.<br />
-          <br />
+        <br />
         </p>
         <ul>
-          <li>
+        <li>
             The <b>type</b> attribute is important since it declares the type of Step primitive
-          </li>
+        </li>
           <li>
             The <b>flows</b> attribute will associate your Step with a given flow or set of flows.
           </li>
@@ -100,7 +100,7 @@ export const steps: TutorialStep[] = [
     ),
     before: [
       { type: 'click', selector: workbenchXPath.flows.previewButton('apitrigger') },
-      { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
+      { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') },
     ],
   },
   {
@@ -128,7 +128,7 @@ export const steps: TutorialStep[] = [
         <i>💡 Both the request body and response payload are defined by zod schemas</i>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('request-body') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('request-validation') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -143,7 +143,7 @@ export const steps: TutorialStep[] = [
         <i>💡 Both the request body and response payload are defined by zod schemas</i>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('response-payload') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('success-response') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -159,7 +159,7 @@ export const steps: TutorialStep[] = [
         Through the <b>emits</b>, you can specify a list of topics that your Step emits for others to <i>subscribe</i>.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('event-driven-architecture') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('event-emission') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -175,7 +175,7 @@ export const steps: TutorialStep[] = [
         💡 We will cover these in depth further down the tutorial.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('pet-creation') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -194,7 +194,7 @@ export const steps: TutorialStep[] = [
         tracing.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('logger') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('logging') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -207,7 +207,7 @@ export const steps: TutorialStep[] = [
         declared in your Step configuration.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('http-response') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('success-response') }],
   },
 
   // Event Steps
@@ -229,7 +229,7 @@ export const steps: TutorialStep[] = [
         💡 <b>Event Steps are triggered by internal events, making them perfect for background jobs and workflow orchestration.</b>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -251,7 +251,7 @@ export const steps: TutorialStep[] = [
     ),
     before: [
       { type: 'click', selector: workbenchXPath.flows.previewButton('tssetnextfeedingreminder') },
-      { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
+      { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') },
     ],
   },
   {
@@ -326,7 +326,7 @@ export const steps: TutorialStep[] = [
         💡 <b>Cron jobs are perfect for scheduled maintenance, cleanup, and recurring tasks that don't depend on user actions.</b>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -388,7 +388,7 @@ export const steps: TutorialStep[] = [
         section in Workbench.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
   },
   {
     elementXpath: workbenchXPath.endpoints.endpoint('POST', '/basic-tutorial'),
@@ -417,65 +417,31 @@ export const steps: TutorialStep[] = [
         endpoint in the <b>Call</b> Tab.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.endpoints.endpoint('POST', '/ts/pets') }],
-  },
-  {
-    elementXpath: workbenchXPath.endpoints.callPanel,
-    title: 'API Endpoint Test',
-    description: () => (
-      <p>
-        This form will allow you to validate your API Step by executing an HTTP request against your API endpoint.
-        <br />
-        <br />
-        You can also test your API endpoints using your terminal through the curl command.
-        <br />
-        <br />
-        💡 Thanks to the <b>bodySchema</b> attribute from the API Step config, you are automatically provided with a
-        sample request payload.
-        <br />
-        <br />
-        <pre className="code-preview">
-          <code className="language-bash">
-            curl -X POST http://localhost:3000/ts/pets \<br />
-            {'  '}-H "Content-Type: application/json" \<br />
-            {'  '}-d '
-            {JSON.stringify({
-              name: 'Jack',
-              species: 'dog',
-              ageMonths: 24,
-            })}
-            '
-          </code>
-        </pre>
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.endpoints.callTab }],
-  },
-  {
-    elementXpath: workbenchXPath.endpoints.playButton,
-    title: 'API Endpoint Test',
-    description: () => (
-      <p>
-        Once you've filled the request payload, you can click on the <b>Play</b> button to trigger an HTTP request
-        against your API endpoint.
-      </p>
-    ),
     before: [
-        {
-          type: 'fill-editor',
-          content: {
-            name: 'Jack',
-            species: 'dog',
-            ageMonths: 24,
-          },
-        },
+      { type: 'click', selector: workbenchXPath.endpoints.endpoint('POST', '/ts/pets') },
+      { type: 'click', selector: workbenchXPath.endpoints.callTab }
     ],
   },
   {
     elementXpath: workbenchXPath.endpoints.response,
-    title: 'Test Result',
-    description: () => <p>Once your request has been resolved, you will see the response from here.</p>,
-    before: [{ type: 'click', selector: workbenchXPath.endpoints.playButton }],
+    title: 'API Endpoint Test',
+    description: () => (
+      <p>
+        Once you've filled the request payload, you can click on the <b>Play</b> button to trigger an HTTP request
+        against your API endpoint. The response will appear below.
+      </p>
+    ),
+    before: [
+      {
+        type: 'fill-editor',
+        content: {
+          name: 'Jack',
+          species: 'dog',
+          ageMonths: 24,
+        },
+      },
+      { type: 'click', selector: workbenchXPath.endpoints.playButton }
+    ],
   },
 
   // UPDATE API Test with Background Job
@@ -495,17 +461,17 @@ export const steps: TutorialStep[] = [
         💡 <b>UPDATE operations can trigger background jobs based on the changes made.</b>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
   },
   {
-    elementXpath: workbenchXPath.endpoints.callPanel,
-    title: 'UPDATE Request with Path Parameter and Body',
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'UPDATE API with Background Job',
     description: () => (
       <p>
         For UPDATE operations, you need to provide both the pet ID in the path parameter and the fields you want to change in the request body.
         <br />
         <br />
-        The tutorial will automatically fill in both the path parameter and request body for you.
+        The tutorial will automatically fill in both the path parameter and request body, then execute the request.
         <br />
         <br />
         💡 <b>This UPDATE will change the pet status, which can trigger background job workflows.</b>
@@ -522,49 +488,14 @@ export const steps: TutorialStep[] = [
           name: 'Updated Buddy'
         },
       },
-    ],
-  },
-  {
-    elementXpath: workbenchXPath.endpoints.response,
-    title: 'UPDATE Response with Background Job',
-    description: () => (
-      <p>
-        Click the <b>Play</b> button to update the pet and trigger any associated background jobs.
-        <br />
-        <br />
-        You'll see the updated pet information returned, and background jobs may be triggered based on the status change.
-        <br />
-        <br />
-        💡 <b>UPDATE operations can trigger background workflows when certain fields are changed.</b>
-      </p>
-    ),
-    before: [
       { type: 'click', selector: workbenchXPath.endpoints.playButton }
-    ],
-  },
-  {
-    elementXpath: workbenchXPath.endpoints.response,
-    title: 'UPDATE and Background Job Execution',
-    description: () => (
-      <p>
-        Excellent! The UPDATE endpoint successfully updated the pet and may have triggered background jobs.
-        <br />
-        <br />
-        You can see the updated pet object with the modified fields. Check the logs to see if any background jobs were triggered by the status change.
-        <br />
-        <br />
-        💡 <b>UPDATE operations demonstrate how API changes can orchestrate background workflows.</b>
-      </p>
-    ),
-    before: [
-      { type: 'click', selector: workbenchXPath.closePanelButton }
     ],
   },
 
   // Tracing
 
   {
-    elementXpath: workbenchXPath.bottomPanel,
+    elementXpath: workbenchXPath.tracing.details,
     title: 'Tracing',
     description: () => (
       <p>
@@ -572,44 +503,24 @@ export const steps: TutorialStep[] = [
         observability tools.
         <br />
         <br />
-        Let's start with <b>tracing</b>, in this section you will be able to see all of your flow executions grouped by{' '}
-        <b>trace id</b>.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.links.tracing }],
-  },
-  {
-    elementXpath: workbenchXPath.tracing.trace(1),
-    title: 'Tracing Tool',
-    description: () => (
-      <p>
-        Trace IDs are auto generated and injected throughout the execution of all Steps in your flow.
+        This section shows all Step executions associated with the selected trace, including:
         <br />
         <br />
-        Clicking on a trace item from this list will allow you to dive deeper into your flow behavior.
+        1. <b>TsCreatePet</b> - Initial pet creation and event emission
+        <br />
+        2. <b>TsSetNextFeedingReminder</b> - Background job for feeding reminders
+        <br />
+        3. <b>TsDeletionReaper</b> - Cron job for data cleanup (if applicable)
+        <br />
+        <br />
+        Each timeline segment shows execution time and you can click on any segment for detailed logs.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.tracing.trace(1) }],
-  },
-  {
-    elementXpath: workbenchXPath.tracing.details,
-    title: 'Trace Timeline',
-    description: () => (
-      <p>
-        This section will show all Step executions associated to the selected trace, you will see a list of executed
-        Steps and their sequencing over a <b>timeline</b>.
-      </p>
-    ),
-  },
-  {
-    elementXpath: workbenchXPath.tracing.timeline(1),
-    title: 'Trace Timeline Segment',
-    description: () => (
-      <p>
-        Each <b>timeline segment</b> will show you the time it took to execute each Step, you can click on any segment
-        and dive even deeper into that specific Step execution logs.
-      </p>
-    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.links.tracing },
+      { type: 'click', selector: workbenchXPath.tracing.trace(1) },
+      { type: 'click', selector: workbenchXPath.tracing.timeline(1) }
+    ],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -630,37 +541,23 @@ export const steps: TutorialStep[] = [
   // Logs
 
   {
-    elementXpath: workbenchXPath.logs.container,
+    elementXpath: workbenchXPath.logs.searchContainer,
     title: 'Logs',
     description: () => (
       <p>
-        Let's take a look at your execution logs, click on this tab will take you to the <b>Logs Tool</b>.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.links.logs }],
-  },
-  {
-    elementXpath: workbenchXPath.logs.traceColumn(1),
-    title: 'Filtering by Trace ID',
-    description: () => (
-      <p>
-        Your log results will show their associated <b>Trace ID</b> in the third column, the <b>Trace ID</b> values are
-        linked to update your search.
+        Let's take a look at your execution logs. The <b>Logs Tool</b> shows all log messages with their associated <b>Trace ID</b>.
         <br />
         <br />
-        💡 Clicking a <b>Trace ID</b> will narrow down your search to only show logs from that trace.
+        By clicking a <b>Trace ID</b>, your search is updated to match results associated with that specific trace execution.
+        <br />
+        <br />
+        💡 This helps you debug and monitor your workflow execution by filtering logs to specific traces.
       </p>
     ),
-  },
-  {
-    elementXpath: workbenchXPath.logs.searchContainer,
-    title: 'Search Criteria',
-    description: () => (
-      <p>
-        By clicking the <b>Trace ID</b>, your search is updated to match results associated with that <b>Trace ID</b>.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.logs.traceColumn(1) }],
+    before: [
+      { type: 'click', selector: workbenchXPath.links.logs },
+      { type: 'click', selector: workbenchXPath.logs.traceColumn(1) }
+    ],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -679,42 +576,30 @@ export const steps: TutorialStep[] = [
   // States
 
   {
-    elementXpath: workbenchXPath.links.states,
+    elementXpath: workbenchXPath.sidebarContainer,
     title: 'State Management',
     description: () => (
       <p>
         Ok now that we've seen the observability tools, let's take a look at the <b>State Management Tool</b>.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.links.states }],
-  },
-  {
-    elementXpath: workbenchXPath.states.container,
-    title: 'State Management Tool',
-    description: () => (
-      <p>
-        This is your <b>State Management Tool</b>, from here you will be able to see all of your persisted state
-        key/value pairs.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.states.row(1) }],
-  },
-  {
-    elementXpath: workbenchXPath.sidebarContainer,
-    title: 'State Details',
-    description: () => (
-      <p>
+        <br />
+        <br />
         This section presents the details for a given state key, from here you will be able to manage the value assigned
         to the selected state key.
+        <br />
+        <br />
+        The State Management Tool shows all of your persisted state key/value pairs from workflow executions.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.links.states }],
+    before: [
+      { type: 'click', selector: workbenchXPath.links.states },
+      { type: 'click', selector: workbenchXPath.states.row(1) }
+    ],
   },
 
   // Background Jobs Showcase
 
   {
-    elementXpath: workbenchXPath.flows.node('tssetnextfeedingreminder'),
+    elementXpath: workbenchXPath.flows.previewButton('tssetnextfeedingreminder'),
     title: 'Background Job - Feeding Reminder',
     link: 'https://www.motia.dev/docs/concepts/steps/event',
     description: () => (
@@ -726,51 +611,23 @@ export const steps: TutorialStep[] = [
         This demonstrates how API operations can trigger background processing workflows.
         <br />
         <br />
+        This background job subscribes to the <b>ts.pet.created</b> event and processes it asynchronously, determining feeding schedules and creating reminder events.
+        <br />
+        <br />
         💡 <b>Background jobs are triggered by events and run asynchronously without blocking the API response.</b>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
-  },
-  {
-    elementXpath: workbenchXPath.flows.previewButton('tssetnextfeedingreminder'),
-    title: 'Background Job Configuration',
-    description: () => (
-      <p>
-        This background job subscribes to the <b>ts.pet.created</b> event that gets emitted when a new pet is created.
-        <br />
-        <br />
-        The job calculates the appropriate feeding schedule based on the pet's age and species, then schedules future reminders.
-        <br />
-        <br />
-        💡 <b>Event-driven background jobs enable complex workflow orchestration.</b>
-      </p>
-    ),
     before: [
+      { type: 'click', selector: workbenchXPath.closePanelButton, optional: true },
       { type: 'click', selector: workbenchXPath.flows.previewButton('tssetnextfeedingreminder') },
-      { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
+      { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') }
     ],
-  },
-  {
-    elementXpath: workbenchXPath.flows.previewButton('tssetnextfeedingreminder'),
-    title: 'Background Job Handler',
-    description: () => (
-      <p>
-        The background job handler receives the pet creation event and processes it asynchronously.
-        <br />
-        <br />
-        It determines the feeding schedule, creates reminder events, and updates the pet's status accordingly.
-        <br />
-        <br />
-        💡 <b>Background jobs can perform complex business logic without affecting API response times.</b>
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
   },
 
   // Cron Job Showcase
 
   {
-    elementXpath: workbenchXPath.flows.node('tsdeletionreaper'),
+    elementXpath: workbenchXPath.flows.previewButton('tsdeletionreaper'),
     title: 'Cron Job - Deletion Reaper',
     link: 'https://www.motia.dev/docs/concepts/steps/cron',
     description: () => (
@@ -782,46 +639,17 @@ export const steps: TutorialStep[] = [
         and have passed their purge date.
         <br />
         <br />
+        The cron job handler scans for pets that need permanent deletion, logs cleanup activities, and ensures data integrity during the deletion process.
+        <br />
+        <br />
         💡 <b>Cron jobs run on a schedule and are perfect for maintenance tasks and data cleanup.</b>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
-  },
-  {
-    elementXpath: workbenchXPath.flows.previewButton('tsdeletionreaper'),
-    title: 'Cron Job Schedule',
-    description: () => (
-      <p>
-        This cron job is configured to run periodically to clean up old soft-deleted pets.
-        <br />
-        <br />
-        The schedule ensures that deleted pets are permanently removed after a grace period,
-        keeping the database clean and organized.
-        <br />
-        <br />
-        💡 <b>Cron jobs are ideal for automated maintenance and cleanup operations.</b>
-      </p>
-    ),
     before: [
+      { type: 'click', selector: workbenchXPath.closePanelButton, optional: true },
       { type: 'click', selector: workbenchXPath.flows.previewButton('tsdeletionreaper') },
-      { type: 'click', selector: workbenchXPath.flows.feature('cron-configuration') },
+      { type: 'click', selector: workbenchXPath.flows.feature('cron-configuration') }
     ],
-  },
-  {
-    elementXpath: workbenchXPath.flows.previewButton('tsdeletionreaper'),
-    title: 'Cron Job Handler',
-    description: () => (
-      <p>
-        The cron job handler scans for pets that need permanent deletion and removes them from the system.
-        <br />
-        <br />
-        It logs the cleanup activities and ensures data integrity during the deletion process.
-        <br />
-        <br />
-        💡 <b>Cron jobs handle time-based operations that don't depend on user actions.</b>
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
   },
 
   // Workflow Demonstration
@@ -846,7 +674,7 @@ export const steps: TutorialStep[] = [
         💡 <b>This demonstrates the power of event-driven architecture for workflow orchestration.</b>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
   },
   {
     elementXpath: workbenchXPath.endpoints.callPanel,
@@ -890,24 +718,9 @@ export const steps: TutorialStep[] = [
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.endpoints.playButton }
+      { type: 'click', selector: workbenchXPath.endpoints.playButton },
+      { type: 'click', selector: workbenchXPath.links.logs }
     ],
-  },
-  {
-    elementXpath: workbenchXPath.bottomPanel,
-    title: 'Check Background Job Execution',
-    description: () => (
-      <p>
-        Now check the <b>Logs</b> tab to see the background jobs that were triggered by the pet creation.
-        <br />
-        <br />
-        You should see log entries showing the feeding reminder job being executed automatically.
-        <br />
-        <br />
-        💡 <b>This demonstrates how event-driven architecture enables complex workflow orchestration.</b>
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.links.logs }],
   },
 
   // End of Tutorial
@@ -967,6 +780,7 @@ export const steps: TutorialStep[] = [
         Thank you for completing our workflow orchestration tutorial!
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
   },
 ]
+

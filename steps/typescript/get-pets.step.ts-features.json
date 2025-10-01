@@ -1,0 +1,26 @@
+[
+  {
+    "id": "api-configuration",
+    "title": "API Endpoint Configuration",
+    "description": "GET endpoint at /ts/pets for listing all pets with no emissions.",
+    "lines": ["8-15"]
+  },
+  {
+    "id": "pet-listing",
+    "title": "Pet Data Listing",
+    "description": "Retrieves and returns all pets from the store with proper error handling.",
+    "lines": ["17-19"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Basic error handling for unexpected failures during pet listing.",
+    "lines": ["20-23"]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns array of pets with 200 status code for successful listing.",
+    "lines": ["18"]
+  }
+]

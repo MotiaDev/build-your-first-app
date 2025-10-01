@@ -1,0 +1,32 @@
+[
+  {
+    "id": "api-configuration",
+    "title": "API Endpoint Configuration",
+    "description": "GET endpoint at /ts/pets/:id for retrieving individual pets by ID.",
+    "lines": ["8-15"]
+  },
+  {
+    "id": "path-validation",
+    "title": "Path Parameter Validation",
+    "description": "Zod schema validation for pet ID path parameter with proper error handling.",
+    "lines": ["5-7"]
+  },
+  {
+    "id": "pet-retrieval",
+    "title": "Pet Data Retrieval",
+    "description": "Retrieves pet data from store using validated ID with null checking.",
+    "lines": ["18-20"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Comprehensive error handling for invalid IDs and not found cases.",
+    "lines": ["22-24", "26-35"]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns pet data with 200 status code for successful retrieval.",
+    "lines": ["25"]
+  }
+]

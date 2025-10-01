@@ -1,0 +1,38 @@
+[
+  {
+    "id": "api-configuration",
+    "title": "API Endpoint Configuration",
+    "description": "PUT endpoint at /ts/pets/:id for updating existing pets with selective updates.",
+    "lines": ["18-25"]
+  },
+  {
+    "id": "path-validation",
+    "title": "Path Parameter Validation",
+    "description": "Zod schema validation for pet ID path parameter with proper error handling.",
+    "lines": ["5-7"]
+  },
+  {
+    "id": "selective-update",
+    "title": "Selective Update Schema",
+    "description": "Zod schema for selective updates with optional fields and validation constraints.",
+    "lines": ["9-16"]
+  },
+  {
+    "id": "pet-update",
+    "title": "Pet Data Update",
+    "description": "Updates pet data in store using validated ID and selective field updates.",
+    "lines": ["35-42"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Comprehensive error handling for invalid IDs, not found cases, and validation errors.",
+    "lines": ["44-46", "48-51", "53-57"]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns updated pet data with 200 status code for successful updates.",
+    "lines": ["47"]
+  }
+]

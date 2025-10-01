@@ -1,75 +1,44 @@
 [
   {
-    "id": "step-configuration",
-    "title": "Step Configuration", 
-    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
-    "lines": [
-      "5-12"
-    ]
-  },
-  {
     "id": "api-configuration",
-    "title": "API Step",
-    "description": "Definition of an API endpoint for creating pets",
-    "lines": [
-      "8-9"
-    ]
+    "title": "API Endpoint Configuration",
+    "description": "POST endpoint at /ts/pets for creating new pets with comprehensive validation schema.",
+    "lines": ["8-15"]
   },
   {
     "id": "request-validation",
-    "title": "Request Validation",
-    "description": "Validate incoming request data to ensure it meets the expected format and constraints.",
-    "lines": [
-      "17-22"
-    ]
+    "title": "Request Body Schema",
+    "description": "Zod schema validation for pet data including name, species, and age with proper error handling.",
+    "lines": ["6-10"]
   },
   {
-    "id": "data-processing",
-    "title": "Data Processing",
-    "description": "Process the validated data and create a new pet record in the store.",
-    "lines": [
-      "23"
-    ]
+    "id": "pet-creation",
+    "title": "Pet Object Creation",
+    "description": "Creates pet object with status logic, ID generation, and proper data structure.",
+    "lines": ["28-34"]
   },
   {
-    "id": "event-driven-architecture",
-    "title": "Emits",
-    "description": "We can define the events that this step will emit, this is how we can trigger other Motia Steps.",
-    "lines": [
-      "10",
-      "29-40"
-    ]
+    "id": "event-emission",
+    "title": "Workflow Trigger",
+    "description": "Emits 'ts.pet.created' and 'ts.feeding.reminder.enqueued' events to trigger background jobs.",
+    "lines": ["36-51"]
   },
   {
-    "id": "workflow-integration",
-    "title": "Workflow Integration",
-    "description": "This step triggers background jobs by emitting events that other steps subscribe to",
-    "lines": [
-      "35-39"
-    ]
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns pet details including ID, name, species, status, and creation timestamp.",
+    "lines": ["53"]
   },
   {
-    "id": "handler",
-    "title": "Handler",
-    "description": "The handler is the function that will be executed when the step is triggered. This one receives the request and creates a new pet.",
-    "lines": [
-      "14-43"
-    ]
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Comprehensive error handling for validation errors and unexpected failures.",
+    "lines": ["54-67"]
   },
   {
-    "id": "logger",
-    "title": "Logger",
-    "description": "The logger is a utility that allows you to log messages. It is available in the handler function and automatically ties to the trace id of the request.",
-    "lines": [
-      "25-27"
-    ]
-  },
-  {
-    "id": "http-response",
-    "title": "HTTP Response",
-    "description": "The handler returns a response to the client with the created pet data and appropriate status code.",
-    "lines": [
-      "42"
-    ]
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for pet creation events and error tracking.",
+    "lines": ["30-33", "61-63"]
   }
 ]
