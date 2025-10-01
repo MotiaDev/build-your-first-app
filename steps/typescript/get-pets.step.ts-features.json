@@ -12,7 +12,15 @@
     "title": "GET API Step",
     "description": "Definition of a GET API endpoint for listing all pets",
     "lines": [
-      "8-9"
+      "6-11"
+    ]
+  },
+  {
+    "id": "no-emissions",
+    "title": "No Events Emitted",
+    "description": "Notice that this step doesn't emit any events, unlike the CREATE step. GET operations are typically simple read operations that don't need to trigger other processes.",
+    "lines": [
+      "10"
     ]
   },
   {
@@ -28,7 +36,7 @@
     "title": "Data Listing",
     "description": "Retrieve all pets from the store and return them as a list",
     "lines": [
-      "15"
+      "16"
     ]
   },
   {
@@ -36,7 +44,7 @@
     "title": "Handler",
     "description": "The handler function that executes when the GET request is made",
     "lines": [
-      "14-16"
+      "14-25"
     ]
   },
   {
@@ -44,7 +52,7 @@
     "title": "HTTP Response",
     "description": "Returns a successful response with the list of pets",
     "lines": [
-      "15"
+      "17"
     ]
   }
 ]

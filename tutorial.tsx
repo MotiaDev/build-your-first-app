@@ -438,12 +438,31 @@ export const steps: TutorialStep[] = [
           whiteSpace: 'pre',
           border: '1px solid var(--color-border)'
         }}>
-          {`curl -X POST http://localhost:3000/ts/pets \\
+          {`# Create a dog
+curl -X POST http://localhost:3000/ts/pets \\
   -H "Content-Type: application/json" \\
   -d '${JSON.stringify({
     name: 'Jack',
     species: 'dog',
     ageMonths: 24,
+  }, null, 2)}'
+
+# Create a cat
+curl -X POST http://localhost:3000/ts/pets \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({
+    name: 'Whiskers',
+    species: 'cat',
+    ageMonths: 12,
+  }, null, 2)}'
+
+# Create a bird
+curl -X POST http://localhost:3000/ts/pets \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({
+    name: 'Tweety',
+    species: 'bird',
+    ageMonths: 6,
   }, null, 2)}'`}
         </code>
       </p>
@@ -463,21 +482,53 @@ export const steps: TutorialStep[] = [
     ),
     before: [
       { type: 'click', selector: workbenchXPath.endpoints.callTab },
-      {
-        type: 'fill-editor',
-        content: {
-          name: 'Jack',
-          species: 'dog',
-          ageMonths: 24,
+        {
+          type: 'fill-editor',
+          content: {
+            name: 'Buddy',
+            species: 'dog',
+            ageMonths: 18,
+          },
         },
-      },
     ],
   },
   {
     elementXpath: workbenchXPath.endpoints.response,
     title: 'Test Result',
-    description: () => <p>Once your request has been resolved, you will see the response from here.</p>,
-    before: [{ type: 'click', selector: workbenchXPath.endpoints.playButton }],
+    description: () => (
+      <p>
+        Once your request has been resolved, you will see the response from here.
+        <br />
+        <br />
+        The POST request should return a 201 Created status with the newly created pet data.
+        <br />
+        <br />
+        💡 <b>POST operations typically return 201 Created for successful resource creation.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.playButton },
+      { type: 'wait', duration: 3000 }
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'Pet Created Successfully',
+    description: () => (
+      <p>
+        Excellent! The POST endpoint successfully created a new pet.
+        <br />
+        <br />
+        You can see the response showing the created pet with its assigned ID, name, species, age, and timestamps.
+        <br />
+        <br />
+        💡 <b>The system automatically assigned an ID and timestamps to the new pet.</b>
+      </p>
+    ),
+    before: [
+      { type: 'wait', duration: 2000 },
+      { type: 'click', selector: workbenchXPath.closePanelButton }
+    ],
   },
 
   // Test GET Single Pet Endpoint
@@ -494,6 +545,66 @@ export const steps: TutorialStep[] = [
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.callPanel,
+    title: 'GET Request with Path Parameter',
+    description: () => (
+      <p>
+        For GET requests with path parameters, you need to enter the pet ID in the path parameter field.
+        <br />
+        <br />
+        The tutorial will automatically fill in a test pet ID for you.
+        <br />
+        <br />
+        💡 <b>Path parameters are used to identify specific resources in RESTful APIs.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.endpoint('GET', '/ts/pets/:id') },
+      { type: 'click', selector: workbenchXPath.endpoints.callTab },
+      {
+        type: 'fill-editor',
+        content: {
+          id: '1'
+        },
+      },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'GET Response',
+    description: () => (
+      <p>
+        Click the <b>Play</b> button to retrieve the pet data. You should see the pet information returned.
+        <br />
+        <br />
+        If the pet exists, you'll get a 200 response with the pet data. If not, you'll get a 404 error.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.playButton },
+      { type: 'wait', duration: 3000 }
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'Single Pet Retrieved',
+    description: () => (
+      <p>
+        Great! The GET endpoint successfully retrieved the specific pet by ID.
+        <br />
+        <br />
+        You can see the individual pet object with all its details, demonstrating how path parameters work to fetch specific resources.
+        <br />
+        <br />
+        💡 <b>GET endpoints with path parameters return single objects, not arrays.</b>
+      </p>
+    ),
+    before: [
+      { type: 'wait', duration: 2000 },
+      { type: 'click', selector: workbenchXPath.closePanelButton }
+    ],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -535,7 +646,10 @@ export const steps: TutorialStep[] = [
           whiteSpace: 'pre',
           border: '1px solid var(--color-border)'
         }}>
-          {`curl http://localhost:3000/ts/pets/1`}
+          {`# Test with different pet IDs
+curl http://localhost:3000/ts/pets/1
+curl http://localhost:3000/ts/pets/2
+curl http://localhost:3000/ts/pets/invalid-id`}
         </code>
         <br />
         💡 <b>Always return proper HTTP status codes (200 for found, 404 for not found).</b>
@@ -560,31 +674,64 @@ export const steps: TutorialStep[] = [
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
   },
   {
-    elementXpath: workbenchXPath.endpoints.playButton,
-    title: 'Test GET Request',
+    elementXpath: workbenchXPath.endpoints.callPanel,
+    title: 'GET All Pets Request',
     description: () => (
       <p>
-        GET requests are simple - no request body needed! Just click the <b>Play</b> button to retrieve all pets.
+        GET requests for listing all pets are simple - no request body or path parameters needed!
         <br />
         <br />
-        <code style={{ 
-          display: 'block', 
-          backgroundColor: 'var(--color-bg-secondary)', 
-          color: 'var(--color-text-primary)',
-          padding: '10px', 
-          borderRadius: '4px', 
-          whiteSpace: 'pre',
-          border: '1px solid var(--color-border)'
-        }}>
-          {`curl http://localhost:3000/ts/pets`}
-        </code>
+        The tutorial will prepare the request for you automatically.
         <br />
-        💡 This should return the pet you just created in the previous step.
+        <br />
+        💡 <b>GET endpoints that list resources typically don't require any input parameters.</b>
       </p>
     ),
     before: [
       { type: 'click', selector: workbenchXPath.endpoints.endpoint('GET', '/ts/pets') },
       { type: 'click', selector: workbenchXPath.endpoints.callTab },
+      {
+        type: 'fill-editor',
+        content: {},
+      },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'GET All Pets Response',
+    description: () => (
+      <p>
+        Click the <b>Play</b> button to retrieve all pets from the system.
+        <br />
+        <br />
+        You should see a list of all pets that have been created, including the ones from previous steps.
+        <br />
+        <br />
+        💡 This should return an array of pet objects.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.playButton },
+      { type: 'wait', duration: 3000 }
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'Response Received',
+    description: () => (
+      <p>
+        Perfect! You can see the response showing all the pets in the system.
+        <br />
+        <br />
+        The GET /ts/pets endpoint successfully returned an array of pet objects, each with their ID, name, species, age, status, and timestamps.
+        <br />
+        <br />
+        💡 <b>GET endpoints that list resources return arrays of objects.</b>
+      </p>
+    ),
+    before: [
+      { type: 'wait', duration: 2000 },
+      { type: 'click', selector: workbenchXPath.closePanelButton }
     ],
   },
 
@@ -605,52 +752,68 @@ export const steps: TutorialStep[] = [
   },
   {
     elementXpath: workbenchXPath.endpoints.callPanel,
-    title: 'UPDATE Request Body',
+    title: 'UPDATE Request with Path Parameter and Body',
     description: () => (
       <p>
-        For UPDATE operations, you only need to provide the fields you want to change. The handler will selectively update only those fields.
+        For UPDATE operations, you need to provide both the pet ID in the path parameter and the fields you want to change in the request body.
         <br />
         <br />
-        Example update payload:
+        The tutorial will automatically fill in both the path parameter and request body for you.
         <br />
         <br />
-        <code style={{ 
-          display: 'block', 
-          backgroundColor: 'var(--color-bg-secondary)', 
-          color: 'var(--color-text-primary)',
-          padding: '10px', 
-          borderRadius: '4px', 
-          whiteSpace: 'pre',
-          border: '1px solid var(--color-border)'
-        }}>
-          {`curl -X PUT http://localhost:3000/ts/pets/1 \\
-  -H "Content-Type: application/json" \\
-  -d '${JSON.stringify({
-    name: 'Updated Jack',
-    status: 'available',
-    ageMonths: 30,
-  }, null, 2)}'`}
-        </code>
+        💡 <b>PUT operations allow selective updates - only provided fields will be changed.</b>
       </p>
     ),
     before: [
       { type: 'click', selector: workbenchXPath.endpoints.endpoint('PUT', '/ts/pets/:id') },
       { type: 'click', selector: workbenchXPath.endpoints.callTab },
+      {
+        type: 'fill-editor',
+        content: {
+          id: '1',
+          name: 'Updated Buddy',
+          status: 'available',
+          ageMonths: 20
+        },
+      },
     ],
   },
   {
-    elementXpath: workbenchXPath.endpoints.playButton,
-    title: 'Test PUT Request',
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'UPDATE Response',
     description: () => (
       <p>
-        Enter the pet ID in the path parameter field (try "1" if you created a pet earlier) and provide update data in the request body using the example above.
+        Click the <b>Play</b> button to update the pet with the new data.
         <br />
         <br />
-        💡 Try updating the pet's name, status, or age to see how selective updates work.
+        You should see the updated pet information returned, showing the changes that were made.
+        <br />
+        <br />
+        💡 The response will contain the complete updated pet object.
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.endpoints.callTab },
+      { type: 'click', selector: workbenchXPath.endpoints.playButton },
+      { type: 'wait', duration: 3000 }
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'Pet Updated Successfully',
+    description: () => (
+      <p>
+        Excellent! The PUT endpoint successfully updated the pet with the new data.
+        <br />
+        <br />
+        You can see the updated pet object with the modified fields, demonstrating how selective updates work.
+        <br />
+        <br />
+        💡 <b>PUT operations return the complete updated object with all fields.</b>
+      </p>
+    ),
+    before: [
+      { type: 'wait', duration: 2000 },
+      { type: 'click', selector: workbenchXPath.closePanelButton }
     ],
   },
 
@@ -673,51 +836,165 @@ export const steps: TutorialStep[] = [
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
   },
   {
-    elementXpath: workbenchXPath.sidebarContainer,
-    title: 'DELETE Operation',
+    elementXpath: workbenchXPath.endpoints.callPanel,
+    title: 'DELETE Request with Path Parameter',
     description: () => (
       <p>
-        DELETE endpoints are the simplest - they just need to identify which resource to remove using path parameters.
+        DELETE operations only need the pet ID in the path parameter - no request body required.
         <br />
         <br />
-        The handler returns either 204 No Content (success) or 404 Not Found (pet doesn't exist).
+        The tutorial will automatically fill in a test pet ID for you.
+        <br />
+        <br />
+        💡 <b>DELETE operations are the simplest - they just need to identify which resource to remove.</b>
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.endpoint('DELETE', '/ts/pets/:id') },
+      { type: 'click', selector: workbenchXPath.endpoints.callTab },
+      {
+        type: 'fill-editor',
+        content: {
+          id: '1'
+        },
+      },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'DELETE Response',
+    description: () => (
+      <p>
+        Click the <b>Play</b> button to delete the pet.
+        <br />
+        <br />
+        If the pet exists, you'll get a 204 No Content response (successful deletion). If the pet doesn't exist, you'll get a 404 Not Found error.
+        <br />
+        <br />
+        💡 DELETE operations typically return 204 No Content on success, meaning the resource was removed.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.endpoints.playButton },
+      { type: 'wait', duration: 3000 }
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.endpoints.response,
+    title: 'Pet Deleted Successfully',
+    description: () => (
+      <p>
+        Perfect! The DELETE endpoint successfully removed the pet from the system.
+        <br />
+        <br />
+        You should see a 204 No Content response, indicating the pet was deleted successfully.
+        <br />
+        <br />
+        💡 <b>DELETE operations typically return 204 No Content on success, with no response body.</b>
+      </p>
+    ),
+    before: [
+      { type: 'wait', duration: 2000 },
+      { type: 'click', selector: workbenchXPath.closePanelButton }
+    ],
+  },
+
+  // Comprehensive Test Data Examples
+
+  {
+    elementXpath: workbenchXPath.endpoints.endpointsList,
+    title: 'Complete Test Data Examples',
+    description: () => (
+      <p>
+        Here's a comprehensive set of test data examples you can use to test all CRUD operations:
         <br />
         <br />
         <code style={{ 
           display: 'block', 
           backgroundColor: 'var(--color-bg-secondary)', 
           color: 'var(--color-text-primary)',
-          padding: '10px', 
+          padding: '15px', 
           borderRadius: '4px', 
           whiteSpace: 'pre',
-          border: '1px solid var(--color-border)'
+          border: '1px solid var(--color-border)',
+          fontSize: '12px'
         }}>
-          {`curl -X DELETE http://localhost:3000/ts/pets/1`}
+          {`# ===== CREATE OPERATIONS (POST) =====
+
+# Create different types of pets
+curl -X POST http://localhost:3000/ts/pets \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({ name: 'Max', species: 'dog', ageMonths: 36 }, null, 2)}'
+
+curl -X POST http://localhost:3000/ts/pets \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({ name: 'Luna', species: 'cat', ageMonths: 24 }, null, 2)}'
+
+curl -X POST http://localhost:3000/ts/pets \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({ name: 'Charlie', species: 'bird', ageMonths: 8 }, null, 2)}'
+
+# ===== READ OPERATIONS (GET) =====
+
+# List all pets
+curl http://localhost:3000/ts/pets
+
+# Get specific pets by ID
+curl http://localhost:3000/ts/pets/1
+curl http://localhost:3000/ts/pets/2
+curl http://localhost:3000/ts/pets/3
+
+# Test with invalid ID (should return 404)
+curl http://localhost:3000/ts/pets/invalid
+
+# ===== UPDATE OPERATIONS (PUT) =====
+
+# Update name only
+curl -X PUT http://localhost:3000/ts/pets/1 \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({ name: 'Max the Great' }, null, 2)}'
+
+# Update status only
+curl -X PUT http://localhost:3000/ts/pets/2 \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({ status: 'adopted' }, null, 2)}'
+
+# Update multiple fields
+curl -X PUT http://localhost:3000/ts/pets/3 \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({ name: 'Charlie Brown', ageMonths: 12, status: 'available' }, null, 2)}'
+
+# ===== DELETE OPERATIONS (DELETE) =====
+
+# Delete specific pets
+curl -X DELETE http://localhost:3000/ts/pets/1
+curl -X DELETE http://localhost:3000/ts/pets/2
+
+# Test delete with non-existent ID (should return 404)
+curl -X DELETE http://localhost:3000/ts/pets/999
+
+# ===== TESTING ERROR CASES =====
+
+# Invalid JSON in POST request
+curl -X POST http://localhost:3000/ts/pets \\
+  -H "Content-Type: application/json" \\
+  -d '{"name": "Test", "species": "invalid_species"}'
+
+# Missing required fields in POST
+curl -X POST http://localhost:3000/ts/pets \\
+  -H "Content-Type: application/json" \\
+  -d '{"name": "Test"}'
+
+# Empty request body in PUT
+curl -X PUT http://localhost:3000/ts/pets/1 \\
+  -H "Content-Type: application/json" \\
+  -d '{}'`}
         </code>
         <br />
-        💡 <b>DELETE operations should be idempotent - safe to call multiple times.</b>
+        💡 <b>Copy and paste these examples into your terminal to test all CRUD operations with realistic data!</b>
       </p>
     ),
-    before: [
-      { type: 'click', selector: workbenchXPath.endpoints.endpoint('DELETE', '/ts/pets/:id') },
-      { type: 'click', selector: workbenchXPath.flows.previewButton('tsdeletepet') },
-      { type: 'click', selector: workbenchXPath.flows.feature('delete-operation') },
-    ],
-  },
-  {
-    elementXpath: workbenchXPath.endpoints.playButton,
-    title: 'Test DELETE Request',
-    description: () => (
-      <p>
-        DELETE requests only need the resource ID in the path parameter (try "1"). No request body required.
-        <br />
-        <br />
-        Click the <b>Play</b> button to delete the pet (you can create another one later to test again).
-      </p>
-    ),
-    before: [
-      { type: 'click', selector: workbenchXPath.endpoints.callTab },
-    ],
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
   },
 
   // Tracing
@@ -901,3 +1178,5 @@ export const steps: TutorialStep[] = [
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
   },
 ]
+
+
