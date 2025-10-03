@@ -451,13 +451,6 @@ This is a demonstration project for Motia workflow capabilities, showcasing mode
 
 This project includes an interactive tutorial system for Motia Workbench. If you're building or maintaining tutorials:
 
-📚 **[TUTORIAL_GUIDE.md](./TUTORIAL_GUIDE.md)** - Complete guide on creating tutorials
-- How to write features.json files
-- How to write tutorial.tsx files
-- How to connect features to tutorial steps
-- Libraries and elements reference
-- Best practices and troubleshooting
-
 ⚡ **[TUTORIAL_CHEATSHEET.md](./TUTORIAL_CHEATSHEET.md)** - Quick reference cheat sheet
 - Features.json template
 - Tutorial.tsx template
