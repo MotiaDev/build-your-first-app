@@ -1,4 +1,4 @@
-# steps/services/types.py
+# services/types.py
 from typing import TypedDict, Literal, Optional
 
 Species = Literal['dog','cat','bird','other']
@@ -12,3 +12,4 @@ class Pet(TypedDict, total=False):
     status: Status
     createdAt: int
     updatedAt: int
+

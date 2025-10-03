@@ -15,7 +15,7 @@ async def handler(req, ctx=None):
     try:
         import sys
         import os
-        sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
         from services import pet_store
     except ImportError:
         # Fallback for import issues

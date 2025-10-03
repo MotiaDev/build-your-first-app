@@ -218,6 +218,10 @@ Emitted when a new pet is created via any `POST /*/pets` endpoint.
 ## File Structure
 
 ```
+services/
+├── pet_store.py                # Data persistence layer (Python)
+├── types.py                    # Type definitions (Python)
+└── __init__.py
 steps/
 ├── javascript/
 │   ├── create-pet.step.js      # POST /js/pets
@@ -233,16 +237,13 @@ steps/
 │   ├── update-pet.step.ts      # PUT /ts/pets/:id
 │   ├── delete-pet.step.ts      # DELETE /ts/pets/:id
 │   └── ts-store.ts             # Data persistence layer
-├── python/
-│   ├── create_pet.step.py      # POST /py/pets
-│   ├── get_pets.step.py        # GET /py/pets
-│   ├── get_pet.step.py         # GET /py/pets/:id
-│   ├── update_pet.step.py      # PUT /py/pets/:id
-│   ├── delete_pet.step.py      # DELETE /py/pets/:id
-│   └── services/
-│       ├── pet_store.py        # Data persistence layer
-│       └── types.py            # Type definitions
-└── motia-workbench.json        # Workflow configuration
+└── python/
+    ├── create_pet.step.py      # POST /py/pets
+    ├── get_pets.step.py        # GET /py/pets
+    ├── get_pet.step.py         # GET /py/pets/:id
+    ├── update_pet.step.py      # PUT /py/pets/:id
+    └── delete_pet.step.py      # DELETE /py/pets/:id
+motia-workbench.json            # Workflow configuration
 ```
 
 ## Data Storage

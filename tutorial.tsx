@@ -9,8 +9,7 @@ export const steps: TutorialStep[] = [
     },
     description: () => (
       <p>
-        Motia is an all-in-one framework for modern backend systems. Out of the box support for API endpoints,
-        background jobs, scheduled tasks and agentic workflow orchestration through a unified runtime.
+        Motia is an all-in-one framework for modern backend systems. Every backend pattern, API endpoints, background jobs, queues, workflows, AI agents, streaming, observability, and state, is expressed with the same primitive.
         <br />
         <br />
         This tutorial focuses on building <b>CRUD API endpoints</b> - the fundamental building blocks of most web applications.
