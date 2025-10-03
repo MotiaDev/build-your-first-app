@@ -446,3 +446,45 @@ This example demonstrates:
 10. **Audit Logging**: Comprehensive event emission for system monitoring
 
 This is a demonstration project for Motia workflow capabilities, showcasing modern backend patterns including CRUD operations, background job processing, and event-driven architecture.
+
+## Tutorial System Documentation
+
+This project includes an interactive tutorial system for Motia Workbench. If you're building or maintaining tutorials:
+
+📚 **[TUTORIAL_GUIDE.md](./TUTORIAL_GUIDE.md)** - Complete guide on creating tutorials
+- How to write features.json files
+- How to write tutorial.tsx files
+- How to connect features to tutorial steps
+- Libraries and elements reference
+- Best practices and troubleshooting
+
+⚡ **[TUTORIAL_CHEATSHEET.md](./TUTORIAL_CHEATSHEET.md)** - Quick reference cheat sheet
+- Features.json template
+- Tutorial.tsx template
+- Common selectors and patterns
+- Common mistakes to avoid
+
+### Tutorial Quick Start
+
+1. **Define code features** in `<stepfile>-features.json`:
+   ```json
+   {
+     "id": "api-configuration",
+     "title": "API Configuration",
+     "description": "POST endpoint configuration",
+     "lines": ["25-34"]
+   }
+   ```
+
+2. **Create tutorial step** in `tutorial.tsx`:
+   ```typescript
+   {
+     title: 'API Configuration',
+     description: () => <p>Explains the config...</p>,
+     before: [
+       { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') }
+     ]
+   }
+   ```
+
+See the documentation files above for complete details!

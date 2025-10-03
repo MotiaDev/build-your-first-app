@@ -3,42 +3,42 @@
     "id": "api-configuration",
     "title": "API Endpoint Configuration",
     "description": "POST endpoint at /ts/pets for creating new pets with comprehensive validation schema.",
-    "lines": ["8-15"]
+    "lines": ["25-34"]
   },
   {
     "id": "request-validation",
     "title": "Request Body Schema",
     "description": "Zod schema validation for pet data including name, species, and age with proper error handling.",
-    "lines": ["6-10"]
+    "lines": ["7-11"]
   },
   {
     "id": "pet-creation",
     "title": "Pet Object Creation",
     "description": "Creates pet object with status logic, ID generation, and proper data structure.",
-    "lines": ["28-34"]
+    "lines": ["41-45"]
   },
   {
     "id": "event-emission",
     "title": "Workflow Trigger",
     "description": "Emits 'ts.pet.created' and 'ts.feeding.reminder.enqueued' events to trigger background jobs.",
-    "lines": ["36-51"]
+    "lines": ["56-79"]
   },
   {
     "id": "success-response",
     "title": "Success Response",
     "description": "Returns pet details including ID, name, species, status, and creation timestamp.",
-    "lines": ["53"]
+    "lines": ["81"]
   },
   {
     "id": "error-handling",
     "title": "Error Handling",
     "description": "Comprehensive error handling for validation errors and unexpected failures.",
-    "lines": ["54-67"]
+    "lines": ["82-103"]
   },
   {
     "id": "logging",
     "title": "Logging",
     "description": "Structured logging for pet creation events and error tracking.",
-    "lines": ["30-33", "61-63"]
+    "lines": ["47-54", "95-97"]
   }
 ]

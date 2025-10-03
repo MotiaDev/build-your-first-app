@@ -73,48 +73,22 @@ export const steps: TutorialStep[] = [
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Step Config',
-    description: () => (
-      <div>
-        <p>
-          All Steps are defined by two main components, the <b>configuration</b> and the <b>handler</b>.
-          <br />
-          <br />
-        Let's start with the configuration, the common config attributes are
-          <i>type, name, description, and flows</i>.<br />
-        <br />
-        </p>
-        <ul>
-        <li>
-            The <b>type</b> attribute is important since it declares the type of Step primitive
-        </li>
-          <li>
-            The <b>flows</b> attribute will associate your Step with a given flow or set of flows.
-          </li>
-          <li>
-            The <b>name</b> and <b>description</b> attributes will provide context in the visualization and
-            observability tools.
-          </li>
-        </ul>
-      </div>
-    ),
-    before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('apitrigger') },
-      { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') },
-    ],
-  },
-  {
-    elementXpath: workbenchXPath.sidebarContainer,
     title: 'API Step Configuration',
     description: () => (
       <p>
-        There are specific configuration attributes for an API Step, let's start with the <b>method</b> attribute. This
-        will declare the type of HTTP method used to talk to your API Step.
+        All Steps are defined by a <b>configuration</b> and a <b>handler</b>. Let's look at the configuration.
         <br />
-        Through the <b>path</b> attribute you'll declare the url path used to trigger your API Step
+        <br />
+        For API Steps, you'll define attributes like <b>method</b> (the HTTP method) and <b>path</b> (the URL path).
+        <br />
+        <br />
+        You'll also set <b>type</b>, <b>name</b>, and <b>flows</b> to declare the step type and associate it with your workflows.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('api-configuration') }],
+    before: [
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tscreatepet') },
+      { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') }
+    ],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -251,7 +225,7 @@ export const steps: TutorialStep[] = [
     ),
     before: [
       { type: 'click', selector: workbenchXPath.flows.previewButton('tssetnextfeedingreminder') },
-      { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') },
+      { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
     ],
   },
   {
@@ -293,18 +267,18 @@ export const steps: TutorialStep[] = [
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Storing Data in State',
+    title: 'Background Job Business Logic',
     link: 'https://www.motia.dev/docs/concepts/state-management',
     description: () => (
       <p>
-        Let's take a closer look at storing data in state.
+        Let's take a closer look at the background job's business logic.
         <br />
         <br />
-        In this example we are persisting the result of a third party HTTP request in <b>State</b>, scoping it to a
-        group id named "orders".
+        In this section, the job calculates the next feeding time and updates the pet record with feeding schedules
+        and welcome notes. This demonstrates how background jobs can perform complex data operations asynchronously.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('state') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('business-logic') }],
   },
 
   // Cron Steps
@@ -495,7 +469,7 @@ export const steps: TutorialStep[] = [
   // Tracing
 
   {
-    elementXpath: workbenchXPath.tracing.details,
+    elementXpath: workbenchXPath.links.tracing,
     title: 'Tracing',
     description: () => (
       <p>
@@ -503,96 +477,72 @@ export const steps: TutorialStep[] = [
         observability tools.
         <br />
         <br />
-        This section shows all Step executions associated with the selected trace, including:
+        The <b>Tracing</b> section shows all trace executions from your API requests and workflow runs.
         <br />
         <br />
-        1. <b>TsCreatePet</b> - Initial pet creation and event emission
+        Each trace shows the complete execution path including:
         <br />
-        2. <b>TsSetNextFeedingReminder</b> - Background job for feeding reminders
+        • <b>TsCreatePet</b> - Initial pet creation and event emission
         <br />
-        3. <b>TsDeletionReaper</b> - Cron job for data cleanup (if applicable)
+        • <b>TsSetNextFeedingReminder</b> - Background job for feeding reminders
         <br />
         <br />
-        Each timeline segment shows execution time and you can click on any segment for detailed logs.
+        Click on any trace to see its timeline and detailed execution logs.
+        <br />
+        <br />
+        💡 <b>Tracing helps you understand the complete flow of your workflow executions.</b>
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.links.tracing },
-      { type: 'click', selector: workbenchXPath.tracing.trace(1) },
-      { type: 'click', selector: workbenchXPath.tracing.timeline(1) }
+      { type: 'click', selector: workbenchXPath.closePanelButton, optional: true },
+      { type: 'click', selector: workbenchXPath.links.tracing }
     ],
-  },
-  {
-    elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Trace Details',
-    description: () => (
-      <p>
-        This is the <b>Trace Details View</b>, this will allow you to look deeper into the logs raised during the
-        execution of a Step.
-        <br />
-        <br />
-        💡 This is a simplified version of the logs, if you wish to look further into a log you will need to use the{' '}
-        <b>Logs Tool</b>.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.tracing.timeline(1) }],
   },
 
   // Logs
 
   {
-    elementXpath: workbenchXPath.logs.searchContainer,
+    elementXpath: workbenchXPath.links.logs,
     title: 'Logs',
     description: () => (
       <p>
         Let's take a look at your execution logs. The <b>Logs Tool</b> shows all log messages with their associated <b>Trace ID</b>.
         <br />
         <br />
-        By clicking a <b>Trace ID</b>, your search is updated to match results associated with that specific trace execution.
+        Click on any log entry to see its details, or click on a <b>Trace ID</b> to filter logs by that specific trace.
         <br />
         <br />
         💡 This helps you debug and monitor your workflow execution by filtering logs to specific traces.
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.links.logs },
-      { type: 'click', selector: workbenchXPath.logs.traceColumn(1) }
+      { type: 'click', selector: workbenchXPath.closePanelButton, optional: true },
+      { type: 'click', selector: workbenchXPath.links.logs }
     ],
-  },
-  {
-    elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Logs',
-    description: () => (
-      <p>
-        When you click on a log row, it will open the <b>Log Details View</b>.
-        <br />
-        <br />
-        In here you will be able to look at your log details (<b>Log Level</b>, <b>Timestamp</b>, <b>Step Name</b>,{' '}
-        <b>Flow Name</b>, and <b>Trace ID</b>), along with any additional context you've provided in your log call.
-      </p>
-    ),
   },
 
   // States
 
   {
-    elementXpath: workbenchXPath.sidebarContainer,
+    elementXpath: workbenchXPath.links.states,
     title: 'State Management',
     description: () => (
       <p>
         Ok now that we've seen the observability tools, let's take a look at the <b>State Management Tool</b>.
         <br />
         <br />
-        This section presents the details for a given state key, from here you will be able to manage the value assigned
-        to the selected state key.
+        The State Management Tool allows you to view and manage persisted state key/value pairs from your workflow executions.
         <br />
         <br />
-        The State Management Tool shows all of your persisted state key/value pairs from workflow executions.
+        If you have state data from your Steps, you can click on any state key to view its details and manage its value.
+        <br />
+        <br />
+        💡 <b>State management allows your workflows to persist data across Step executions.</b>
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.links.states },
-      { type: 'click', selector: workbenchXPath.states.row(1) }
+      { type: 'click', selector: workbenchXPath.closePanelButton, optional: true },
+      { type: 'click', selector: workbenchXPath.links.states }
     ],
   },
 
@@ -619,8 +569,10 @@ export const steps: TutorialStep[] = [
     ),
     before: [
       { type: 'click', selector: workbenchXPath.closePanelButton, optional: true },
+      { type: 'click', selector: workbenchXPath.links.flows },
+      { type: 'click', selector: workbenchXPath.flows.node('tssetnextfeedingreminder') },
       { type: 'click', selector: workbenchXPath.flows.previewButton('tssetnextfeedingreminder') },
-      { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') }
+      { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') }
     ],
   },
 
@@ -647,6 +599,7 @@ export const steps: TutorialStep[] = [
     ),
     before: [
       { type: 'click', selector: workbenchXPath.closePanelButton, optional: true },
+      { type: 'click', selector: workbenchXPath.flows.node('tsdeletionreaper') },
       { type: 'click', selector: workbenchXPath.flows.previewButton('tsdeletionreaper') },
       { type: 'click', selector: workbenchXPath.flows.feature('cron-configuration') }
     ],
@@ -674,7 +627,10 @@ export const steps: TutorialStep[] = [
         💡 <b>This demonstrates the power of event-driven architecture for workflow orchestration.</b>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
+    before: [
+      { type: 'click', selector: workbenchXPath.closePanelButton, optional: true },
+      { type: 'click', selector: workbenchXPath.links.endpoints }
+    ],
   },
   {
     elementXpath: workbenchXPath.endpoints.callPanel,
@@ -783,4 +739,5 @@ export const steps: TutorialStep[] = [
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
   },
 ]
+
 

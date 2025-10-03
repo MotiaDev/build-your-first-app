@@ -84,6 +84,10 @@
         "y": 300,
         "sourceHandlePosition": "top"
       },
+      "steps/typescript/set-next-feeding-reminder.job.step.ts": {
+        "x": -510,
+        "y": 488
+      },
       "steps/typescript/get-pets.step.ts": {
         "x": -800,
         "y": 300
@@ -92,22 +96,18 @@
         "x": -600,
         "y": 300
       },
+      "steps/typescript/deletion-reaper.cron.step.ts": {
+        "x": 55,
+        "y": 271
+      },
       "steps/typescript/delete-pet.step.ts": {
         "x": -200,
         "y": 300
       },
       "steps/typescript/create-pet.step.ts": {
-        "x": -1025,
-        "y": 294,
+        "x": -848,
+        "y": 490,
         "sourceHandlePosition": "right"
-      },
-      "steps/typescript/deletion-reaper.cron.step.ts": {
-        "x": 55,
-        "y": 271
-      },
-      "steps/typescript/set-next-feeding-reminder.job.step.ts": {
-        "x": -825,
-        "y": 817
       }
     }
   }
