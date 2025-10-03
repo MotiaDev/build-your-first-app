@@ -4,64 +4,71 @@
     "title": "Step Configuration", 
     "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
     "lines": [
-      "5-12"
+      "20-29"
     ]
   },
   {
     "id": "api-configuration",
-    "title": "API Step",
-    "description": "Definition of an API endpoint for creating pets",
+    "title": "API Endpoint Configuration",
+    "description": "POST endpoint at /ts/pets for creating new pets with type, name, path, method, and emits configuration.",
     "lines": [
-      "8-9"
+      "20-29"
     ]
   },
   {
     "id": "request-validation",
-    "title": "Request Validation",
-    "description": "Validate incoming request data to ensure it meets the expected format and constraints.",
+    "title": "Request Body Schema",
+    "description": "Zod schema validation for pet data including name, species, and age with proper constraints.",
     "lines": [
-      "16-22"
+      "7-11"
     ]
   },
   {
-    "id": "data-processing",
-    "title": "Data Processing",
-    "description": "Process the validated data and create a new pet record in the store.",
+    "id": "pet-creation",
+    "title": "Pet Creation",
+    "description": "Creates a new pet record in the store using validated data from the request.",
     "lines": [
-      "23"
+      "36-40"
     ]
   },
   {
-    "id": "event-driven-architecture",
-    "title": "Emits",
-    "description": "We can define the events that this step will emit, this is how we can trigger other Motia Steps.",
+    "id": "event-emission",
+    "title": "Event Emission",
+    "description": "Emits 'pet.created' event with type-safe data to notify other parts of the system.",
     "lines": [
-      "10",
-      "29-34"
+      "51-64"
     ]
   },
   {
     "id": "handler",
-    "title": "Handler",
-    "description": "The handler is the function that will be executed when the step is triggered. This one receives the request and creates a new pet.",
+    "title": "Handler Function",
+    "description": "The handler function that executes when the API endpoint is called, processing the request and returning a response.",
     "lines": [
-      "14-37"
+      "31-89"
     ]
   },
   {
-    "id": "logger",
-    "title": "Logger",
-    "description": "The logger is a utility that allows you to log messages. It is available in the handler function and automatically ties to the trace id of the request.",
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for pet creation with context including petId, name, species, and status.",
     "lines": [
-      "25-27"
+      "42-49"
     ]
   },
   {
-    "id": "http-response",
-    "title": "HTTP Response",
-    "description": "The handler returns a response to the client with the created pet data and appropriate status code.",
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns HTTP 201 status with the created pet object in the response body.",
     "lines": [
-      "36"
+      "66"
+    ]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Comprehensive error handling for validation errors (400) and unexpected failures (500).",
+    "lines": [
+      "67-88"
     ]
   }
 ]
