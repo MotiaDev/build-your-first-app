@@ -4,15 +4,15 @@
     "title": "Step Configuration", 
     "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
     "lines": [
-      "5-12"
+      "4-11"
     ]
   },
   {
     "id": "cron-configuration",
     "title": "Cron Configuration",
-    "description": "Defines the cron schedule for when this cleanup job should run automatically.",
+    "description": "Defines the cron schedule for when this cleanup job should run automatically. This job runs daily at 2:00 AM.",
     "lines": [
-      "9"
+      "8"
     ]
   },
   {
@@ -20,7 +20,7 @@
     "title": "Cron Job Handler",
     "description": "The handler that runs on the scheduled interval to clean up old soft-deleted pets.",
     "lines": [
-      "14-35"
+      "13-99"
     ]
   },
   {
@@ -28,7 +28,7 @@
     "title": "Data Scanning",
     "description": "Scans the pet store for pets that have been soft-deleted and are ready for permanent removal.",
     "lines": [
-      "20-25"
+      "19-37"
     ]
   },
   {
@@ -36,7 +36,7 @@
     "title": "Cleanup Logic",
     "description": "Implements the logic for permanently removing pets that have passed their purge date.",
     "lines": [
-      "25-30"
+      "39-73"
     ]
   },
   {
@@ -44,7 +44,7 @@
     "title": "Logging",
     "description": "Logs the cleanup activities for monitoring and audit purposes.",
     "lines": [
-      "28-30"
+      "14-16", "22-24", "47-54", "75-81"
     ]
   },
   {
@@ -52,7 +52,7 @@
     "title": "Error Handling",
     "description": "Handles errors gracefully during the cleanup process to ensure system stability.",
     "lines": [
-      "31-35"
+      "94-98"
     ]
   }
 ]

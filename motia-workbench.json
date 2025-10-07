@@ -80,33 +80,34 @@
     "id": "TsPetManagement",
     "config": {
       "steps/typescript/update-pet.step.ts": {
-        "x": -400,
-        "y": 300,
+        "x": -797,
+        "y": 494,
         "sourceHandlePosition": "top"
       },
       "steps/typescript/set-next-feeding-reminder.job.step.ts": {
-        "x": -510,
-        "y": 488
+        "x": -239,
+        "y": 348,
+        "targetHandlePosition": "left"
       },
       "steps/typescript/get-pets.step.ts": {
-        "x": -800,
-        "y": 300
+        "x": -904,
+        "y": 341
       },
       "steps/typescript/get-pet.step.ts": {
-        "x": -600,
-        "y": 300
+        "x": -1018,
+        "y": 497
       },
       "steps/typescript/deletion-reaper.cron.step.ts": {
-        "x": 55,
-        "y": 271
+        "x": -243,
+        "y": 521
       },
       "steps/typescript/delete-pet.step.ts": {
-        "x": -200,
-        "y": 300
+        "x": -922,
+        "y": 646
       },
       "steps/typescript/create-pet.step.ts": {
-        "x": -848,
-        "y": 490,
+        "x": -567,
+        "y": 491,
         "sourceHandlePosition": "right"
       }
     }

@@ -4,13 +4,13 @@
     "title": "Step Configuration", 
     "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
     "lines": [
-      "5-12"
+      "4-11"
     ]
   },
   {
     "id": "event-subscription",
     "title": "Event Subscription",
-    "description": "This background job subscribes to the ts.pet.created event that gets emitted when a new pet is created.",
+    "description": "This background job subscribes to the ts.feeding.reminder.enqueued event that gets emitted when a new pet is created.",
     "lines": [
       "8"
     ]
@@ -18,33 +18,33 @@
   {
     "id": "input-schema",
     "title": "Input Schema",
-    "description": "Defines the structure of the event data that will be received when a pet is created.",
+    "description": "Defines the structure of the event data that will be received when a feeding reminder is enqueued.",
     "lines": [
-      "14-18"
+      "13-15"
     ]
   },
   {
     "id": "handler",
     "title": "Background Job Handler",
-    "description": "The handler processes the pet creation event asynchronously, calculating feeding schedules and scheduling reminders.",
+    "description": "The handler processes the feeding reminder event asynchronously, calculating feeding schedules and updating pet records.",
     "lines": [
-      "20-45"
+      "13-64"
     ]
   },
   {
     "id": "business-logic",
     "title": "Business Logic",
-    "description": "Contains the core logic for determining feeding schedules based on pet age and species.",
+    "description": "Contains the core logic for calculating next feeding time and updating pet records with welcome notes.",
     "lines": [
-      "25-35"
+      "22-38"
     ]
   },
   {
     "id": "event-emission",
     "title": "Event Emission",
-    "description": "Emits events to trigger other parts of the workflow, such as scheduling feeding reminders.",
+    "description": "Emits events to signal completion of the feeding reminder job.",
     "lines": [
-      "40-44"
+      "48-57"
     ]
   },
   {
@@ -52,7 +52,7 @@
     "title": "Logging",
     "description": "Logs the background job execution for monitoring and debugging purposes.",
     "lines": [
-      "30-32"
+      "17-19", "40-46"
     ]
   }
 ]

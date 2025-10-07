@@ -13,11 +13,11 @@ export const steps: TutorialStep[] = [
         background jobs, scheduled tasks and agentic workflow orchestration through a unified runtime.
         <br />
         <br />
-        This tutorial is an <b>extension of the CRUD API tutorial</b> that adds <b>workflow orchestration</b> capabilities.
-        You'll learn how to build complete workflows that combine API endpoints with <b>async background jobs</b> and <b>scheduled cron jobs</b>.
+        This tutorial is an <b>extension of the CRUD API tutorial</b> that adds <b>background jobs</b> capabilities.
+        You'll learn how to combine API endpoints with <b>async background jobs</b> (Event Steps) and <b>scheduled cron jobs</b> (Cron Steps).
         <br />
         <br />
-        The workflow includes:
+        This tutorial covers:
         <br />
         • <b>CRUD API endpoints</b> for pet management (Create, Read, Update, Delete)
         <br />
@@ -27,7 +27,7 @@ export const steps: TutorialStep[] = [
         <br />
         <br />
         Let's start with <b>Workbench</b>, it is a development tool provided by Motia's ecosystem, from here you'll be
-        able to visualize your complete workflow and test the orchestration.
+        able to visualize your steps and test background job execution.
         <br />
         <br />
         💡 If you haven't completed the basic CRUD tutorial yet, we recommend starting there first.
@@ -47,11 +47,11 @@ export const steps: TutorialStep[] = [
         you to create new pets by exposing an HTTP POST endpoint for external traffic.
         <br />
         <br />
-        This step also demonstrates <b>workflow orchestration</b> - when a pet is created, it automatically triggers
-        background jobs for feeding reminders and other automated processes.
+        This step demonstrates how API operations can trigger <b>background jobs</b> - when a pet is created, it automatically emits events
+        that trigger background jobs for feeding reminders and other automated processes.
         <br />
         <br />
-        💡 <b>This is the entry point of our complete workflow that combines CRUD operations with background processing.</b>
+        💡 <b>This is the entry point that combines CRUD operations with background job processing.</b>
       </p>
     ),
     before: [
@@ -192,7 +192,7 @@ export const steps: TutorialStep[] = [
     link: 'https://www.motia.dev/docs/concepts/steps/event',
     description: () => (
       <p>
-        Now let's explore <b>async background jobs</b> in our pet management workflow. After a pet is created, 
+        Now let's explore <b>async background jobs</b> in our pet management system. After a pet is created, 
         we need to set up automated feeding reminders.
         <br />
         <br />
@@ -200,7 +200,7 @@ export const steps: TutorialStep[] = [
         <b>Event Steps</b> are essential for Motia's event-driven architecture and enable background processing.
         <br />
         <br />
-        💡 <b>Event Steps are triggered by internal events, making them perfect for background jobs and workflow orchestration.</b>
+        💡 <b>Event Steps are triggered by internal events, making them perfect for async background jobs.</b>
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
@@ -217,7 +217,7 @@ export const steps: TutorialStep[] = [
         The <b>Event Step</b> then processes the background job by setting up automated feeding schedules
         based on the pet's age, species, and health status.
         <br /> <br />
-        This demonstrates how <b>Event Steps</b> enable background processing and workflow orchestration
+        This demonstrates how <b>Event Steps</b> enable background processing
         in response to API operations.
         <br /> <br />
         💡 <b>Background jobs allow you to perform complex, time-consuming tasks without blocking API responses.</b>
@@ -289,8 +289,8 @@ export const steps: TutorialStep[] = [
     link: 'https://www.motia.dev/docs/concepts/steps/cron',
     description: () => (
       <p>
-        Now let's explore <b>scheduled cron jobs</b> in our pet management workflow. So far you've learned about 
-        <b>CRUD API endpoints</b> and <b>async background jobs</b>.
+        Now let's explore <b>scheduled cron jobs</b> in our pet management system. So far you've learned about 
+        <b>CRUD API endpoints</b> and <b>async background jobs</b> (Event Steps).
         <br />
         <br />
         The <b>CRON</b> Step allows you to schedule tasks that run automatically at specified intervals.
@@ -354,7 +354,7 @@ export const steps: TutorialStep[] = [
     title: 'Endpoints',
     description: () => (
       <p>
-        Now that we've looked at Motia primitives, let's trigger the API Step from the <b>endpoints</b> section in
+        Now that we've looked at Motia primitives (API Steps, Event Steps, and Cron Steps), let's trigger the API Step from the <b>endpoints</b> section in
         Workbench.
         <br />
         <br />
@@ -473,11 +473,11 @@ export const steps: TutorialStep[] = [
     title: 'Tracing',
     description: () => (
       <p>
-        Great! You have triggered your first flow, now let's take a look at our example flow behavior using Workbench's
+        Great! You have triggered your first API request with background jobs, now let's take a look at the execution using Workbench's
         observability tools.
         <br />
         <br />
-        The <b>Tracing</b> section shows all trace executions from your API requests and workflow runs.
+        The <b>Tracing</b> section shows all trace executions from your API requests and background job runs.
         <br />
         <br />
         Each trace shows the complete execution path including:
@@ -490,7 +490,7 @@ export const steps: TutorialStep[] = [
         Click on any trace to see its timeline and detailed execution logs.
         <br />
         <br />
-        💡 <b>Tracing helps you understand the complete flow of your workflow executions.</b>
+        💡 <b>Tracing helps you understand the complete flow of your API requests and background job executions.</b>
       </p>
     ),
     before: [
@@ -512,7 +512,7 @@ export const steps: TutorialStep[] = [
         Click on any log entry to see its details, or click on a <b>Trace ID</b> to filter logs by that specific trace.
         <br />
         <br />
-        💡 This helps you debug and monitor your workflow execution by filtering logs to specific traces.
+        💡 This helps you debug and monitor your API requests and background job execution by filtering logs to specific traces.
       </p>
     ),
     before: [
@@ -531,13 +531,13 @@ export const steps: TutorialStep[] = [
         Ok now that we've seen the observability tools, let's take a look at the <b>State Management Tool</b>.
         <br />
         <br />
-        The State Management Tool allows you to view and manage persisted state key/value pairs from your workflow executions.
+        The State Management Tool allows you to view and manage persisted state key/value pairs from your step executions.
         <br />
         <br />
         If you have state data from your Steps, you can click on any state key to view its details and manage its value.
         <br />
         <br />
-        💡 <b>State management allows your workflows to persist data across Step executions.</b>
+        💡 <b>State management allows you to persist data across Step executions.</b>
       </p>
     ),
     before: [
@@ -557,11 +557,11 @@ export const steps: TutorialStep[] = [
         Now let's explore the <b>background job</b> that gets triggered when a pet is created.
         <br />
         <br />
-        The <b>Set Next Feeding Reminder</b> job automatically schedules feeding reminders based on the pet's age and species.
-        This demonstrates how API operations can trigger background processing workflows.
+        The <b>Set Next Feeding Reminder</b> job automatically schedules feeding reminders and adds welcome notes to newly created pets.
+        This demonstrates how API operations can trigger background job processing.
         <br />
         <br />
-        This background job subscribes to the <b>ts.pet.created</b> event and processes it asynchronously, determining feeding schedules and creating reminder events.
+        This background job subscribes to the <b>ts.feeding.reminder.enqueued</b> event and processes it asynchronously, calculating next feeding times and updating pet records with welcome messages.
         <br />
         <br />
         💡 <b>Background jobs are triggered by events and run asynchronously without blocking the API response.</b>
@@ -609,10 +609,10 @@ export const steps: TutorialStep[] = [
 
   {
     elementXpath: workbenchXPath.endpoints.endpoint('POST', '/ts/pets'),
-    title: 'Complete Workflow Test',
+    title: 'Complete Background Jobs Test',
     description: () => (
       <p>
-        Let's test the complete workflow by creating a new pet and observing how it triggers background jobs.
+        Let's test the complete flow by creating a new pet and observing how it triggers background jobs.
         <br />
         <br />
         When you create a pet, you'll see:
@@ -624,7 +624,7 @@ export const steps: TutorialStep[] = [
         • Feeding reminders are scheduled automatically
         <br />
         <br />
-        💡 <b>This demonstrates the power of event-driven architecture for workflow orchestration.</b>
+        💡 <b>This demonstrates the power of event-driven architecture for background job processing.</b>
       </p>
     ),
     before: [
@@ -634,16 +634,16 @@ export const steps: TutorialStep[] = [
   },
   {
     elementXpath: workbenchXPath.endpoints.callPanel,
-    title: 'Create Pet to Trigger Workflow',
+    title: 'Create Pet to Trigger Background Jobs',
     description: () => (
       <p>
-        Create a new pet to see the complete workflow in action. The tutorial will automatically fill in test data.
+        Create a new pet to see the background jobs in action. The tutorial will automatically fill in test data.
         <br />
         <br />
         After creating the pet, check the logs and tracing to see how the background jobs are triggered.
         <br />
         <br />
-        💡 <b>Watch how the workflow orchestrates multiple steps automatically.</b>
+        💡 <b>Watch how the API operation triggers background jobs automatically.</b>
       </p>
     ),
     before: [
@@ -661,16 +661,16 @@ export const steps: TutorialStep[] = [
   },
   {
     elementXpath: workbenchXPath.endpoints.response,
-    title: 'Workflow Execution',
+    title: 'Background Jobs Execution',
     description: () => (
       <p>
-        Click the <b>Play</b> button to create the pet and trigger the complete workflow.
+        Click the <b>Play</b> button to create the pet and trigger the background jobs.
         <br />
         <br />
         You'll see the pet creation response, and then can check the logs to see background jobs executing.
         <br />
         <br />
-        💡 <b>The workflow demonstrates how API operations can trigger complex background processing.</b>
+        💡 <b>This demonstrates how API operations can trigger complex background job processing.</b>
       </p>
     ),
     before: [
@@ -686,21 +686,21 @@ export const steps: TutorialStep[] = [
     link: 'https://www.motia.dev/docs',
     description: () => (
       <p>
-        You've completed our Motia Workflow Orchestration tutorial! 🎉
+        You've completed our Motia Background Jobs tutorial! 🎉
         <br />
         <br />
         You've learned how to build a complete pet management system that combines:
         <br />
         • <b>CRUD API endpoints</b> for pet management (Create, Read, Update, Delete)
         <br />
-        • <b>Async background jobs</b> for feeding reminders and automated processes
+        • <b>Async background jobs</b> (Event Steps) for feeding reminders and automated processes
         <br />
-        • <b>Scheduled cron jobs</b> for data cleanup and maintenance
+        • <b>Scheduled cron jobs</b> (Cron Steps) for data cleanup and maintenance
         <br />
-        • <b>Event-driven architecture</b> for workflow orchestration
+        • <b>Event-driven architecture</b> for triggering background jobs
         <br />
         <br />
-        You've also learned how to navigate Workbench, test workflows, and monitor execution
+        You've also learned how to navigate Workbench, test API endpoints with background jobs, and monitor execution
         through tracing and logging.
         <br />
         <br />
@@ -733,7 +733,7 @@ export const steps: TutorialStep[] = [
         .
         <br />
         <br />
-        Thank you for completing our workflow orchestration tutorial!
+        Thank you for completing our background jobs tutorial!
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
