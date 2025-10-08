@@ -7,7 +7,7 @@ export const config = {
   name: 'TsUpdatePet',
   path: '/ts/pets/:id',
   method: 'PUT',
-  emits: ['ts.pet.status.update.requested'],
+  emits: [],
   flows: ['TsPetManagement']
 };
 

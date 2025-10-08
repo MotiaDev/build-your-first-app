@@ -70,41 +70,41 @@
   {
     "id": "PyPetManagement",
     "config": {
-      "steps/python/create_pet.step.py": {
+      "steps/python/create_pet_step.py": {
         "x": -800,
         "y": 100,
         "sourceHandlePosition": "right"
       },
-      "steps/python/set_next_feeding_reminder.job.step.py": {
+      "steps/python/set_next_feeding_reminder.job_step.py": {
         "x": -500,
         "y": 200,
         "targetHandlePosition": "left",
         "sourceHandlePosition": "right"
       },
-      "steps/python/pet_lifecycle_orchestrator.step.py": {
+      "steps/python/pet_lifecycle_orchestrator_step.py": {
         "x": -200,
         "y": 150,
         "targetHandlePosition": "left",
         "sourceHandlePosition": "bottom"
       },
-      "steps/python/get_pets.step.py": {
+      "steps/python/get_pets_step.py": {
         "x": -800,
         "y": 300
       },
-      "steps/python/get_pet.step.py": {
+      "steps/python/get_pet_step.py": {
         "x": -600,
         "y": 300
       },
-      "steps/python/update_pet.step.py": {
+      "steps/python/update_pet_step.py": {
         "x": -400,
         "y": 300,
         "sourceHandlePosition": "top"
       },
-      "steps/python/delete_pet.step.py": {
+      "steps/python/delete_pet_step.py": {
         "x": -200,
         "y": 300
       },
-      "steps/python/deletion_reaper.cron.step.py": {
+      "steps/python/deletion_reaper.cron_step.py": {
         "x": 100,
         "y": 200
       }

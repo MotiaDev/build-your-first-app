@@ -80,15 +80,8 @@ export const config = {
   type: 'event',
   name: 'TsPetLifecycleOrchestrator',
   description: 'Pet lifecycle state management with staff interaction points',
-  subscribes: [
-    'ts.pet.created', 
-    'ts.feeding.reminder.completed',
-    'ts.pet.status.update.requested'
-  ],
-  emits: [
-    'ts.lifecycle.transition.completed',
-    'ts.lifecycle.transition.rejected'
-  ],
+  subscribes: [],
+  emits: [],
   flows: ['TsPetManagement']
 };
 

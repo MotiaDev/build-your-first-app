@@ -68,15 +68,8 @@ exports.config = {
   type: 'event',
   name: 'JsPetLifecycleOrchestrator',
   description: 'Pet lifecycle state management with staff interaction points',
-  subscribes: [
-    'js.pet.created', 
-    'js.feeding.reminder.completed',
-    'js.pet.status.update.requested'
-  ],
-  emits: [
-    'js.lifecycle.transition.completed',
-    'js.lifecycle.transition.rejected'
-  ],
+  subscribes: [],
+  emits: [],
   flows: ['JsPetManagement']
 };
 

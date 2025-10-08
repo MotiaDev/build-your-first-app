@@ -7,7 +7,7 @@ export const config = {
   name: 'TsDeletePet',
   path: '/ts/pets/:id',
   method: 'DELETE',
-  emits: ['ts.pet.soft.deleted'],
+  emits: [],
   flows: ['TsPetManagement']
 };
 

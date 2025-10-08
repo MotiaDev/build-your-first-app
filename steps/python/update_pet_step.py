@@ -4,7 +4,7 @@ config = {
     "name": "PyUpdatePet", 
     "path": "/py/pets/:id", 
     "method": "PUT", 
-    "emits": ["py.pet.status.update.requested"], 
+    "emits": [], 
     "flows": ["PyPetManagement"] 
 }
 

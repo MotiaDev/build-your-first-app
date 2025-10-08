@@ -6,7 +6,7 @@ export const config = {
   name: 'TsSetNextFeedingReminder',
   description: 'Background job that sets next feeding reminder and adds welcome notes',
   subscribes: ['ts.feeding.reminder.enqueued'],
-  emits: ['ts.feeding.reminder.completed'],
+  emits: [],
   flows: ['TsPetManagement']
 };
 

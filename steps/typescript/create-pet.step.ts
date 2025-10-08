@@ -7,7 +7,7 @@ export const config = {
   name: 'TsCreatePet',
   path: '/ts/pets',
   method: 'POST',
-  emits: ['ts.pet.created', 'ts.feeding.reminder.enqueued'],
+  emits: ['ts.feeding.reminder.enqueued'],
   flows: ['TsPetManagement']
 };
 

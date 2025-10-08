@@ -6,7 +6,7 @@ export const config = {
   name: 'TsPetEnrichment',
   description: 'Background job that enriches pet records with default notes and feeding schedule',
   subscribes: ['ts.pet.enrichment.enqueued'],
-  emits: ['ts.pet.enrichment.completed'],
+  emits: [],
   flows: ['pets']
 };
 
@@ -45,16 +45,7 @@ export const handler = async (input: any, context?: any) => {
       });
     }
 
-    if (emit) {
-      await emit({
-        topic: 'ts.pet.enrichment.completed',
-        data: { 
-          petId, 
-          completedAt: Date.now(),
-          processingTimeMs: Date.now() - enqueuedAt
-        }
-      });
-    }
+    // Pet enrichment completed successfully
 
   } catch (error: any) {
     if (logger) {

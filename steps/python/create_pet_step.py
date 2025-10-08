@@ -4,7 +4,7 @@ config = {
     "name": "PyCreatePet",
     "path": "/py/pets",
     "method": "POST",
-    "emits": ["py.pet.created", "py.feeding.reminder.enqueued"],
+    "emits": ["py.feeding.reminder.enqueued"],
     "flows": ["PyPetManagement"]
 }
 

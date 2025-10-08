@@ -6,7 +6,7 @@ exports.config = {
   name: 'JsDeletionReaper',
   description: 'Daily job that permanently removes pets scheduled for deletion',
   cron: '0 2 * * *', // Daily at 2:00 AM
-  emits: ['js.pet.purged', 'js.reaper.completed'],
+  emits: [],
   flows: ['JsPetManagement']
 };
 
