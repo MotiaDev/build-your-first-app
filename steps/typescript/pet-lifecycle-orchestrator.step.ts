@@ -80,7 +80,7 @@ export const config = {
   type: 'event',
   name: 'TsPetLifecycleOrchestrator',
   description: 'Pet lifecycle state management with staff interaction points',
-  subscribes: [],
+  subscribes: ['ts.pet.created', 'ts.feeding.reminder.completed', 'ts.pet.status.update.requested'],
   emits: [],
   flows: ['TsPetManagement']
 };
@@ -133,19 +133,7 @@ export const handler = async (input: any, context?: any) => {
         });
       }
       
-      if (emit) {
-        await emit({
-          topic: 'ts.lifecycle.transition.rejected',
-          data: {
-            petId,
-            currentStatus: pet.status,
-            requestedStatus,
-            eventType,
-            reason,
-            timestamp: Date.now()
-          }
-        });
-      }
+      // Transition rejected - no event emission needed
       return;
     }
 
@@ -183,22 +171,19 @@ export const handler = async (input: any, context?: any) => {
       });
     }
 
-    if (emit) {
-      await emit({
-        topic: 'ts.lifecycle.transition.completed',
-        data: {
-          petId,
-          oldStatus,
-          newStatus: rule.to,
-          eventType,
-          description: rule.description,
-          timestamp: Date.now()
-        }
+    // Transition completed successfully
+    if (logger) {
+      logger.info('✅ Pet status transition completed', { 
+        petId, 
+        oldStatus, 
+        newStatus: rule.to, 
+        eventType, 
+        description: rule.description 
       });
-
-      // Check for automatic progressions after successful transition
-      await processAutomaticProgression(petId, rule.to, emit, logger);
     }
+
+    // Check for automatic progressions after successful transition
+    await processAutomaticProgression(petId, rule.to, emit, logger);
 
   } catch (error: any) {
     if (logger) {
@@ -209,7 +194,7 @@ export const handler = async (input: any, context?: any) => {
 
 async function processAutomaticProgression(petId: string, currentStatus: Pet["status"], emit: any, logger: any) {
   // Define automatic progressions
-  const automaticProgressions: Record<Pet["status"], { to: Pet["status"], description: string }> = {
+  const automaticProgressions: Partial<Record<Pet["status"], { to: Pet["status"], description: string }>> = {
     'healthy': { to: 'available', description: 'Automatic progression - pet ready for adoption' },
     'ill': { to: 'under_treatment', description: 'Automatic progression - treatment started' },
     'recovered': { to: 'healthy', description: 'Automatic progression - recovery complete' }
@@ -248,23 +233,18 @@ async function processAutomaticProgression(petId: string, currentStatus: Pet["st
           });
         }
 
-        if (emit) {
-          await emit({
-            topic: 'ts.lifecycle.transition.completed',
-            data: {
-              petId,
-              oldStatus,
-              newStatus: rule.to,
-              eventType: 'status.update.requested',
-              description: progression.description,
-              automatic: true,
-              timestamp: Date.now()
-            }
+        // Automatic progression completed successfully
+        if (logger) {
+          logger.info('✅ Automatic progression completed', { 
+            petId, 
+            oldStatus, 
+            newStatus: rule.to, 
+            description: progression.description 
           });
-
-          // Check for further automatic progressions (for chaining like recovered → healthy → available)
-          await processAutomaticProgression(petId, rule.to, emit, logger);
         }
+
+        // Check for further automatic progressions (for chaining like recovered → healthy → available)
+        await processAutomaticProgression(petId, rule.to, emit, logger);
       } else if (logger) {
         logger.error('❌ Failed to apply automatic progression', { petId, oldStatus, newStatus: rule.to });
       }

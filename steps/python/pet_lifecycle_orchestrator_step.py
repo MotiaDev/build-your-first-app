@@ -72,10 +72,7 @@ config = {
         "py.feeding.reminder.completed",
         "py.pet.status.update.requested"
     ],
-    "emits": [
-        "py.lifecycle.transition.completed",
-        "py.lifecycle.transition.rejected"
-    ],
+    "emits": [],
     "flows": ["PyPetManagement"]
 }
 

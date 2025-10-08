@@ -12,30 +12,29 @@ declare module 'motia' {
   }
 
   interface Handlers {
-    'TsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'TsSetNextFeedingReminder': EventHandler<never, never>
-    'TsPetEnrichment': EventHandler<never, never>
+    'TsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.pet.status.update.requested'; data: never }>
+    'TsSetNextFeedingReminder': EventHandler<never, { topic: 'ts.feeding.reminder.completed'; data: never }>
     'TsPetLifecycleOrchestrator': EventHandler<never, never>
     'TsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'TsDeletionReaper': CronHandler<never>
     'TsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'TsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'ts.feeding.reminder.enqueued'; data: never }>
-    'JsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'JsSetNextFeedingReminder': EventHandler<never, never>
+    'TsCreatePet': ApiRouteHandler<{ name: string; species: 'dog' | 'cat' | 'bird' | 'other'; ageMonths: unknown }, unknown, { topic: 'ts.pet.created'; data: never } | { topic: 'ts.feeding.reminder.enqueued'; data: never }>
+    'JsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'js.pet.status.update.requested'; data: never }>
+    'JsSetNextFeedingReminder': EventHandler<never, { topic: 'js.feeding.reminder.completed'; data: never }>
     'JsPetLifecycleOrchestrator': EventHandler<never, never>
     'JsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'JsDeletionReaper': CronHandler<never>
     'JsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'JsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'js.feeding.reminder.enqueued'; data: never }>
-    'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PySetNextFeedingReminder': EventHandler<never, never>
+    'JsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'js.pet.created'; data: never } | { topic: 'js.feeding.reminder.enqueued'; data: never }>
+    'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.pet.status.update.requested'; data: never }>
+    'PySetNextFeedingReminder': EventHandler<never, { topic: 'py.feeding.reminder.completed'; data: never }>
     'PyPetLifecycleOrchestrator': EventHandler<never, never>
     'PyListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyDeletionReaper': CronHandler<never>
     'PyDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.feeding.reminder.enqueued'; data: never }>
+    'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.pet.created'; data: never } | { topic: 'py.feeding.reminder.enqueued'; data: never }>
   }
 }

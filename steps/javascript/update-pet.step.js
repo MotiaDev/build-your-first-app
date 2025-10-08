@@ -6,7 +6,7 @@ exports.config = {
   name: 'JsUpdatePet', 
   path: '/js/pets/:id', 
   method: 'PUT', 
-  emits: [], 
+  emits: ['js.pet.status.update.requested'], 
   flows: ['JsPetManagement'] 
 };
 

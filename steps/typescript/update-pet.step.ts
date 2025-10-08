@@ -1,73 +1,104 @@
 // steps/typescript/update-pet.step.ts
-// import { ApiRouteConfig, Handlers } from 'motia';
+import { ApiRouteConfig, Handlers } from 'motia';
+import { z } from 'zod';
 import { TSStore } from './ts-store';
 
-export const config = {
+// Define path parameter schema
+const pathParamsSchema = z.object({
+  id: z.string().min(1, 'Pet ID is required')
+});
+
+// Define request body schema for selective updates
+const updatePetSchema = z.object({
+  name: z.string().min(1, 'Name is required').trim().optional(),
+  species: z.enum(['dog', 'cat', 'bird', 'other']).optional(),
+  ageMonths: z.number().int().min(0, 'Age must be a positive number').optional(),
+  status: z.enum(['new','in_quarantine','healthy','available','pending','adopted','ill','under_treatment','recovered','deleted']).optional(),
+  notes: z.string().optional(),
+  nextFeedingAt: z.number().optional()
+});
+
+export const config: ApiRouteConfig = {
   type: 'api',
   name: 'TsUpdatePet',
   path: '/ts/pets/:id',
   method: 'PUT',
-  emits: [],
+  emits: ['ts.pet.status.update.requested'],
   flows: ['TsPetManagement']
 };
 
-export const handler = async (req: any, context?: any) => {
-  const { emit, logger } = context || {};
-  const b: any = req.body ?? {};
-  const petId = req.pathParams.id;
-  
-  // Check if pet exists
-  const currentPet = TSStore.get(petId);
-  if (!currentPet) {
-    return { status: 404, body: { message: 'Not found' } };
-  }
-
-  // Handle status updates through orchestrator
-  if (b.status && b.status !== currentPet.status) {
-    const validStatuses = ['new','in_quarantine','healthy','available','pending','adopted','ill','under_treatment','recovered','deleted'];
+export const handler: Handlers['TsUpdatePet'] = async (req, { emit, logger }) => {
+  try {
+    // Validate path parameters
+    const { id } = pathParamsSchema.parse(req.pathParams);
     
-    if (!validStatuses.includes(String(b.status))) {
-      return { status: 400, body: { message: 'Invalid status' } };
+    // Validate request body
+    const validatedData = updatePetSchema.parse(req.body);
+    
+    // Check if pet exists
+    const currentPet = TSStore.get(id);
+    if (!currentPet) {
+      return { status: 404, body: { message: 'Pet not found' } };
     }
 
-    if (logger) {
-      logger.info('👤 Staff requesting status change', { 
-        petId, 
-        currentStatus: currentPet.status, 
-        requestedStatus: b.status 
-      });
+    // Handle status updates through orchestrator
+    if (validatedData.status && validatedData.status !== currentPet.status) {
+      if (logger) {
+        logger.info('👤 Staff requesting status change', { 
+          petId: id, 
+          currentStatus: currentPet.status, 
+          requestedStatus: validatedData.status 
+        });
+      }
+
+      // Emit to orchestrator for validation and processing
+      if (emit) {
+        await (emit as any)({
+          topic: 'ts.pet.status.update.requested',
+          data: { 
+            petId: id, 
+            event: 'status.update.requested',
+            requestedStatus: validatedData.status,
+            currentStatus: currentPet.status
+          }
+        });
+      }
+
+      // Return current pet - orchestrator will handle the actual status change
+      return { status: 202, body: { 
+        message: 'Status change request submitted',
+        petId: id,
+        currentStatus: currentPet.status,
+        requestedStatus: validatedData.status
+      }};
     }
 
-    // Emit to orchestrator for validation and processing
-    if (emit) {
-      await emit({
-        topic: 'ts.pet.status.update.requested',
-        data: { 
-          petId, 
-          event: 'status.update.requested',
-          requestedStatus: b.status,
-          currentStatus: currentPet.status
+    // Handle non-status updates normally
+    const patch: Partial<{ name: string; species: "dog" | "cat" | "bird" | "other"; ageMonths: number; notes: string; nextFeedingAt: number }> = {};
+    
+    if (validatedData.name !== undefined) patch.name = validatedData.name;
+    if (validatedData.species !== undefined) patch.species = validatedData.species;
+    if (validatedData.ageMonths !== undefined) patch.ageMonths = validatedData.ageMonths;
+    if (validatedData.notes !== undefined) patch.notes = validatedData.notes;
+    if (validatedData.nextFeedingAt !== undefined) patch.nextFeedingAt = validatedData.nextFeedingAt;
+
+    const updated = TSStore.update(id, patch);
+    return updated ? { status: 200, body: updated } : { status: 404, body: { message: 'Pet not found' } };
+    
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return {
+        status: 400,
+        body: {
+          message: 'Validation error',
+          errors: error.errors
         }
-      });
+      };
     }
-
-    // Return current pet - orchestrator will handle the actual status change
-    return { status: 202, body: { 
-      message: 'Status change request submitted',
-      petId,
-      currentStatus: currentPet.status,
-      requestedStatus: b.status
-    }};
+    
+    return {
+      status: 500,
+      body: { message: 'Internal server error' }
+    };
   }
-
-  // Handle non-status updates normally
-  const patch: any = {};
-  if (typeof b.name === 'string') patch.name = b.name;
-  if (['dog','cat','bird','other'].includes(String(b.species))) patch.species = b.species;
-  if (Number.isFinite(b.ageMonths)) patch.ageMonths = Number(b.ageMonths);
-  if (typeof b.notes === 'string') patch.notes = b.notes;
-  if (Number.isFinite(b.nextFeedingAt)) patch.nextFeedingAt = Number(b.nextFeedingAt);
-
-  const updated = TSStore.update(petId, patch);
-  return updated ? { status: 200, body: updated } : { status: 404, body: { message: 'Not found' } };
 };
