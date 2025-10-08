@@ -9,24 +9,30 @@ export const steps: TutorialStep[] = [
     },
     description: () => (
       <p>
-        Welcome to the <b>Pet Management Background Jobs</b> tutorial! This example demonstrates how to build robust, event-driven workflows using Motia's background job orchestration capabilities.
+        Welcome to the <b>Pet Management System</b> tutorial! This comprehensive example demonstrates how to build a complete, production-ready system with API endpoints, background jobs, and workflow orchestration.
         <br />
         <br />
         You'll learn how to implement:
         <br />
-        • <b>API Steps</b> - Entry points that trigger background workflows
+        • <b>API Steps</b> - RESTful endpoints for creating and managing pets
         <br />
-        • <b>Event Steps</b> - Asynchronous background jobs for data processing
+        • <b>Event Steps</b> - Background jobs for async processing
         <br />
-        • <b>Cron Steps</b> - Scheduled maintenance and cleanup operations
+        • <b>Cron Steps</b> - Scheduled cleanup and maintenance tasks
         <br />
-        • <b>Background Job Orchestration</b> - How jobs chain together through events
-        <br />
-        <br />
-        This tutorial shows how to build a pet management system where creating a pet automatically triggers feeding reminders, status updates, and scheduled cleanup - all running in the background!
+        • <b>Workflow Orchestration</b> - Coordinating complex business logic and state transitions
         <br />
         <br />
-        💡 <b>Background jobs</b> enable you to build responsive APIs while handling complex processing asynchronously.
+        This tutorial progresses through three key sections:
+        <br />
+        1️⃣ <b>API Endpoints</b> - Building the Create Pet API
+        <br />
+        2️⃣ <b>Background Jobs</b> - Adding async processing and scheduled tasks
+        <br />
+        3️⃣ <b>Workflow Orchestration</b> - Managing pet lifecycle with state machines
+        <br />
+        <br />
+        💡 <b>By the end</b>, you'll understand how to build scalable, event-driven systems with Motia!
       </p>
     ),
   },
@@ -34,7 +40,7 @@ export const steps: TutorialStep[] = [
   // Flows
 
   {
-    elementXpath: workbenchXPath.flows.node('TsCreatePet'),
+    elementXpath: workbenchXPath.flows.node('tscreatepet'),
     title: 'API Step - Create Pet',
     link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
@@ -60,7 +66,7 @@ export const steps: TutorialStep[] = [
     ],
   },
   {
-    elementXpath: workbenchXPath.flows.previewButton('TsCreatePet'),
+    elementXpath: workbenchXPath.flows.previewButton('tscreatepet'),
     title: 'Code Preview',
     description: () => <p>Clicking on this icon will allow you to visualize the source code for the Create Pet Step.</p>,
     before: [
@@ -73,146 +79,151 @@ export const steps: TutorialStep[] = [
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Step Configuration',
+    title: 'API Endpoint Setup',
     description: () => (
-      <div>
-        <p>
-          All Steps are defined by two main components, the <b>configuration</b> and the <b>handler</b>.
-          <br />
-          <br />
-          Let's start with the configuration, the common config attributes are
-          <i>type, name, description, and flows</i>.<br />
-          <br />
-        </p>
-        <ul>
-          <li>
-            The <b>type</b> attribute declares this as an API Step primitive
-          </li>
-          <li>
-            The <b>flows</b> attribute associates this Step with the TsPetManagement flow
-          </li>
-          <li>
-            The <b>name</b> and <b>description</b> attributes provide context in the visualization and
-            observability tools.
-          </li>
-        </ul>
-      </div>
+      <p>
+        This sets up a POST endpoint at <b>/ts/pets</b> where clients can send requests to create new pets.
+        <br />
+        <br />
+        The configuration includes:
+        <br />
+        • <b>method: POST</b> - accepts POST requests
+        <br />
+        • <b>path: /ts/pets</b> - the URL for this endpoint
+        <br />
+        • <b>emits</b> - events this API will trigger (for background jobs!)
+        <br />
+        <br />
+        💡 <b>Notice the emits array</b> - this is how we trigger background jobs when a pet is created!
+      </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('TsCreatePet') },
-      { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tscreatepet') },
+      { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') }
     ],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'API Endpoint Configuration',
-    description: () => (
-      <p>
-        There are specific configuration attributes for an API Step. The <b>method</b> attribute declares the HTTP method (POST in this case).
-        <br />
-        The <b>path</b> attribute declares the URL path (/ts/pets) used to trigger your API Step.
-        <br />
-        <br />
-        Notice the <b>emits</b> attribute - this API step emits events to trigger background jobs!
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('api-configuration') }],
-  },
-  {
-    elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Request Body Schema',
+    title: 'Request Body',
     link: 'https://zod.dev',
     description: () => (
       <p>
-        The <b>bodySchema</b> attribute defines the shape of the request body using Zod validation.
+        This defines what data the API expects from clients:
+        <br />
+        • <b>name</b> - the pet's name (required)
+        <br />
+        • <b>species</b> - dog, cat, bird, or other
+        <br />
+        • <b>ageMonths</b> - pet's age in months
         <br />
         <br />
-        This schema validates that incoming requests have the required fields: name, species, and ageMonths.
+        Using Zod for validation means requests are automatically checked before your code runs. If something's missing or wrong, clients get a clear error message.
         <br />
         <br />
-        <i>💡 Zod provides automatic validation and type safety for your API endpoints</i>
+        💡 <b>Type safety and validation all in one!</b>
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('request-validation') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Workflow Trigger',
+    title: 'Creating the Pet',
     description: () => (
       <p>
-        This is the heart of <b>background job orchestration</b>! The Create Pet API emits events that queue background jobs for processing.
+        This is where the pet actually gets created! After the data is validated, it's sent to the store to create a new pet record.
         <br />
         <br />
-        When a pet is created, this step emits events that trigger:
+        The store automatically handles:
         <br />
-        • <b>ts.pet.created</b> - queues the lifecycle orchestrator job
+        • Generating a unique ID
         <br />
-        • <b>ts.feeding.reminder.enqueued</b> - queues the feeding reminder background job
+        • Setting the initial status
+        <br />
+        • Adding timestamps
         <br />
         <br />
-        These events are processed asynchronously, allowing the API to return immediately while background jobs handle the heavy lifting.
-        <br />
-        <br />
-        💡 This pattern enables <b>eventual consistency</b> - your API stays fast while background jobs ensure data integrity.
+        💡 <b>In a real app, this would be a database call</b> (like Prisma, MongoDB, etc.)
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('event-emission') }],
-  },
-  {
-    elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Handler Function',
-    description: () => (
-      <p>
-        The <b>handler function</b> contains the business logic for creating pets.
-        <br />
-        <br />
-        It receives the validated request data (thanks to Zod), creates the pet record, 
-        logs the operation, and emits events to trigger background jobs.
-        <br />
-        <br />
-        Notice the try-catch block for proper error handling with validation errors and unexpected failures.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('pet-creation') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
     title: 'Logging',
     description: () => (
       <p>
-        The <b>logger</b> provides structured logging for pet creation events with context like petId, name, species, and status.
+        Records that a pet was created with helpful details like ID, name, and species.
         <br />
         <br />
-        Motia's logger automatically ties logs to trace IDs, providing excellent observability 
-        throughout the workflow execution.
+        These logs show up in the Workbench's Logs section, automatically tied to the request's trace ID. This makes it super easy to track what happened during each API call.
         <br />
         <br />
-        This makes debugging and monitoring your pet management system much easier.
+        💡 <b>Pro tip:</b> Good logging is your best friend when debugging!
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('logging') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Triggering Background Jobs',
+    description: () => (
+      <p>
+        This is where the magic happens! After creating the pet, we emit events to kick off background jobs:
+        <br />
+        <br />
+        • <b>ts.pet.created</b> - notifies other parts of the system about the new pet
+        <br />
+        • <b>ts.feeding.reminder.enqueued</b> - triggers a background job to set up feeding reminders
+        <br />
+        <br />
+        The API returns immediately to the client while these background jobs process asynchronously. This keeps your API fast and responsive!
+        <br />
+        <br />
+        💡 <b>This is the heart of event-driven architecture</b> - APIs stay fast while background jobs handle the heavy lifting.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('event-emission') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
     title: 'Success Response',
     description: () => (
       <p>
-        The handler returns a <b>201 Created</b> response with the newly created pet object.
+        Returns the newly created pet back to the client with a <b>201 Created</b> status code.
         <br />
         <br />
-        The response includes all pet details: ID, name, species, status, and creation timestamp.
+        The client gets all the pet details: ID, name, species, status, and timestamps. They can use this to show confirmation to the user or update their UI.
         <br />
         <br />
-        If validation fails, it returns a 400 error with detailed validation messages.
+        💡 <b>201 status code</b> is the standard for "successfully created a new resource"
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('success-response') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Error Handling',
+    description: () => (
+      <p>
+        Catches problems like missing required fields or invalid data types.
+        <br />
+        <br />
+        If validation fails (like forgetting the pet's name), returns a <b>400 Bad Request</b> with helpful error messages showing exactly what went wrong.
+        <br />
+        <br />
+        For unexpected errors, returns a <b>500 Internal Server Error</b> to let the client know something broke.
+        <br />
+        <br />
+        💡 <b>Always handle errors gracefully</b> - it makes your API much easier to work with!
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('error-handling') }],
   },
 
   // Event Steps
 
   {
-    elementXpath: workbenchXPath.flows.node('TsSetNextFeedingReminder'),
+    elementXpath: workbenchXPath.flows.node('tssetnextfeedingreminder'),
     title: 'Background Job - Feeding Reminder',
     link: 'https://www.motia.dev/docs/concepts/steps/event',
     description: () => (
@@ -259,7 +270,7 @@ export const steps: TutorialStep[] = [
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('TsSetNextFeedingReminder') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tssetnextfeedingreminder') },
       { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
     ],
   },
@@ -339,7 +350,7 @@ export const steps: TutorialStep[] = [
   // Cron Steps
 
   {
-    elementXpath: workbenchXPath.flows.node('TsDeletionReaper'),
+    elementXpath: workbenchXPath.flows.node('tsdeletionreaper'),
     title: 'Cron Step - Deletion Reaper',
     link: 'https://www.motia.dev/docs/concepts/steps/cron',
     description: () => (
@@ -393,7 +404,7 @@ export const steps: TutorialStep[] = [
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('TsDeletionReaper') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tsdeletionreaper') },
       { type: 'click', selector: workbenchXPath.flows.feature('cron-configuration') },
     ],
   },
@@ -424,17 +435,201 @@ export const steps: TutorialStep[] = [
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
   },
 
+  // Workflow Orchestration - Pet Lifecycle Orchestrator
+
+  {
+    elementXpath: workbenchXPath.flows.node('tspetlifecycleorchestrator'),
+    title: 'Workflow Orchestration - Lifecycle Management',
+    link: 'https://www.motia.dev/docs/concepts/steps/event',
+    description: () => (
+      <p>
+        Now let's explore <b>Workflow Orchestration</b> with the Pet Lifecycle Orchestrator!
+        <br />
+        <br />
+        This orchestrator manages the entire lifecycle of a pet from creation to adoption, handling status transitions like:
+        <br />
+        • Quarantine → Healthy → Available
+        <br />
+        • Illness → Treatment → Recovery
+        <br />
+        • Adoption process management
+        <br />
+        <br />
+        This demonstrates how <b>workflow orchestration</b> coordinates multiple steps and enforces business rules across your system.
+        <br />
+        <br />
+        💡 <b>Workflow orchestrators</b> are the brain of your system - they ensure everything flows correctly!
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Orchestrator Configuration',
+    description: () => (
+      <p>
+        The lifecycle orchestrator is an <b>Event Step</b> that listens for three types of events:
+        <br />
+        <br />
+        • <b>ts.pet.created</b> - when a new pet is added
+        <br />
+        • <b>ts.feeding.reminder.completed</b> - when feeding setup finishes
+        <br />
+        • <b>ts.pet.status.update.requested</b> - when staff requests a status change
+        <br />
+        <br />
+        By subscribing to these events, the orchestrator can manage the pet's entire lifecycle automatically.
+        <br />
+        <br />
+        💡 <b>Notice:</b> It has no emits! The orchestrator directly updates pet status instead of emitting events.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.flows.node('tspetlifecycleorchestrator') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tspetlifecycleorchestrator') },
+      { type: 'click', selector: workbenchXPath.flows.feature('orchestrator-configuration') },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Transition Rules',
+    description: () => (
+      <p>
+        These rules define all valid status transitions for pets - think of them as the "business rules" of your workflow.
+        <br />
+        <br />
+        Each rule specifies:
+        <br />
+        • <b>from</b> - what status(es) the pet can be in
+        <br />
+        • <b>to</b> - what status it transitions to
+        <br />
+        • <b>event</b> - what triggers this transition
+        <br />
+        • <b>description</b> - why this transition happens
+        <br />
+        <br />
+        For example: A pet in quarantine can only move to "healthy" when staff does a health check.
+        <br />
+        <br />
+        💡 <b>Defining clear rules</b> ensures your workflow stays consistent and predictable!
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('transition-rules') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Finding the Right Rule',
+    description: () => (
+      <p>
+        When an event comes in, the orchestrator searches through all the transition rules to find one that matches:
+        <br />
+        <br />
+        • The pet's <b>current status</b>
+        <br />
+        • The <b>requested new status</b> (if applicable)
+        <br />
+        • The <b>event type</b> that triggered it
+        <br />
+        <br />
+        This ensures only valid transitions can happen - you can't skip steps!
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('rule-validation') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Rejecting Invalid Transitions',
+    description: () => (
+      <p>
+        If no valid rule is found (like trying to mark a quarantined pet as adopted), the transition is rejected.
+        <br />
+        <br />
+        The orchestrator logs exactly why it was rejected - which helps staff understand what went wrong and what they need to do instead.
+        <br />
+        <br />
+        💡 <b>Clear rejection reasons</b> make your workflow much easier to use and debug!
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('transition-rejection') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Applying the Transition',
+    description: () => (
+      <p>
+        When a valid rule is found, the orchestrator updates the pet's status in the store.
+        <br />
+        <br />
+        This is where the actual state change happens - the pet moves from one lifecycle stage to the next.
+        <br />
+        <br />
+        If the update fails for any reason, the orchestrator logs the error and stops.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('status-update') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Transition Logging',
+    description: () => (
+      <p>
+        Every successful transition is logged with full details:
+        <br />
+        • What status the pet was in
+        <br />
+        • What status it moved to
+        <br />
+        • Why the transition happened
+        <br />
+        • When it happened
+        <br />
+        <br />
+        These logs create a complete audit trail of each pet's lifecycle, making it easy to track their journey.
+        <br />
+        <br />
+        💡 <b>Good logging</b> is essential for compliance, debugging, and understanding how your workflow performs!
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('transition-logging') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Automatic Progressions',
+    description: () => (
+      <p>
+        Here's where workflow orchestration gets powerful! Some transitions automatically trigger follow-up transitions.
+        <br />
+        <br />
+        For example:
+        <br />
+        • When a pet becomes <b>healthy</b> → automatically mark as <b>available</b> for adoption
+        <br />
+        • When a pet is marked <b>ill</b> → automatically start <b>treatment</b>
+        <br />
+        • When a pet <b>recovers</b> → automatically mark as <b>healthy</b> → then <b>available</b>
+        <br />
+        <br />
+        This reduces manual work and ensures the workflow flows smoothly without staff having to remember every step!
+        <br />
+        <br />
+        💡 <b>Automatic progressions</b> are like dominoes - one action triggers the next automatically!
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('automatic-progression') }],
+  },
+
   // Endpoints
 
   {
     elementXpath: workbenchXPath.links.endpoints,
-    title: 'Testing the Pet Management API',
+    title: 'Testing the Complete Workflow',
     description: () => (
       <p>
-        Now that we've explored all background job types, let's test the <b>Pet Management API</b> to see the complete background job orchestration in action!
+        Now that we've explored API endpoints, background jobs, and workflow orchestration, let's test the complete system!
         <br />
         <br />
-        💡 The Endpoints section shows all API Steps and provides tools to test them, triggering the entire background job chain.
+        💡 The Endpoints section shows all API Steps and provides tools to test them, triggering the entire workflow.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
@@ -744,59 +939,10 @@ export const steps: TutorialStep[] = [
     ),
   },
 
-  // States
-
-  {
-    elementXpath: workbenchXPath.links.states,
-    title: 'Pet Data Storage',
-    description: () => (
-      <p>
-        Finally, let's check the <b>State Management Tool</b> to see how the pet data is stored and managed throughout the workflow.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.links.states }],
-  },
-  {
-    elementXpath: workbenchXPath.states.container,
-    title: 'Pet Store State',
-    description: () => (
-      <p>
-        The <b>State Management Tool</b> shows all persisted pet data from your workflow orchestration.
-        <br />
-        <br />
-        You can see the pet records created by the API and updated by the background jobs, 
-        demonstrating how data flows through the complete workflow.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.states.row(1) }],
-  },
-  {
-    elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Pet Record Details',
-    description: () => (
-      <p>
-        Here you can see the complete pet record including:
-        <br />
-        <br />
-        • <b>Pet Information</b> - name, species, age
-        <br />
-        • <b>Status</b> - managed by the lifecycle orchestrator
-        <br />
-        • <b>Feeding Schedule</b> - added by the background job
-        <br />
-        • <b>Timestamps</b> - creation and update times
-        <br />
-        <br />
-        This demonstrates how the workflow orchestration maintains and updates data across multiple steps!
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.links.states }],
-  },
-
   // End of Tutorial
 
   {
-    title: 'Workflow Orchestration Master! 🎉',
+    title: 'Workflow Orchestration Completed! 🎉',
     link: 'https://www.motia.dev/docs',
     description: () => (
       <p>
@@ -852,3 +998,5 @@ export const steps: TutorialStep[] = [
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
   },
 ]
+
+

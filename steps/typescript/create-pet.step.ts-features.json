@@ -1,48 +1,40 @@
 [
   {
-    "id": "step-configuration",
-    "title": "Step Configuration",
-    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
-    "lines": [
-      "19-28"
-    ]
-  },
-  {
     "id": "api-configuration",
-    "title": "API Endpoint Configuration",
-    "description": "POST endpoint at /ts/pets for creating new pets with comprehensive validation schema.",
+    "title": "API Configuration",
+    "description": "Sets up a POST endpoint at /ts/pets where clients can send requests to create new pets.",
     "lines": [
       "19-28"
     ]
   },
   {
     "id": "request-validation",
-    "title": "Request Body Schema",
-    "description": "Zod schema validation for pet data including name, species, and age with proper error handling.",
+    "title": "Request Body",
+    "description": "Defines what data the API expects - pet name, species (dog, cat, bird, or other), and age in months.",
     "lines": [
       "7-11"
     ]
   },
   {
     "id": "pet-creation",
-    "title": "Pet Object Creation",
-    "description": "Creates pet object with status logic, ID generation, and proper data structure.",
+    "title": "Creating the Pet",
+    "description": "Takes the validated data and creates a new pet in the store with all the necessary details.",
     "lines": [
       "35-39"
     ]
   },
   {
-    "id": "handler",
-    "title": "Handler Function",
-    "description": "The handler function that executes when the API endpoint is called, processing the request and returning a response.",
+    "id": "logging",
+    "title": "Logging",
+    "description": "Records that a pet was created with details like ID, name, and species for tracking.",
     "lines": [
-      "31-89"
+      "41-43"
     ]
   },
   {
     "id": "event-emission",
-    "title": "Workflow Trigger",
-    "description": "Emits 'ts.pet.created' and 'ts.feeding.reminder.enqueued' events to trigger background jobs.",
+    "title": "Triggering Background Jobs",
+    "description": "Sends out events to kick off background jobs - one for general pet creation tasks and another to set up feeding reminders.",
     "lines": [
       "52-61"
     ]
@@ -50,7 +42,7 @@
   {
     "id": "success-response",
     "title": "Success Response",
-    "description": "Returns pet details including ID, name, species, status, and creation timestamp.",
+    "description": "Returns the newly created pet back to the client with a 201 status code.",
     "lines": [
       "64"
     ]
@@ -58,17 +50,9 @@
   {
     "id": "error-handling",
     "title": "Error Handling",
-    "description": "Comprehensive error handling for validation errors and unexpected failures.",
+    "description": "Catches problems like missing required fields or invalid data and returns helpful error messages.",
     "lines": [
-      "66-82"
-    ]
-  },
-  {
-    "id": "logging",
-    "title": "Logging",
-    "description": "Structured logging for pet creation events and error tracking.",
-    "lines": [
-      "41-43"
+      "66-81"
     ]
   }
 ]

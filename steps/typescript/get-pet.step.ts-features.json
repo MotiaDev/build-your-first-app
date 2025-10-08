@@ -1,40 +1,32 @@
 [
   {
-    "id": "step-configuration",
-    "title": "Step Configuration",
-    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
-    "lines": [
-      "11-18"
-    ]
-  },
-  {
     "id": "api-configuration",
-    "title": "API Endpoint Configuration",
-    "description": "GET endpoint at /ts/pets/:id for retrieving a single pet by ID.",
+    "title": "API Configuration",
+    "description": "Sets up a GET endpoint at /ts/pets/:id where the :id is the specific pet you want to find.",
     "lines": [
       "11-18"
     ]
   },
   {
     "id": "path-parameter-validation",
-    "title": "Path Parameter Validation",
-    "description": "Zod schema validation for the 'id' path parameter to ensure it's a valid pet ID.",
+    "title": "ID Validation",
+    "description": "Checks that the pet ID in the URL is valid before trying to look it up.",
     "lines": [
       "7-9"
     ]
   },
   {
     "id": "pet-retrieval",
-    "title": "Pet Retrieval",
-    "description": "Retrieves a pet from the store using the validated ID.",
+    "title": "Finding the Pet",
+    "description": "Searches the store for a pet with the matching ID.",
     "lines": [
       "25"
     ]
   },
   {
     "id": "not-found-handling",
-    "title": "Not Found Handling",
-    "description": "Returns a 404 status if the pet is not found.",
+    "title": "Not Found",
+    "description": "If no pet exists with that ID, returns a 404 error saying the pet wasn't found.",
     "lines": [
       "27-29"
     ]
@@ -42,7 +34,7 @@
   {
     "id": "success-response",
     "title": "Success Response",
-    "description": "Returns the pet data with a 200 status code.",
+    "description": "If the pet is found, returns all its details with a 200 OK status.",
     "lines": [
       "31"
     ]
@@ -50,7 +42,7 @@
   {
     "id": "error-handling",
     "title": "Error Handling",
-    "description": "Comprehensive error handling for invalid path parameters and unexpected failures.",
+    "description": "Catches problems like invalid IDs or other unexpected errors and returns appropriate error messages.",
     "lines": [
       "33-49"
     ]

@@ -1,48 +1,40 @@
 [
   {
-    "id": "step-configuration",
-    "title": "Step Configuration",
-    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
-    "lines": [
-      "21-28"
-    ]
-  },
-  {
     "id": "api-configuration",
-    "title": "API Endpoint Configuration",
-    "description": "PUT endpoint at /ts/pets/:id for updating an existing pet.",
+    "title": "API Configuration",
+    "description": "Sets up a PUT endpoint at /ts/pets/:id for updating an existing pet's information.",
     "lines": [
       "21-28"
     ]
   },
   {
     "id": "path-parameter-validation",
-    "title": "Path Parameter Validation",
-    "description": "Zod schema validation for the 'id' path parameter.",
+    "title": "ID Validation",
+    "description": "Checks that the pet ID in the URL is valid.",
     "lines": [
       "7-9"
     ]
   },
   {
     "id": "request-body-validation",
-    "title": "Request Body Validation",
-    "description": "Zod schema validation for the request body, allowing selective updates.",
+    "title": "Update Fields",
+    "description": "Defines which fields can be updated - name, status (available, pending, adopted), and age. All fields are optional so you can update just what you need.",
     "lines": [
       "12-19"
     ]
   },
   {
     "id": "pet-update",
-    "title": "Pet Update Logic",
-    "description": "Updates the pet in the store with the provided patch data.",
+    "title": "Updating the Pet",
+    "description": "Takes the changes and updates the pet in the store.",
     "lines": [
       "85"
     ]
   },
   {
     "id": "not-found-handling",
-    "title": "Not Found Handling",
-    "description": "Returns a 404 status if the pet is not found.",
+    "title": "Not Found",
+    "description": "If the pet doesn't exist, returns a 404 error.",
     "lines": [
       "39-42"
     ]
@@ -50,7 +42,7 @@
   {
     "id": "success-response",
     "title": "Success Response",
-    "description": "Returns the updated pet data with a 200 status code.",
+    "description": "Returns the updated pet with all its current information and a 200 OK status.",
     "lines": [
       "86"
     ]
@@ -58,7 +50,7 @@
   {
     "id": "error-handling",
     "title": "Error Handling",
-    "description": "Comprehensive error handling for validation errors and unexpected failures.",
+    "description": "Catches validation errors (like invalid status values) and other problems, returning helpful error messages.",
     "lines": [
       "88-104"
     ]

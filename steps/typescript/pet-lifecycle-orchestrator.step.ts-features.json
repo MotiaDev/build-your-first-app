@@ -1,0 +1,67 @@
+[
+  {
+    "id": "orchestrator-configuration",
+    "title": "Orchestrator Configuration",
+    "description": "Sets up the lifecycle orchestrator as an Event Step that listens for pet creation, feeding reminders, and status change requests.",
+    "lines": [
+      "79-86"
+    ]
+  },
+  {
+    "id": "transition-rules",
+    "title": "Transition Rules",
+    "description": "Defines all valid status transitions for pets - from new to adoption, including health checks, quarantine, illness, and treatment flows.",
+    "lines": [
+      "16-77"
+    ]
+  },
+  {
+    "id": "rule-validation",
+    "title": "Finding the Right Rule",
+    "description": "Looks through all transition rules to find one that matches the current pet status and the requested change.",
+    "lines": [
+      "106-119"
+    ]
+  },
+  {
+    "id": "transition-rejection",
+    "title": "Rejecting Invalid Transitions",
+    "description": "If no valid rule is found (like trying to skip quarantine), the transition is rejected with a clear reason.",
+    "lines": [
+      "121-138"
+    ]
+  },
+  {
+    "id": "status-update",
+    "title": "Applying the Transition",
+    "description": "Updates the pet's status in the store when a valid transition is found.",
+    "lines": [
+      "152-161"
+    ]
+  },
+  {
+    "id": "transition-logging",
+    "title": "Transition Logging",
+    "description": "Records the status change with details about what changed and why, making it easy to track pet lifecycles.",
+    "lines": [
+      "163-172"
+    ]
+  },
+  {
+    "id": "automatic-progression",
+    "title": "Automatic Progressions",
+    "description": "Some status changes trigger automatic follow-up transitions - like marking a healthy pet as available for adoption without requiring staff action.",
+    "lines": [
+      "195-259"
+    ]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Catches any problems during the transition process and logs them for debugging.",
+    "lines": [
+      "188-192"
+    ]
+  }
+]
+
