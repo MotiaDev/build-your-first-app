@@ -6,7 +6,7 @@ export const config = {
   name: 'TsSetNextFeedingReminder',
   description: 'Background job that sets next feeding reminder and adds welcome notes',
   subscribes: ['ts.feeding.reminder.enqueued'],
-  emits: ['ts.feeding.reminder.completed'],
+  emits: [],
   flows: ['TsPetManagement']
 };
 
@@ -45,16 +45,7 @@ export const handler = async (input: any, context?: any) => {
       });
     }
 
-    if (emit) {
-      await emit({
-        topic: 'ts.feeding.reminder.completed',
-        data: { 
-          petId, 
-          completedAt: Date.now(),
-          processingTimeMs: Date.now() - enqueuedAt
-        }
-      });
-    }
+    // Feeding reminder scheduled successfully
 
   } catch (error: any) {
     if (logger) {

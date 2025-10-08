@@ -9,18 +9,12 @@ const pathParamsSchema = z.object({
 });
 
 // Define event data schema for type safety
-const petSoftDeletedEventSchema = z.object({
-  petId: z.string(),
-  name: z.string(),
-  purgeAt: z.number()
-});
-
 export const config: ApiRouteConfig = {
   type: 'api',
   name: 'TsDeletePet',
   path: '/ts/pets/:id',
   method: 'DELETE',
-  emits: ['ts.pet.soft.deleted'],
+  emits: [],
   flows: ['TsPetManagement']
 };
 
@@ -46,19 +40,7 @@ export const handler: Handlers['TsDeletePet'] = async (req, { emit, logger }) =>
       });
     }
 
-    if (emit) {
-      // Type-safe event emission
-      const eventData = petSoftDeletedEventSchema.parse({
-        petId: deletedPet.id,
-        name: deletedPet.name,
-        purgeAt: deletedPet.purgeAt
-      });
-      
-      await (emit as any)({
-        topic: 'ts.pet.soft.deleted',
-        data: eventData
-      });
-    }
+    // Pet soft deleted successfully
 
     return { 
       status: 202, 

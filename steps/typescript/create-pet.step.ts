@@ -11,12 +11,6 @@ const createPetSchema = z.object({
 });
 
 // Define event data schemas for type safety
-const petCreatedEventSchema = z.object({
-  petId: z.string(),
-  name: z.string(),
-  species: z.string()
-});
-
 const feedingReminderEventSchema = z.object({
   petId: z.string(),
   enqueuedAt: z.number()
@@ -27,7 +21,7 @@ export const config: ApiRouteConfig = {
   name: 'TsCreatePet',
   path: '/ts/pets',
   method: 'POST',
-  emits: ['ts.pet.created', 'ts.feeding.reminder.enqueued'],
+  emits: ['ts.feeding.reminder.enqueued'],
   flows: ['TsPetManagement'],
   // Add schema validation
   bodySchema: createPetSchema
@@ -55,20 +49,9 @@ export const handler: Handlers['TsCreatePet'] = async (req, { emit, logger }) =>
     
     if (emit) {
       // Type-safe event emission
-      const petCreatedData = petCreatedEventSchema.parse({
-        petId: pet.id,
-        name: pet.name,
-        species: pet.species
-      });
-      
       const feedingReminderData = feedingReminderEventSchema.parse({
         petId: pet.id,
         enqueuedAt: Date.now()
-      });
-      
-      await (emit as any)({
-        topic: 'ts.pet.created',
-        data: petCreatedData
       });
       
       // Enqueue feeding reminder background job

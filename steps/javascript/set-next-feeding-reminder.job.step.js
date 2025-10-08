@@ -6,7 +6,7 @@ exports.config = {
   name: 'JsSetNextFeedingReminder',
   description: 'Background job that sets next feeding reminder and adds welcome notes',
   subscribes: ['js.feeding.reminder.enqueued'],
-  emits: ['js.feeding.reminder.completed'],
+  emits: [],
   flows: ['JsPetManagement']
 };
 

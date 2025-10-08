@@ -6,7 +6,7 @@ exports.config = {
   name: 'JsCreatePet',
   path: '/js/pets',
   method: 'POST',
-  emits: ['js.pet.created', 'js.feeding.reminder.enqueued'],
+  emits: ['js.feeding.reminder.enqueued'],
   flows: ['JsPetManagement']
 };
 
