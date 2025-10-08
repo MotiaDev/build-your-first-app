@@ -1,106 +1,26 @@
-{
-  "stepName": "TsAdoptionPosting",
-  "stepType": "event",
-  "description": "Event step that creates adoption listings for pets ready for adoption",
-  "features": [
-    {
-      "title": "Adoption Listing Creation",
-      "description": "Creates comprehensive adoption listings for pets",
-      "details": [
-        "Generates adoption listings from pet profile data",
-        "Combines pet information with AI-generated profile",
-        "Creates engaging adoption posts for potential adopters",
-        "Formats listings for various adoption platforms"
-      ]
-    },
-    {
-      "title": "Event-Driven Processing",
-      "description": "Automatically triggered by adoption readiness events",
-      "details": [
-        "Subscribes to 'ts.adoption.ready' events",
-        "Processes adoption-ready pets automatically",
-        "Emits posting started and completed events",
-        "Provides workflow progress tracking"
-      ]
-    },
-    {
-      "title": "Profile Integration",
-      "description": "Leverages AI-generated profiles for adoption listings",
-      "details": [
-        "Uses enriched profile data from AI processing",
-        "Combines pet details with personality traits",
-        "Includes breed information and temperament tags",
-        "Incorporates adopter hints and care requirements"
-      ]
-    },
-    {
-      "title": "Data Validation",
-      "description": "Validates pet data before creating adoption listings",
-      "details": [
-        "Ensures pet has required adoption information",
-        "Validates profile enrichment completion",
-        "Checks pet status is appropriate for adoption",
-        "Handles missing or incomplete data gracefully"
-      ]
-    },
-    {
-      "title": "Listing Format",
-      "description": "Creates structured adoption listing data",
-      "details": [
-        "Formats pet information for adoption platforms",
-        "Includes photos, description, and contact information",
-        "Generates adoption-specific metadata",
-        "Creates searchable and filterable listings"
-      ]
-    },
-    {
-      "title": "Error Handling",
-      "description": "Handles errors in adoption listing creation",
-      "details": [
-        "Manages missing profile data gracefully",
-        "Provides fallback for incomplete pet information",
-        "Logs errors with structured data for monitoring",
-        "Ensures workflow continues despite individual failures"
-      ]
-    }
-  ],
-  "workflowIntegration": {
-    "subscribes": [
-      {
-        "topic": "ts.adoption.ready",
-        "description": "Triggered when pets are ready for adoption posting"
-      }
-    ],
-    "emits": [
-      {
-        "topic": "ts.adoption.posting_started",
-        "description": "Indicates adoption posting process has begun"
-      },
-      {
-        "topic": "ts.adoption.posting_completed",
-        "description": "Indicates adoption posting process has completed"
-      }
-    ],
-    "flow": "TsPetManagement"
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event step configuration for creating adoption listings.",
+    "lines": ["4-11"]
   },
-  "inputSchema": {
-    "required": ["petId", "petData", "profileData"],
-    "validation": {
-      "petId": "Valid pet ID",
-      "petData": "Complete pet information",
-      "profileData": "AI-generated profile data"
-    }
+  {
+    "id": "handler",
+    "title": "Adoption Posting Handler",
+    "description": "Creates adoption listings and schedules adoption interviews.",
+    "lines": ["13-62"]
   },
-  "outputSchema": {
-    "listing": {
-      "petId": "string",
-      "title": "string",
-      "description": "string",
-      "photos": "array of strings",
-      "contactInfo": "object",
-      "metadata": "object"
-    }
+  {
+    "id": "adoption-listing",
+    "title": "Adoption Listing Creation",
+    "description": "Generates comprehensive adoption listings with pet details and AI-generated profiles.",
+    "lines": ["28-54"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for adoption posting operations.",
+    "lines": ["17-19", "47-54", "59-61"]
   }
-}
-
-
+]

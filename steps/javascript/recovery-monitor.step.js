@@ -6,12 +6,12 @@ exports.config = {
   name: 'JsRecoveryMonitor',
   description: 'Monitors pet recovery progress and schedules follow-up health checks',
   subscribes: ['js.treatment.started', 'js.treatment.completed'],
-  emits: ['js.recovery.progress', 'js.health.check.scheduled'],
+  emits: [],
   flows: ['JsPetManagement']
 };
 
 exports.handler = async (input, context) => {
-  const { emit, logger } = context || {};
+  const { logger } = context || {};
   const { petId, treatmentType, treatmentStatus } = input;
 
   if (logger) {
@@ -48,22 +48,7 @@ exports.handler = async (input, context) => {
         });
       }
 
-      if (emit) {
-        await emit({
-          topic: 'js.recovery.progress',
-          data: {
-            petId,
-            recoveryPlan,
-            nextSteps: [
-              'Begin treatment monitoring',
-              'Schedule daily health checks',
-              'Update medication schedule',
-              'Notify staff of special care requirements'
-            ],
-            timestamp: Date.now()
-          }
-        });
-      }
+      // Recovery plan created successfully (no emit - no subscribers)
 
     } else if (treatmentStatus === 'completed') {
       // Treatment completed - schedule follow-up
@@ -86,22 +71,7 @@ exports.handler = async (input, context) => {
         });
       }
 
-      if (emit) {
-        await emit({
-          topic: 'js.health.check.scheduled',
-          data: {
-            petId,
-            followUpSchedule,
-            nextSteps: [
-              'Monitor recovery indicators',
-              'Schedule follow-up appointments',
-              'Prepare discharge paperwork',
-              'Update pet status when ready'
-            ],
-            timestamp: Date.now()
-          }
-        });
-      }
+      // Follow-up scheduled successfully (no emit - no subscribers)
     }
 
   } catch (error) {

@@ -1,87 +1,38 @@
-{
-  "stepName": "TsDeletePet",
-  "stepType": "api",
-  "description": "Soft deletes a pet from the system (marks as deleted with purge date)",
-  "endpoint": {
-    "method": "DELETE",
-    "path": "/ts/pets/:id",
-    "description": "Soft deletes pet by unique identifier"
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Basic step configuration for the delete pet API, including path parameters and method.",
+    "lines": ["11-18"]
   },
-  "features": [
-    {
-      "title": "Soft Delete Implementation",
-      "description": "Marks pet as deleted without permanent removal",
-      "details": [
-        "Sets pet status to 'deleted' instead of permanent removal",
-        "Sets deletedAt timestamp for audit trail",
-        "Calculates purgeAt date for eventual permanent deletion",
-        "Maintains pet data for recovery and audit purposes"
-      ]
-    },
-    {
-      "title": "Purge Date Calculation",
-      "description": "Automatically calculates when pet should be permanently removed",
-      "details": [
-        "Sets purgeAt date based on business rules (typically 30 days)",
-        "Enables recovery of accidentally deleted pets",
-        "Supports compliance and audit requirements",
-        "Allows for data retention policies"
-      ]
-    },
-    {
-      "title": "Error Handling",
-      "description": "Validates deletion requests and handles edge cases",
-      "details": [
-        "Validates pet exists before deletion",
-        "Returns 404 for non-existent pets",
-        "Prevents deletion of already deleted pets",
-        "Provides clear error messages for invalid requests"
-      ]
-    },
-    {
-      "title": "Response Format",
-      "description": "Confirms deletion with updated pet information",
-      "details": [
-        "Returns HTTP 200 for successful deletion",
-        "Response body contains updated pet object",
-        "Shows deleted status and purge date",
-        "Includes deletion timestamp for audit"
-      ]
-    },
-    {
-      "title": "Audit Trail",
-      "description": "Maintains complete audit trail for deleted pets",
-      "details": [
-        "Records deletion timestamp",
-        "Preserves original pet data for recovery",
-        "Tracks deletion source and context",
-        "Supports compliance and reporting requirements"
-      ]
-    }
-  ],
-  "workflowIntegration": {
-    "triggers": ["External API calls", "Staff actions"],
-    "emits": [],
-    "flow": "TsPetManagement"
+  {
+    "id": "path-parameter-validation",
+    "title": "Path Parameter Validation",
+    "description": "Zod schema validation for the 'id' path parameter to ensure it's a valid pet ID.",
+    "lines": ["7-9", "23"]
   },
-  "inputSchema": {
-    "required": ["id (path parameter)"],
-    "validation": {
-      "id": "Valid pet ID that exists in the system"
-    }
+  {
+    "id": "soft-delete",
+    "title": "Soft Delete Logic",
+    "description": "Marks pet as deleted without permanent removal, setting deletedAt timestamp and purgeAt date.",
+    "lines": ["25-28"]
   },
-  "outputSchema": {
-    "success": {
-      "status": 200,
-      "body": "Updated pet object with deleted status and purge date"
-    },
-    "error": {
-      "status": 404,
-      "body": {
-        "message": "Pet not found"
-      }
-    }
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for monitoring soft delete operations with pet details and purge date.",
+    "lines": ["30-35"]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns confirmation message with pet ID and scheduled purge date.",
+    "lines": ["37-44"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Handles cases where the pet is not found (404) or validation errors occur (400).",
+    "lines": ["27-28", "46-61"]
   }
-}
-
-
+]

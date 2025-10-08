@@ -1,8 +1,8 @@
 // steps/typescript/get-pets.step.ts
-// import { ApiRouteConfig, Handlers } from 'motia';
+import { ApiRouteConfig, Handlers } from 'motia';
 import { TSStore } from './ts-store';
 
-export const config = {
+export const config: ApiRouteConfig = {
   type: 'api',
   name: 'TsListPets',
   path: '/ts/pets',
@@ -11,6 +11,14 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async () => {
-  return { status: 200, body: TSStore.list() };
+export const handler: Handlers['TsListPets'] = async (req, { logger }) => {
+  try {
+    const pets = TSStore.list();
+    return { status: 200, body: pets };
+  } catch (error) {
+    return {
+      status: 500,
+      body: { message: 'Internal server error' }
+    };
+  }
 };

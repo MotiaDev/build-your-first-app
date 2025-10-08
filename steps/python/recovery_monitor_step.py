@@ -12,7 +12,7 @@ config = {
     "name": "PyRecoveryMonitor",
     "description": "Monitors pet recovery progress and schedules follow-up health checks",
     "subscribes": ["py.treatment.started", "py.treatment.completed"],
-    "emits": ["py.recovery.progress", "py.health.check.scheduled"],
+    "emits": [],
     "flows": ["PyPetManagement"]
 }
 

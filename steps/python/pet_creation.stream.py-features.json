@@ -1,73 +1,14 @@
-{
-  "stepName": "PetCreationStream",
-  "stepType": "stream",
-  "description": "Motia native stream configuration for real-time pet creation workflow updates",
-  "features": [
-    {
-      "title": "Stream Configuration",
-      "description": "Defines the structure and behavior of the pet creation stream",
-      "details": [
-        "Configures stream name as 'petCreation' for context.streams.petCreation access",
-        "Defines simple message-based schema for real-time updates",
-        "Uses default storage type for optimal performance",
-        "Enables real-time communication between workflow steps"
-      ]
-    },
-    {
-      "title": "Schema Definition",
-      "description": "Defines the structure of stream updates using JSON Schema",
-      "details": [
-        "Uses JSON Schema for stream data validation",
-        "Defines message field as required string",
-        "Ensures consistent data structure across all stream updates",
-        "Provides runtime validation for stream data"
-      ]
-    },
-    {
-      "title": "Integration Support",
-      "description": "Enables integration with Motia workflow steps",
-      "details": [
-        "Available as context.streams.petCreation in all step handlers",
-        "Supports set() operations for updating stream data",
-        "Enables real-time updates from any workflow step",
-        "Provides trace-based correlation for workflow tracking"
-      ]
-    },
-    {
-      "title": "Real-Time Updates",
-      "description": "Facilitates real-time communication in pet creation workflow",
-      "details": [
-        "Streams initial pet creation messages",
-        "Streams quarantine status updates",
-        "Streams health check results and progress",
-        "Streams final status determinations"
-      ]
-    }
-  ],
-  "streamSchema": {
-    "type": "object",
-    "properties": {
-      "message": {
-        "type": "string",
-        "description": "Real-time status update message"
-      }
-    },
-    "required": ["message"]
+[
+  {
+    "id": "stream-configuration",
+    "title": "Stream Configuration",
+    "description": "Defines the structure and behavior of the pet creation stream for real-time updates.",
+    "lines": ["1-13"]
   },
-  "integration": {
-    "contextAccess": "context.streams.petCreation",
-    "methods": ["set(trace_id, key, data)"],
-    "storageType": "default",
-    "workflowSteps": [
-      "PyCreatePet",
-      "PySetNextFeedingReminder"
-    ]
-  },
-  "usage": {
-    "initialization": "streams.petCreation.set(trace_id, 'message', {'message': 'Initial message'})",
-    "updates": "streams.petCreation.set(trace_id, 'message', {'message': 'Update message'})",
-    "correlation": "Uses trace_id for workflow correlation and stream tracking"
+  {
+    "id": "schema-definition",
+    "title": "Schema Definition",
+    "description": "Pydantic schema for type-safe stream updates with message and enrichment data.",
+    "lines": ["6-12"]
   }
-}
-
-
+]

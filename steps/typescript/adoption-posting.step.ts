@@ -6,12 +6,12 @@ export const config = {
   name: 'TsAdoptionPosting',
   description: 'Posts pet for adoption and schedules adoption interviews when pet is ready',
   subscribes: ['ts.adoption.ready'],
-  emits: ['ts.adoption.posted', 'ts.interview.scheduled'],
+  emits: [],
   flows: ['TsPetManagement']
 };
 
 export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
+  const { logger } = context || {};
   const { petId, profile } = input;
 
   if (logger) {
@@ -53,41 +53,7 @@ export const handler = async (input: any, context?: any) => {
       });
     }
 
-    // Emit adoption posted event
-    if (emit) {
-      await emit({
-        topic: 'ts.adoption.posted',
-        data: {
-          petId,
-          adoptionPosting,
-          nextSteps: [
-            'Share on social media',
-            'Update shelter website',
-            'Notify adoption coordinators',
-            'Prepare adoption paperwork'
-          ],
-          timestamp: Date.now()
-        }
-      });
-
-      // Schedule initial adoption interview
-      await emit({
-        topic: 'ts.interview.scheduled',
-        data: {
-          petId,
-          interviewType: 'adoption_screening',
-          scheduledAt: Date.now() + (7 * 24 * 60 * 60 * 1000), // 1 week from now
-          duration: '30 minutes',
-          requirements: [
-            'Valid ID',
-            'Proof of residence',
-            'References from veterinarian',
-            'Home visit scheduled'
-          ],
-          notes: `Initial screening for ${pet.name} adoption`
-        }
-      });
-    }
+    // Adoption posted and interview scheduled (no emit - no subscribers)
 
   } catch (error: any) {
     if (logger) {

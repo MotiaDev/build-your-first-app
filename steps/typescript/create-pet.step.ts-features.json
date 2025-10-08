@@ -1,113 +1,44 @@
-{
-  "stepName": "TsCreatePet",
-  "stepType": "api",
-  "description": "Creates a new pet in the system with real-time streaming updates using Motia's native Streams API",
-  "endpoint": {
-    "method": "POST",
-    "path": "/ts/pets",
-    "description": "Creates a new pet with basic information and returns stream result for real-time updates"
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Basic step configuration with type, name, path, method, and workflow flows.",
+    "lines": ["16-22"]
   },
-  "features": [
-    {
-      "title": "Pet Creation",
-      "description": "Creates a new pet record with validated input data including name, species, age, and optional weight and symptoms",
-      "details": [
-        "Validates required fields: name (string), species (dog/cat/bird/other), ageMonths (number)",
-        "Accepts optional fields: weightKg (number), symptoms (array)",
-        "Generates unique pet ID and sets initial status to 'new'",
-        "Stores pet data in TypeScript store"
-      ]
-    },
-    {
-      "title": "Event Emission",
-      "description": "Emits workflow events to trigger downstream processing",
-      "details": [
-        "Emits 'ts.pet.created' event with pet creation data",
-        "Emits 'ts.feeding.reminder.enqueued' event to trigger feeding reminder setup",
-        "Events contain petId, name, species, and traceId information"
-      ]
-    },
-    {
-      "title": "Input Validation",
-      "description": "Comprehensive validation of incoming pet data",
-      "details": [
-        "Validates name is non-empty string",
-        "Validates species is one of: dog, cat, bird, other",
-        "Validates ageMonths is a finite number",
-        "Returns 400 error with descriptive message for invalid data",
-        "Handles optional weightKg and symptoms fields gracefully"
-      ]
-    },
-    {
-      "title": "Motia Native Streaming",
-      "description": "Uses Motia's native Streams API for real-time updates",
-      "details": [
-        "Creates initial stream record with pet creation message",
-        "Returns stream result object directly (required for Motia streaming)",
-        "Stream includes pet details embedded in message",
-        "Enables real-time updates from downstream steps",
-        "Follows Motia's streaming pattern for proper integration"
-      ]
-    },
-    {
-      "title": "Logging",
-      "description": "Structured logging for monitoring and debugging",
-      "details": [
-        "Logs pet creation with key details (petId, name, species, status)",
-        "Uses emoji prefix for easy log identification",
-        "Includes structured data for log analysis"
-      ]
-    }
-  ],
-  "workflowIntegration": {
-    "triggers": ["External API calls"],
-    "emits": [
-      {
-        "topic": "ts.pet.created",
-        "description": "Triggers AI profile enrichment and lifecycle orchestration"
-      },
-      {
-        "topic": "ts.feeding.reminder.enqueued", 
-        "description": "Triggers background job to set up feeding reminders and status updates"
-      }
-    ],
-    "flow": "TsPetManagement"
+  {
+    "id": "request-validation",
+    "title": "Request Body Schema",
+    "description": "Zod schema validation for pet data including name, species, age, and optional weight and symptoms with proper error handling.",
+    "lines": ["7-14"]
   },
-  "inputSchema": {
-    "required": ["name", "species", "ageMonths"],
-    "optional": ["weightKg", "symptoms"],
-    "validation": {
-      "name": "Non-empty string",
-      "species": "One of: dog, cat, bird, other",
-      "ageMonths": "Finite number",
-      "weightKg": "Number (optional)",
-      "symptoms": "Array of strings (optional)"
-    }
+  {
+    "id": "pet-creation",
+    "title": "Pet Object Creation",
+    "description": "Creates pet object with validated data, generates unique ID, and stores in TypeScript store.",
+    "lines": ["28-36"]
   },
-  "outputSchema": {
-    "success": {
-      "status": 201,
-      "body": {
-        "id": "Stream ID for tracking updates",
-        "groupId": "Trace ID for workflow correlation",
-        "message": "Initial pet creation message with pet details"
-      }
-    },
-    "error": {
-      "status": 400,
-      "body": "Error message with validation details"
-    }
+  {
+    "id": "event-emission",
+    "title": "Workflow Trigger",
+    "description": "Emits 'ts.pet.created' and 'ts.feeding.reminder.enqueued' events to trigger background jobs and workflow orchestration.",
+    "lines": ["46-56"]
   },
-  "streamingFeatures": [
-    {
-      "type": "message",
-      "description": "Real-time status updates via Motia Streams API",
-      "details": [
-        "Initial creation message with pet details",
-        "Quarantine status updates from feeding reminder job",
-        "Health check results based on symptoms",
-        "Final status determination (healthy/ill/available)"
-      ]
-    }
-  ]
-}
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns stream result with pet creation details including ID, name, species, status, and success message.",
+    "lines": ["58-61"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for monitoring and debugging with emoji prefix and contextual data.",
+    "lines": ["38-40"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Comprehensive error handling for Zod validation errors and unexpected server errors.",
+    "lines": ["63-78"]
+  }
+]

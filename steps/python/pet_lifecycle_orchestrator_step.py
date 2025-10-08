@@ -123,13 +123,10 @@ config = {
         "py.adoption.needs_data",
         "py.adoption.ready"
     ],
-    "emits": [
-        "py.lifecycle.transition.completed",
-        "py.lifecycle.transition.rejected",
+    "emits": [ 
         "py.treatment.required",
         "py.adoption.ready",
-        "py.treatment.completed",
-        "py.health.restored"
+        "py.treatment.completed", 
     ],
     "flows": ["PyPetManagement"]
 }

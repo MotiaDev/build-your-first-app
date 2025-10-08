@@ -1,67 +1,32 @@
-{
-  "stepName": "TsGetPet",
-  "stepType": "api",
-  "description": "Retrieves a single pet by ID from the system",
-  "endpoint": {
-    "method": "GET",
-    "path": "/ts/pets/:id",
-    "description": "Fetches pet details by unique identifier"
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Basic step configuration for the get pet API, including path parameters and method.",
+    "lines": ["11-18"]
   },
-  "features": [
-    {
-      "title": "Pet Retrieval",
-      "description": "Fetches complete pet information by ID",
-      "details": [
-        "Retrieves pet from TypeScript store using unique ID",
-        "Returns complete pet object with all fields",
-        "Includes system-generated fields (id, status, timestamps)",
-        "Preserves all pet data including profile, symptoms, and flags"
-      ]
-    },
-    {
-      "title": "Error Handling",
-      "description": "Handles missing pets and invalid requests",
-      "details": [
-        "Returns 404 status for non-existent pets",
-        "Validates pet ID parameter exists",
-        "Provides clear error messages for debugging",
-        "Maintains consistent error response format"
-      ]
-    },
-    {
-      "title": "Response Format",
-      "description": "Standardized JSON response format",
-      "details": [
-        "Returns HTTP 200 for successful retrieval",
-        "Response body contains complete pet object",
-        "Includes all pet attributes and metadata",
-        "Consistent with other API endpoints"
-      ]
-    }
-  ],
-  "workflowIntegration": {
-    "triggers": ["External API calls", "Frontend applications"],
-    "emits": [],
-    "flow": "TsPetManagement"
+  {
+    "id": "path-parameter-validation",
+    "title": "Path Parameter Validation",
+    "description": "Zod schema validation for the 'id' path parameter to ensure it's a valid pet ID.",
+    "lines": ["7-9", "23"]
   },
-  "inputSchema": {
-    "required": ["id (path parameter)"],
-    "validation": {
-      "id": "Valid pet ID that exists in the system"
-    }
+  {
+    "id": "pet-retrieval",
+    "title": "Pet Retrieval Logic",
+    "description": "Retrieves a single pet by its ID from the TypeScript store.",
+    "lines": ["25-29"]
   },
-  "outputSchema": {
-    "success": {
-      "status": 200,
-      "body": "Complete pet object with all fields"
-    },
-    "error": {
-      "status": 404,
-      "body": {
-        "message": "Pet not found"
-      }
-    }
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns the complete pet object if found, with HTTP 200 status.",
+    "lines": ["31"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Handles cases where the pet is not found (404) or validation errors occur (400).",
+    "lines": ["27-29", "33-48"]
   }
-}
-
-
+]

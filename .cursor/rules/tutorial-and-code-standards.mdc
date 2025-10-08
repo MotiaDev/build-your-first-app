@@ -1,0 +1,334 @@
+---
+alwaysApply: false
+---
+# Motia Tutorial and Code Standards - Comprehensive Best Practices
+
+This rule defines comprehensive standards for Motia tutorial development, code organization, and feature file management based on established best practices from the ai-agents branch.
+
+## 1. Python Step Naming Convention
+
+**CRITICAL**: All Python step files must follow the correct naming convention.
+
+- ✅ **CORRECT**: Use `_step.py` suffix (e.g., `create_pet_step.py`, `update_pet_step.py`)
+- ❌ **WRONG**: Using `.step.py` suffix (e.g., `create_pet.step.py`, `update_pet.step.py`)
+
+**Rule**: All Python step files must follow `{step-name}_step.py` naming convention for proper module resolution.
+
+## 2. TypeScript Handler Standards
+
+Always use Motia's standard type-safe handler definitions with proper imports and Zod validation.
+
+### ✅ **CORRECT Pattern**:
+```typescript
+import { ApiRouteConfig, Handlers } from 'motia';
+import { z } from 'zod';
+
+// Define schema with Zod for type safety and validation
+const createPetSchema = z.object({
+  name: z.string().min(1, 'Name is required').trim(),
+  species: z.enum(['dog', 'cat', 'bird', 'other']),
+  ageMonths: z.number().int().min(0, 'Age must be a positive number')
+});
+
+export const config: ApiRouteConfig = {
+  type: 'api',
+  name: 'TsCreatePet',
+  path: '/ts/pets',
+  method: 'POST',
+  emits: ['ts.pet.created', 'ts.feeding.reminder.enqueued'],
+  flows: ['TsPetManagement']
+};
+
+export const handler: Handlers['TsCreatePet'] = async (req, { emit, logger }) => {
+  try {
+    // Zod automatically validates and parses the request body
+    const validatedData = createPetSchema.parse(req.body);
+    
+    // ... handler logic
+    
+    return { status: 201, body: pet };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return {
+        status: 400,
+        body: {
+          message: 'Validation error',
+          errors: error.errors
+        }
+      };
+    }
+    
+    return {
+      status: 500,
+      body: { message: 'Internal server error' }
+    };
+  }
+};
+```
+
+### ❌ **WRONG Patterns**:
+- Manual validation without Zod
+- Non-type-safe handler definitions
+- Missing error handling for Zod validation
+
+## 3. Event Emission Management
+
+Clean up unused event emissions while preserving workflow visualization.
+
+### ✅ **REMOVE**: Events with no subscribers
+```typescript
+// Remove from config.emits array
+// Remove corresponding await emit() calls from handlers
+```
+
+### ✅ **KEEP**: Events that maintain workflow visualization
+```typescript
+// Keep core workflow events like:
+// - ts.pet.created (triggers orchestrator)
+// - ts.feeding.reminder.enqueued (triggers background job)
+// - ts.feeding.reminder.completed (orchestrator subscribes)
+```
+
+### ✅ **PRESERVE**: Essential workflow connections
+- Core workflow events that trigger orchestrators
+- Events that maintain tutorial visualization
+- Events that connect different step types
+
+**Rule**: Remove unused emissions but preserve workflow visualization events for tutorial purposes.
+
+## 4. Tutorial.tsx Step Naming
+
+Use consistent lowercase step names throughout the tutorial.
+
+### ✅ **CORRECT Pattern**:
+```typescript
+// Use lowercase step names
+elementXpath: workbenchXPath.flows.node('tscreatepet'),
+elementXpath: workbenchXPath.flows.previewButton('tscreatepet'),
+elementXpath: workbenchXPath.flows.node('tshealthreviewagent'),
+elementXpath: workbenchXPath.flows.node('tspetlifecycleorchestrator'),
+elementXpath: workbenchXPath.flows.node('tsdeletionreaper'),
+```
+
+### ❌ **WRONG Pattern**:
+```typescript
+// Don't use full step names
+elementXpath: workbenchXPath.flows.node('TsCreatePet'),
+elementXpath: workbenchXPath.flows.node('TsHealthReviewAgent'),
+```
+
+**Pattern**: Remove "Ts" prefix and convert to lowercase (e.g., `TsCreatePet` → `tscreatepet`)
+
+## 5. Features.json Format Standards
+
+Use the simple array format matching the reference implementation.
+
+### ✅ **CORRECT Format**:
+```json
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Basic step configuration with type, name, path, method, and workflow flows.",
+    "lines": ["13-20"]
+  },
+  {
+    "id": "request-validation",
+    "title": "Request Body Schema",
+    "description": "Zod schema validation for pet data including name, species, and age with proper error handling.",
+    "lines": ["7-11"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for monitoring and debugging with emoji prefix and contextual data.",
+    "lines": ["33-35"]
+  }
+]
+```
+
+### ❌ **WRONG Format**:
+```json
+{
+  "stepName": "TsCreatePet",
+  "stepType": "api",
+  "features": [
+    {
+      "title": "Feature Title",
+      "description": "Complex nested object with detailed metadata",
+      "details": ["array", "of", "detailed", "descriptions"]
+    }
+  ]
+}
+```
+
+**Rule**: Match reference format from api-endpoints/background-jobs branches with simple array structure.
+
+## 6. Feature ID Consistency
+
+Maintain consistent feature ID naming across all features.json files.
+
+### ✅ **Standard Feature IDs**:
+- `'step-configuration'` - Basic step configuration
+- `'api-configuration'` - API-specific configuration
+- `'request-validation'` - Request body validation
+- `'handler'` - Main business logic
+- `'event-emission'` - Event emission logic
+- `'success-response'` - Success response handling
+- `'logging'` - Logging functionality (NOT 'logger')
+- `'error-handling'` - Error handling logic
+- `'input-schema'` - Input validation schema
+- `'state'` - State management
+- `'cron-configuration'` - Cron job configuration
+
+**Rule**: Use `'logging'` not `'logger'` for consistency across all files.
+
+## 7. Tutorial Navigation Flow
+
+Ensure proper tutorial flow with source code visualization.
+
+### ✅ **REQUIRED Flow Pattern**:
+1. **Node Highlight** - Introduces the step in the flow diagram
+2. **Preview Button** - Highlights the code preview icon
+3. **Source Code View** - Shows the complete source file (REQUIRED!)
+4. **Feature Sections** - Walks through specific code features
+
+### ✅ **Example Structure**:
+```typescript
+{
+  elementXpath: workbenchXPath.flows.node('tscreatepet'),
+  title: 'Pet Creation API',
+  // ... description
+},
+{
+  elementXpath: workbenchXPath.flows.previewButton('tscreatepet'),
+  title: 'Code Preview',
+  description: () => <p>Click this icon to view the source code...</p>,
+},
+{
+  elementXpath: workbenchXPath.sidebarContainer,
+  title: 'Step Source Code',
+  description: () => (
+    <p>
+      This is the source code for the Pet Creation API Step...
+    </p>
+  ),
+  before: [
+    { type: 'click', selector: workbenchXPath.flows.previewButton('tscreatepet') },
+  ],
+},
+{
+  elementXpath: workbenchXPath.sidebarContainer,
+  title: 'Pet Creation Configuration',
+  // ... feature-specific content
+  before: [
+    { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
+  ],
+},
+```
+
+**Rule**: Always include the intermediate source code display step before diving into specific features.
+
+## 8. API Endpoint References
+
+Use actual endpoints and correct test data in tutorials.
+
+### ✅ **CORRECT Pattern**:
+```typescript
+// Use actual endpoints
+elementXpath: workbenchXPath.endpoints.endpoint('POST', '/ts/pets'),
+
+// Use correct test data matching actual API schema
+{
+  type: 'fill-editor',
+  content: {
+    name: 'Jack',
+    species: 'dog',
+    ageMonths: 24
+  },
+},
+```
+
+### ❌ **WRONG Pattern**:
+```typescript
+// Don't use placeholder endpoints
+elementXpath: workbenchXPath.endpoints.endpoint('POST', '/basic-tutorial'),
+
+// Don't use mismatched test data
+{
+  type: 'fill-editor',
+  content: {
+    pet: { name: 'Jack', photoUrl: 'https://...' },
+    foodOrder: { id: 'food-order-1', quantity: 0 },
+  },
+},
+```
+
+**Rule**: Tutorial must reference real endpoints with correct test data matching actual API schema.
+
+## 9. TypeScript Compilation Verification
+
+Always verify TypeScript compilation after making changes.
+
+### ✅ **REQUIRED Step**:
+```bash
+npx tsc --noEmit
+```
+
+**Rule**: Ensure TypeScript compilation passes before finalizing any changes.
+
+## 10. Workflow Visualization Balance
+
+Balance clean code with tutorial visualization needs.
+
+### ✅ **Maintain**:
+- Essential workflow connections for tutorial visualization
+- Core events that demonstrate workflow orchestration
+- Events that show step-to-step communication
+
+### ✅ **Remove**:
+- Events with no subscribers that don't contribute to visualization
+- Redundant event emissions
+- Events that clutter the workflow without purpose
+
+**Rule**: Remove unused emissions but preserve workflow visualization events that help users understand the system architecture.
+
+## 11. Line Number Accuracy
+
+Ensure features.json line numbers accurately reflect actual source code.
+
+### ✅ **Process**:
+1. Read the actual step file
+2. Identify the correct line ranges for each feature
+3. Update features.json with accurate line numbers
+4. Verify line numbers match the code structure
+
+**Rule**: Always verify line numbers match the actual source code before finalizing features.json files.
+
+## 12. Reference Branch Alignment
+
+When updating tutorials, align with established reference branches.
+
+### ✅ **Reference Branches**:
+- `api-endpoints` - For tutorial structure and step naming
+- `background-jobs` - For features.json format and content
+- `workflow-orchestrator` - For comprehensive workflow examples
+
+**Rule**: Always check reference branches for established patterns before implementing new features or fixing existing ones.
+
+---
+
+## Quick Checklist for Any Branch Updates:
+
+- [ ] Python files use `_step.py` naming convention
+- [ ] TypeScript handlers use Motia standards with Zod validation
+- [ ] Unused event emissions removed (but workflow visualization preserved)
+- [ ] Tutorial step names use lowercase pattern
+- [ ] Features.json uses simple array format with accurate line numbers
+- [ ] Feature IDs are consistent (`'logging'` not `'logger'`)
+- [ ] Tutorial includes proper navigation flow with source code display
+- [ ] API endpoints reference actual endpoints with correct test data
+- [ ] TypeScript compilation passes
+- [ ] Workflow visualization maintains essential connections
+- [ ] Line numbers in features.json match actual source code
+- [ ] Changes align with reference branch patterns

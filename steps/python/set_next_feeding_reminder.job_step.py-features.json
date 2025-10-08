@@ -1,123 +1,38 @@
-{
-  "stepName": "PySetNextFeedingReminder",
-  "stepType": "event",
-  "description": "Sets the next feeding reminder for a pet and updates its status with real-time streaming updates",
-  "features": [
-    {
-      "title": "Feeding Reminder Setup",
-      "description": "Sets up feeding schedules and reminder systems for pets",
-      "details": [
-        "Calculates next feeding time (24 hours from creation)",
-        "Sets feeding reminder timestamps and schedules",
-        "Creates feeding schedule entries for pet care",
-        "Manages feeding reminder notifications and alerts"
-      ]
-    },
-    {
-      "title": "Pet Status Management",
-      "description": "Updates pet status and manages quarantine period",
-      "details": [
-        "Sets pet status to 'in_quarantine' after creation",
-        "Manages status transitions based on health conditions",
-        "Handles status updates for healthy vs ill pets",
-        "Determines final status (healthy/ill/available)"
-      ]
-    },
-    {
-      "title": "Real-Time Streaming Updates",
-      "description": "Streams status updates via Motia's native Streams API",
-      "details": [
-        "Streams quarantine entry notifications",
-        "Streams health check results with delays",
-        "Streams final status determination messages",
-        "Provides real-time workflow progress updates"
-      ]
-    },
-    {
-      "title": "Welcome Message Creation",
-      "description": "Adds welcome messages and initial care instructions",
-      "details": [
-        "Adds welcome notes to new pet records",
-        "Provides initial care instructions and information",
-        "Sets up basic pet care guidelines",
-        "Creates personalized welcome messages"
-      ]
-    },
-    {
-      "title": "Event-Driven Processing",
-      "description": "Automatically triggered by pet creation workflow",
-      "details": [
-        "Subscribes to 'py.feeding.reminder.enqueued' events",
-        "Processes feeding reminder requests automatically",
-        "Emits feeding reminder completion events",
-        "Provides workflow progress tracking"
-      ]
-    },
-    {
-      "title": "Background Job Processing",
-      "description": "Handles asynchronous background processing tasks",
-      "details": [
-        "Processes jobs without blocking main workflow",
-        "Handles job queuing and execution",
-        "Manages job retry logic and error handling",
-        "Provides job status tracking and monitoring"
-      ]
-    },
-    {
-      "title": "Data Updates",
-      "description": "Updates pet records with feeding and care information",
-      "details": [
-        "Updates pet record with nextFeedingAt timestamp",
-        "Updates pet status to in_quarantine",
-        "Adds welcome notes and care instructions",
-        "Maintains data consistency across the system"
-      ]
-    },
-    {
-      "title": "Error Handling",
-      "description": "Handles errors in feeding reminder setup process",
-      "details": [
-        "Manages missing pet data gracefully",
-        "Handles update failures and retries",
-        "Logs errors with structured data for monitoring",
-        "Ensures workflow continues despite individual failures"
-      ]
-    }
-  ],
-  "workflowIntegration": {
-    "subscribes": [
-      {
-        "topic": "py.feeding.reminder.enqueued",
-        "description": "Triggered when feeding reminders are queued for new pets"
-      }
-    ],
-    "emits": [
-      {
-        "topic": "py.feeding.reminder.completed",
-        "description": "Indicates feeding reminder setup has completed"
-      }
-    ],
-    "flow": "PyPetManagement"
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event step configuration for setting feeding reminders and welcome notes.",
+    "lines": ["10-17"]
   },
-  "inputSchema": {
-    "required": ["petId", "enqueuedAt", "traceId"],
-    "validation": {
-      "petId": "Valid pet ID from creation event",
-      "enqueuedAt": "Timestamp when job was enqueued",
-      "traceId": "Trace ID for streaming correlation"
-    }
+  {
+    "id": "event-subscription",
+    "title": "Event Subscription",
+    "description": "Subscribes to 'py.feeding.reminder.enqueued' to trigger the background job.",
+    "lines": ["14"]
   },
-  "outputSchema": {
-    "updates": {
-      "nextFeedingAt": "timestamp (24 hours from now)",
-      "notes": "string (welcome message)",
-      "status": "string (in_quarantine)"
-    },
-    "streaming": {
-      "type": "message",
-      "content": "Real-time status updates and health check results"
-    }
+  {
+    "id": "handler",
+    "title": "Event Handler",
+    "description": "Processes the enqueued event to calculate and set the next feeding time, add notes, and update pet status.",
+    "lines": ["19-86"]
+  },
+  {
+    "id": "pet-update-logic",
+    "title": "Pet Update Logic",
+    "description": "Updates the pet record with the calculated next feeding time, welcome note, and quarantine status.",
+    "lines": ["28-38"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for tracking the reminder setup process and any errors.",
+    "lines": ["23-25", "40-52", "81-83"]
+  },
+  {
+    "id": "not-found-handling",
+    "title": "Pet Not Found Handling",
+    "description": "Handles cases where the pet specified in the event is not found in the store.",
+    "lines": ["40-45"]
   }
-}
-
-
+]

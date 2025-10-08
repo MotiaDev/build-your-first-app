@@ -12,7 +12,7 @@ config = {
     "name": "PyAdoptionPosting",
     "description": "Posts pet for adoption and schedules adoption interviews when pet is ready",
     "subscribes": ["py.adoption.ready"],
-    "emits": ["py.adoption.posted", "py.interview.scheduled"],
+    "emits": [],
     "flows": ["PyPetManagement"]
 }
 

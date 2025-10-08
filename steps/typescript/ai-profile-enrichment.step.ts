@@ -6,12 +6,12 @@ export const config = {
   name: 'TsAiProfileEnrichment',
   description: 'AI agent that enriches pet profiles using OpenAI',
   subscribes: ['ts.pet.created'],
-  emits: ['ts.pet.profile_enrichment_started', 'ts.pet.profile_enrichment_completed'],
+  emits: [],
   flows: ['TsPetManagement']
 };
 
 export const handler = async (input: any, context?: any) => {
-  const { emit, logger, streams, traceId } = context || {};
+  const { logger, streams, traceId } = context || {};
   const { petId, name, species } = input;
 
   if (logger) {
@@ -25,17 +25,7 @@ export const handler = async (input: any, context?: any) => {
     });
   }
 
-  // Emit enrichment started event (for backward compatibility)
-  if (emit) {
-    await emit({
-      topic: 'ts.pet.profile_enrichment_started',
-      data: { 
-        petId, 
-        event: 'profile_enrichment_started',
-        startedAt: Date.now() 
-      }
-    });
-  }
+  // Profile enrichment started (no emit - no subscribers)
 
   try {
     // Get OpenAI API key from environment
@@ -158,18 +148,7 @@ Keep it positive, realistic, and adoption-focused.`;
       });
     }
 
-    // Emit enrichment completed event (for backward compatibility)
-    if (emit) {
-      await emit({
-        topic: 'ts.pet.profile_enrichment_completed',
-        data: { 
-          petId, 
-          event: 'profile_enrichment_completed',
-          completedAt: Date.now(),
-          profile
-        }
-      });
-    }
+    // Profile enrichment completed successfully (no emit - no subscribers)
 
   } catch (error: any) {
     if (logger) {
@@ -199,18 +178,6 @@ Keep it positive, realistic, and adoption-focused.`;
       });
     }
 
-    // Emit completed event even on error (with fallback profile)
-    if (emit) {
-      await emit({
-        topic: 'ts.pet.profile_enrichment_completed',
-        data: { 
-          petId, 
-          event: 'profile_enrichment_completed',
-          completedAt: Date.now(),
-          profile: fallbackProfile,
-          error: error.message
-        }
-      });
-    }
+    // Fallback profile created (no emit - no subscribers)
   }
 };

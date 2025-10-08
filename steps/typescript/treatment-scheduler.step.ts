@@ -6,12 +6,12 @@ export const config = {
   name: 'TsTreatmentScheduler',
   description: 'Schedules veterinary treatment and medication for pets requiring medical care',
   subscribes: ['ts.treatment.required'],
-  emits: ['ts.treatment.scheduled', 'ts.medication.updated'],
+  emits: [],
   flows: ['TsPetManagement']
 };
 
 export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
+  const { logger } = context || {};
   const { petId, symptoms, urgency } = input;
 
   if (logger) {
@@ -54,35 +54,7 @@ export const handler = async (input: any, context?: any) => {
       });
     }
 
-    // Emit treatment scheduled event
-    if (emit) {
-      await emit({
-        topic: 'ts.treatment.scheduled',
-        data: {
-          petId,
-          treatmentSchedule,
-          nextSteps: [
-            'Notify veterinary staff',
-            'Prepare treatment room',
-            'Update pet medication schedule'
-          ],
-          timestamp: Date.now()
-        }
-      });
-
-      // Emit medication update if needed
-      if (treatmentSchedule.medication.length > 0) {
-        await emit({
-          topic: 'ts.medication.updated',
-          data: {
-            petId,
-            medication: treatmentSchedule.medication,
-            startDate: Date.now(),
-            instructions: generateMedicationInstructions(treatmentSchedule.medication)
-          }
-        });
-      }
-    }
+    // Treatment scheduled successfully (no emit - no subscribers)
 
   } catch (error: any) {
     if (logger) {

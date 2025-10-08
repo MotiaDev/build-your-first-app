@@ -12,7 +12,7 @@ config = {
     "name": "PyAiProfileEnrichment",
     "description": "AI agent that enriches pet profiles using OpenAI",
     "subscribes": ["py.pet.created"],
-    "emits": ["py.pet.profile_enrichment_started", "py.pet.profile_enrichment_completed"],
+    "emits": [],
     "flows": ["PyPetManagement"]
 }
 

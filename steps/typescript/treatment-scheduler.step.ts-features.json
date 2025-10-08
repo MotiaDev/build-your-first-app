@@ -1,105 +1,26 @@
-{
-  "stepName": "TsTreatmentScheduler",
-  "stepType": "event",
-  "description": "Event step that schedules medical treatment for pets requiring health intervention",
-  "features": [
-    {
-      "title": "Treatment Scheduling",
-      "description": "Schedules medical treatment for pets requiring health intervention",
-      "details": [
-        "Processes health treatment requirement events",
-        "Creates treatment schedules based on pet needs",
-        "Coordinates with medical staff and resources",
-        "Manages treatment timeline and follow-up care"
-      ]
-    },
-    {
-      "title": "Event-Driven Processing",
-      "description": "Automatically triggered by health assessment events",
-      "details": [
-        "Subscribes to 'ts.health.treatment_required' events",
-        "Processes treatment requests automatically",
-        "Emits scheduling started and completed events",
-        "Provides workflow progress tracking"
-      ]
-    },
-    {
-      "title": "Medical Coordination",
-      "description": "Coordinates medical treatment planning and execution",
-      "details": [
-        "Analyzes pet symptoms and health conditions",
-        "Determines appropriate treatment protocols",
-        "Schedules medical appointments and procedures",
-        "Coordinates with veterinary staff and resources"
-      ]
-    },
-    {
-      "title": "Treatment Planning",
-      "description": "Creates comprehensive treatment plans for pets",
-      "details": [
-        "Develops treatment schedules based on pet condition",
-        "Plans medication and procedure timelines",
-        "Coordinates follow-up care and monitoring",
-        "Tracks treatment progress and outcomes"
-      ]
-    },
-    {
-      "title": "Data Validation",
-      "description": "Validates pet health data before scheduling treatment",
-      "details": [
-        "Ensures pet exists and is in valid state for treatment",
-        "Validates health condition and symptom data",
-        "Checks treatment eligibility and requirements",
-        "Handles missing or incomplete health data"
-      ]
-    },
-    {
-      "title": "Error Handling",
-      "description": "Handles errors in treatment scheduling process",
-      "details": [
-        "Manages scheduling conflicts and resource constraints",
-        "Provides fallback for treatment planning failures",
-        "Logs errors with structured data for monitoring",
-        "Ensures critical health needs are addressed"
-      ]
-    }
-  ],
-  "workflowIntegration": {
-    "subscribes": [
-      {
-        "topic": "ts.health.treatment_required",
-        "description": "Triggered when pets require medical treatment"
-      }
-    ],
-    "emits": [
-      {
-        "topic": "ts.treatment.scheduling_started",
-        "description": "Indicates treatment scheduling process has begun"
-      },
-      {
-        "topic": "ts.treatment.scheduling_completed",
-        "description": "Indicates treatment scheduling process has completed"
-      }
-    ],
-    "flow": "TsPetManagement"
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event step configuration for treatment scheduling with event subscriptions.",
+    "lines": ["4-11"]
   },
-  "inputSchema": {
-    "required": ["petId", "healthData", "symptoms"],
-    "validation": {
-      "petId": "Valid pet ID",
-      "healthData": "Pet health information",
-      "symptoms": "Array of symptoms and conditions"
-    }
+  {
+    "id": "handler",
+    "title": "Event Handler",
+    "description": "Processes treatment requirement events and schedules appropriate medical care.",
+    "lines": ["65-110"]
   },
-  "outputSchema": {
-    "treatmentPlan": {
-      "petId": "string",
-      "schedule": "object",
-      "procedures": "array",
-      "medications": "array",
-      "followUp": "object"
-    }
+  {
+    "id": "treatment-logic",
+    "title": "Treatment Scheduling Logic",
+    "description": "Determines treatment urgency, type, and schedules based on pet symptoms.",
+    "lines": ["76-105"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for treatment scheduling operations and errors.",
+    "lines": ["73-74", "96-104", "108-110"]
   }
-}
-
-
+]

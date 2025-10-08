@@ -1,108 +1,32 @@
-{
-  "stepName": "TsRecoveryMonitor",
-  "stepType": "event",
-  "description": "Event step that monitors pet recovery progress and manages recovery workflow",
-  "features": [
-    {
-      "title": "Recovery Monitoring",
-      "description": "Monitors pet recovery progress and health status",
-      "details": [
-        "Tracks recovery milestones and progress indicators",
-        "Monitors treatment effectiveness and outcomes",
-        "Assesses recovery completion criteria",
-        "Manages transition from treatment to recovery status"
-      ]
-    },
-    {
-      "title": "Event-Driven Processing",
-      "description": "Automatically triggered by recovery-related events",
-      "details": [
-        "Subscribes to recovery and treatment completion events",
-        "Processes recovery status updates automatically",
-        "Emits monitoring started and completed events",
-        "Provides workflow progress tracking"
-      ]
-    },
-    {
-      "title": "Health Assessment",
-      "description": "Assesses pet health during recovery period",
-      "details": [
-        "Evaluates recovery progress against baseline health",
-        "Identifies recovery completion indicators",
-        "Monitors for complications or setbacks",
-        "Determines readiness for status transition"
-      ]
-    },
-    {
-      "title": "Recovery Planning",
-      "description": "Plans and manages recovery care protocols",
-      "details": [
-        "Develops recovery care schedules",
-        "Coordinates follow-up appointments and monitoring",
-        "Plans gradual return to normal activities",
-        "Manages medication tapering and discontinuation"
-      ]
-    },
-    {
-      "title": "Status Management",
-      "description": "Manages pet status transitions during recovery",
-      "details": [
-        "Coordinates transition from under_treatment to recovered",
-        "Manages progression from recovered to healthy",
-        "Handles recovery setbacks and complications",
-        "Maintains accurate status tracking"
-      ]
-    },
-    {
-      "title": "Data Validation",
-      "description": "Validates recovery data and progress indicators",
-      "details": [
-        "Ensures pet exists and is in valid recovery state",
-        "Validates recovery progress and health indicators",
-        "Checks recovery completion criteria",
-        "Handles missing or incomplete recovery data"
-      ]
-    }
-  ],
-  "workflowIntegration": {
-    "subscribes": [
-      {
-        "topic": "ts.recovery.monitoring_started",
-        "description": "Triggered when recovery monitoring begins"
-      },
-      {
-        "topic": "ts.treatment.completed",
-        "description": "Triggered when treatment is completed"
-      }
-    ],
-    "emits": [
-      {
-        "topic": "ts.recovery.monitoring_completed",
-        "description": "Indicates recovery monitoring process has completed"
-      },
-      {
-        "topic": "ts.recovery.ready_for_healthy",
-        "description": "Indicates pet is ready to transition to healthy status"
-      }
-    ],
-    "flow": "TsPetManagement"
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event step configuration for monitoring pet recovery progress.",
+    "lines": ["4-11"]
   },
-  "inputSchema": {
-    "required": ["petId", "recoveryData"],
-    "validation": {
-      "petId": "Valid pet ID",
-      "recoveryData": "Pet recovery information and progress"
-    }
+  {
+    "id": "handler",
+    "title": "Event Handler",
+    "description": "Monitors recovery progress and schedules follow-up health checks.",
+    "lines": ["13-81"]
   },
-  "outputSchema": {
-    "recoveryStatus": {
-      "petId": "string",
-      "progress": "object",
-      "milestones": "array",
-      "nextSteps": "array",
-      "readyForTransition": "boolean"
-    }
+  {
+    "id": "recovery-monitoring",
+    "title": "Recovery Monitoring Logic",
+    "description": "Tracks recovery milestones and creates monitoring schedules.",
+    "lines": ["30-51"]
+  },
+  {
+    "id": "follow-up-scheduling",
+    "title": "Follow-up Scheduling",
+    "description": "Schedules follow-up health checks after treatment completion.",
+    "lines": ["53-75"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for recovery monitoring operations.",
+    "lines": ["17-19", "42-48", "68-72", "78-80"]
   }
-}
-
-
+]
