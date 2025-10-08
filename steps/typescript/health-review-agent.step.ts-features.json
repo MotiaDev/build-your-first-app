@@ -1,26 +1,56 @@
 [
   {
-    "id": "step-configuration",
-    "title": "Step Configuration",
-    "description": "API step configuration for health review endpoint with proper path parameters and event emissions.",
+    "id": "api-configuration",
+    "title": "API Configuration",
+    "description": "Sets up a POST endpoint at /ts/pets/:id/health-review where staff can request AI-powered health reviews for pets.",
     "lines": ["10-17"]
   },
   {
-    "id": "input-schema",
-    "title": "Input Validation",
-    "description": "Validates pet ID parameter and ensures pet exists before proceeding with health review.",
-    "lines": ["19-31"]
+    "id": "pet-validation",
+    "title": "Pet Validation",
+    "description": "Retrieves the pet and validates it's in the right status for a health review (healthy, in_quarantine, or available).",
+    "lines": ["28-50"]
   },
   {
-    "id": "handler",
-    "title": "AI Agent Handler",
-    "description": "Core AI decision-making logic using OpenAI to analyze pet health and determine treatment needs.",
-    "lines": ["52-100"]
+    "id": "agent-context",
+    "title": "Building Agent Context",
+    "description": "Prepares all the pet information the AI needs to make a decision - species, age, symptoms, flags, and health profile.",
+    "lines": ["52-53"]
   },
   {
-    "id": "state",
-    "title": "State Management",
-    "description": "Caches recent AI decisions to prevent duplicate processing and improve performance.",
-    "lines": ["55-73"]
+    "id": "idempotency-check",
+    "title": "Idempotency Check",
+    "description": "Checks if we recently made a decision for this pet in the same state, returning the cached result to avoid duplicate API calls.",
+    "lines": ["55-86"]
+  },
+  {
+    "id": "ai-decision",
+    "title": "AI Decision Call",
+    "description": "Calls OpenAI to analyze the pet's health data and choose the appropriate action from available emits.",
+    "lines": ["88-104"]
+  },
+  {
+    "id": "decision-validation",
+    "title": "Decision Validation",
+    "description": "Validates the AI's chosen emit is valid and handles any errors from the AI decision process.",
+    "lines": ["105-134"]
+  },
+  {
+    "id": "emit-firing",
+    "title": "Firing Chosen Emit",
+    "description": "Fires the emit chosen by the AI agent, triggering the orchestrator to handle the pet's health status transition.",
+    "lines": ["136-157"]
+  },
+  {
+    "id": "response-formatting",
+    "title": "Response Formatting",
+    "description": "Returns a detailed response including the AI's decision, rationale, and artifact metadata for tracking.",
+    "lines": ["159-172"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Catches and logs any errors during the health review, returning helpful error messages to the client.",
+    "lines": ["174-190"]
   }
 ]

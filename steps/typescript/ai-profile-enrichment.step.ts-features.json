@@ -1,102 +1,44 @@
-{
-  "stepName": "TsAiProfileEnrichment",
-  "stepType": "event",
-  "description": "AI-powered event step that enriches pet profiles using OpenAI for adoption purposes",
-  "features": [
-    {
-      "title": "AI Profile Generation",
-      "description": "Uses OpenAI to generate comprehensive pet profiles",
-      "details": [
-        "Integrates with OpenAI API for intelligent profile generation",
-        "Creates engaging bio descriptions for potential adopters",
-        "Guesses breed information based on pet details",
-        "Generates temperament tags and adopter hints"
-      ]
-    },
-    {
-      "title": "Profile Data Structure",
-      "description": "Creates structured profile data for adoption listings",
-      "details": [
-        "bio: Warm, engaging 2-3 sentence description",
-        "breedGuess: Specific breed or breed mix identification",
-        "temperamentTags: Array of 3-5 personality traits",
-        "adopterHints: Practical advice for potential adopters"
-      ]
-    },
-    {
-      "title": "Event-Driven Processing",
-      "description": "Automatically triggered by pet creation events",
-      "details": [
-        "Subscribes to 'ts.pet.created' events",
-        "Processes pet creation data automatically",
-        "Emits enrichment started and completed events",
-        "Provides workflow progress tracking"
-      ]
-    },
-    {
-      "title": "Error Handling",
-      "description": "Robust error handling for API failures and edge cases",
-      "details": [
-        "Handles OpenAI API key validation",
-        "Manages API rate limiting and failures",
-        "Provides fallback behavior for API errors",
-        "Logs errors with structured data for monitoring"
-      ]
-    },
-    {
-      "title": "Data Validation",
-      "description": "Validates and processes pet creation input data",
-      "details": [
-        "Extracts petId, name, and species from events",
-        "Validates required data before processing",
-        "Handles missing or malformed input gracefully",
-        "Ensures data consistency across the system"
-      ]
-    },
-    {
-      "title": "Profile Storage",
-      "description": "Stores generated profiles in the pet record",
-      "details": [
-        "Updates pet record with generated profile data",
-        "Maintains profile version history",
-        "Preserves original pet data alongside enriched profile",
-        "Enables profile updates and modifications"
-      ]
-    }
-  ],
-  "workflowIntegration": {
-    "subscribes": [
-      {
-        "topic": "ts.pet.created",
-        "description": "Triggered when new pets are created"
-      }
-    ],
-    "emits": [
-      {
-        "topic": "ts.pet.profile_enrichment_started",
-        "description": "Indicates profile enrichment process has begun"
-      },
-      {
-        "topic": "ts.pet.profile_enrichment_completed", 
-        "description": "Indicates profile enrichment process has completed"
-      }
-    ],
-    "flow": "TsPetManagement"
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event Step that subscribes to pet.created events and automatically enriches pet profiles with AI-generated content.",
+    "lines": ["4-11"]
   },
-  "inputSchema": {
-    "required": ["petId", "name", "species"],
-    "validation": {
-      "petId": "Valid pet ID from creation event",
-      "name": "Pet name string",
-      "species": "Pet species (dog, cat, bird, other)"
-    }
+  {
+    "id": "api-key-check",
+    "title": "API Key Validation",
+    "description": "Checks for the OpenAI API key in environment variables before making AI requests.",
+    "lines": ["24-28"]
   },
-  "outputSchema": {
-    "profile": {
-      "bio": "string (2-3 sentences)",
-      "breedGuess": "string (specific breed)",
-      "temperamentTags": "array of strings (3-5 traits)",
-      "adopterHints": "string (practical advice)"
-    }
+  {
+    "id": "ai-prompt",
+    "title": "AI Prompt Generation",
+    "description": "Creates a detailed prompt asking the AI to generate an adoption-focused profile with bio, breed guess, temperament tags, and adopter hints.",
+    "lines": ["30-41"]
+  },
+  {
+    "id": "openai-call",
+    "title": "OpenAI API Call",
+    "description": "Calls OpenAI's GPT-3.5 model to generate the pet profile using the prepared prompt.",
+    "lines": ["43-76"]
+  },
+  {
+    "id": "response-parsing",
+    "title": "Response Parsing",
+    "description": "Parses the AI's JSON response, with fallback to a default profile if parsing fails.",
+    "lines": ["78-94"]
+  },
+  {
+    "id": "profile-update",
+    "title": "Profile Update",
+    "description": "Updates the pet record in the store with the AI-generated profile information.",
+    "lines": ["96-113"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling with Fallback",
+    "description": "Catches any errors during AI enrichment and creates a basic fallback profile to ensure pets always have profile data.",
+    "lines": ["118-138"]
   }
-}
+]

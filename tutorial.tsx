@@ -2,14 +2,14 @@ import { workbenchXPath, TutorialStep } from '@motiadev/workbench'
 
 export const steps: TutorialStep[] = [
   {
-    title: 'Pet Management Workflow Tutorial',
+    title: 'Pet Management AI Agents Tutorial',
     image: {
       height: 200,
       src: 'https://github.com/MotiaDev/motia/raw/main/packages/docs/public/github-readme-banner.png',
     },
     description: () => (
       <p>
-        Welcome to the Pet Management Workflow Tutorial! This comprehensive guide demonstrates how to build an intelligent 
+        Welcome to the Pet Management AI Agents Tutorial! This comprehensive guide demonstrates how to build an intelligent 
         pet management system with Motia, featuring AI-driven decision making, workflow automation, and visible staff action triggers.
         <br />
         <br />
@@ -20,12 +20,32 @@ export const steps: TutorialStep[] = [
           <li>📋 <b>Staff Automation</b> - Automated task scheduling and management</li>
           <li>🛡️ <b>Guard Enforcement</b> - Business rule validation and error handling</li>
         </ul>
+      </p>
+    ),
+  },
+
+  // Setup Requirements
+
+  {
+    title: '⚙️ Setup: OpenAI API Key Required',
+    link: 'https://platform.openai.com/api-keys',
+    description: () => (
+      <p>
+        <b>Important!</b> This tutorial uses AI agents that require an OpenAI API key.
         <br />
-        This tutorial is based on the structure from the{' '}
-        <a href="https://github.com/MotiaDev/motia-examples/blob/main/examples/ai-content-moderation/tutorial.tsx" target="_blank">
-          AI Content Moderation Tutorial
-        </a>
-        .
+        <br />
+        <b>To set up your environment:</b>
+        <ol>
+          <li>- Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a></li>
+          <li>- Create a <code>.env</code> file in the project root directory</li>
+          <li>- Add this line: <code>OPENAI_API_KEY=your_api_key_here</code></li>
+          <li>- Restart the Workbench server if it's already running</li>
+        </ol>
+        <br />
+        Without this API key, the AI agents (Health Review, Adoption Review, Profile Enrichment) won't work.
+        <br />
+        <br />
+        💡 You can still explore the rest of the tutorial, but AI-powered features will skip their processing.
       </p>
     ),
   },
@@ -115,19 +135,8 @@ export const steps: TutorialStep[] = [
       { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
     ],
   },
-  {
-    elementXpath: workbenchXPath.sidebarContainer,
-    title: 'API Step Configuration',
-    description: () => (
-      <p>
-        There are specific configuration attributes for an API Step, let's start with the <b>method</b> attribute. This
-        will declare the type of HTTP method used to talk to your API Step.
-        <br />
-        Through the <b>path</b> attribute you'll declare the url path used to trigger your API Step
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('api-configuration') }],
-  },
+
+
   {
     elementXpath: workbenchXPath.sidebarContainer,
     title: 'Request Body',
@@ -222,7 +231,146 @@ export const steps: TutorialStep[] = [
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('success-response') }],
   },
 
-  // AI Agents
+  // Section 4: AI Profile Enrichment (Automatic AI Agent)
+
+  {
+    elementXpath: workbenchXPath.flows.node('tsaiprofileenrichment'),
+    title: 'AI Profile Enrichment',
+    link: 'https://www.motia.dev/docs/concepts/steps/event',
+    description: () => (
+      <p>
+        Welcome to the AI Agents section! Let's start with <b>AI Profile Enrichment</b> - an automatic AI agent that
+        enriches every new pet with a detailed profile using OpenAI.
+        <br />
+        <br />
+        This Event Step automatically triggers when a pet is created and generates:
+        <ul>
+          <li><b>bio</b> - A warm, engaging description for potential adopters</li>
+          <li><b>breedGuess</b> - AI's best guess at the breed or mix</li>
+          <li><b>temperamentTags</b> - Personality traits like "friendly", "energetic"</li>
+          <li><b>adopterHints</b> - Practical advice for potential adopters</li>
+        </ul>
+        <br />
+        💡 This is a <b>non-routing AI agent</b> - it generates content but doesn't make workflow decisions.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
+  },
+  {
+    elementXpath: workbenchXPath.flows.previewButton('tsaiprofileenrichment'),
+    title: 'Code Preview',
+    description: () => <p>Click this icon to view the source code for the AI Profile Enrichment Step.</p>,
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'AI Profile Enrichment Source Code',
+    description: () => (
+      <p>
+        This is the source code for the AI Profile Enrichment agent. It demonstrates how AI can
+        automatically enhance your data without blocking the main workflow.
+        <br />
+        <br />
+        The agent subscribes to <b>ts.pet.created</b> events and runs asynchronously, so pet creation
+        returns immediately while the AI works in the background.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tsaiprofileenrichment') },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Event Step Configuration',
+    description: () => (
+      <p>
+        The configuration defines this as an Event Step that subscribes to pet creation events.
+        <br />
+        <br />
+        Notice it <b>subscribes</b> to <b>ts.pet.created</b> but doesn't emit any events itself - this is a
+        pure data enrichment agent.
+        <br />
+        <br />
+        💡 Event Steps are triggered internally by other steps emitting to their subscribed topics.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'API Key Validation',
+    description: () => (
+      <p>
+        Before calling OpenAI, the agent checks for the <b>OPENAI_API_KEY</b> environment variable.
+        <br />
+        <br />
+        This is a best practice for external API integrations - fail fast with clear error messages
+        if credentials are missing.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('api-key-check') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'AI Prompt Engineering',
+    description: () => (
+      <p>
+        The prompt is carefully crafted to get structured, adoption-focused content from the AI.
+        <br />
+        <br />
+        Key elements:
+        <ul>
+          <li>Clear instructions on what fields to generate</li>
+          <li>Specific tone guidance ("warm, engaging")</li>
+          <li>Expected output format (JSON)</li>
+          <li>Context about the use case (adoption)</li>
+        </ul>
+        <br />
+        💡 Good prompts are specific about format, tone, and content expectations.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('ai-prompt') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Calling OpenAI API',
+    description: () => (
+      <p>
+        The agent makes an HTTP request to OpenAI's GPT-3.5 model with the prepared prompt.
+        <br />
+        <br />
+        Configuration includes:
+        <ul>
+          <li><b>model</b>: gpt-3.5-turbo (fast and cost-effective)</li>
+          <li><b>temperature</b>: 0.7 (balanced creativity)</li>
+          <li><b>max_tokens</b>: 500 (controls response length)</li>
+        </ul>
+        <br />
+        The response is validated and parsed before use.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('openai-call') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Error Handling with Fallback',
+    description: () => (
+      <p>
+        Robust error handling ensures pets always get a profile, even if the AI fails.
+        <br />
+        <br />
+        If OpenAI is unavailable or returns invalid data, the agent creates a basic fallback profile.
+        This ensures the workflow continues smoothly rather than failing completely.
+        <br />
+        <br />
+        💡 Always have fallback strategies for external dependencies to keep your system resilient.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('error-handling') }],
+  },
+
+  // Section 5: AI Health Review Agent (Agentic Routing)
 
   {
     elementXpath: workbenchXPath.flows.node('tshealthreviewagent'),
@@ -230,17 +378,18 @@ export const steps: TutorialStep[] = [
     link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
       <p>
-        Let's explore the AI Health Review Agent! This is where the magic happens - AI agents make intelligent decisions
-        about pet health based on symptoms, age, and other factors.
+        Now let's explore <b>Agentic Decision Making</b>! This is where AI actively chooses which path
+        the workflow should take based on pet health data.
         <br />
         <br />
-        The Health Review Agent uses OpenAI to analyze pet data and choose from predefined actions:
+        The Health Review Agent is an <b>API Step</b> that staff can call to get AI-powered health assessments.
+        The AI analyzes the pet's symptoms and chooses from predefined actions:
         <ul>
-          <li><b>emit.health.treatment_required</b> - Pet needs medical treatment</li>
-          <li><b>emit.health.no_treatment_needed</b> - Pet is healthy</li>
+          <li><b>emit.health.treatment_required</b> - Pet needs medical treatment → orchestrator → under_treatment</li>
+          <li><b>emit.health.no_treatment_needed</b> - Pet is healthy → orchestrator → stays healthy</li>
         </ul>
         <br />
-        💡 This demonstrates <b>agentic decision making</b> where AI chooses the next action in the workflow.
+        💡 This is <b>agentic routing</b> - the AI makes decisions that control workflow state transitions.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
@@ -255,12 +404,12 @@ export const steps: TutorialStep[] = [
     title: 'Health Review Agent Source Code',
     description: () => (
       <p>
-        This is the source code for the AI Health Review Agent. This step demonstrates how AI agents
-        can make intelligent decisions in your workflow.
+        This is the source code for the AI Health Review Agent - a RESTful API endpoint that uses AI
+        to make routing decisions in the workflow.
         <br />
         <br />
-        The agent analyzes pet health data and chooses the appropriate action to emit, effectively
-        making decisions that drive the workflow forward.
+        Unlike the Profile Enrichment agent, this one makes <b>decisions that affect workflow state</b>,
+        choosing which emit to fire based on the pet's health condition.
       </p>
     ),
     before: [
@@ -269,76 +418,238 @@ export const steps: TutorialStep[] = [
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Event Step',
-    link: 'https://www.motia.dev/docs/concepts/steps/event',
+    title: 'API Configuration',
     description: () => (
       <p>
-        Now that we have an entry point in our flow, let's focus on subscribing to a <b>topic</b> and performing a
-        specific task.
-        <br /> <br />
-        For this we will look at the <b>Event</b> Step.
-        <br /> <br />
-        <b>Event</b> Steps are an essential primitive for Motia's event driven architecture. Let's dive deeper into the
-        anatomy of an Event Step by taking a look at the code visualization tool.
-        <br /> <br />
-        💡 <b>Event</b> Steps can only be triggered internally, through topic subscriptions.
+        This is an <b>API Step</b> that staff can call via POST request to trigger a health review.
+        <br />
+        <br />
+        Notice the <b>emits</b> array lists all possible events this agent can fire. The AI will
+        choose exactly one based on the pet's health data.
+        <br />
+        <br />
+        💡 Agent API endpoints provide explicit trigger points for AI decision making.
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
+      { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') },
     ],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Event Step Input',
+    title: 'Pet Validation',
     description: () => (
       <p>
-        <b>Event</b> Steps like other primitives are composed by a configuration and a handler.
+        The agent validates the pet exists and is in the right status for a health review.
         <br />
         <br />
-        <b>Event</b> Steps have a specific attribute from their config, the <b>input</b> attribute, which declares the
-        data structure provided by the topic it is subscribed to.
-        <br />
-        <br />
-        The <b>input</b> attributes is defined as a zod schema, think of the <b>input</b> attributes as a contract for
-        other Steps that emit the topics that your Step subscribes to.
-        <br />
-        <br /> 💡 <b>Multiple Steps can subscribe to the same topic, but their input schema must be the same.</b>
+        Only pets in <b>healthy</b>, <b>in_quarantine</b>, or <b>available</b> status can be reviewed.
+        This prevents reviewing pets that are already under treatment or adopted.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('input-schema') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('pet-validation') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Event Step Handler',
+    title: 'Building Agent Context',
     description: () => (
       <p>
-        Let's take a look at the <b>Event</b> Step Handler.
+        The agent builds a comprehensive context object with all data the AI needs to make a decision:
+        <ul>
+          <li>Pet ID, species, age, weight</li>
+          <li>Current symptoms array</li>
+          <li>Health flags (special needs, etc.)</li>
+          <li>Current status</li>
+        </ul>
         <br />
-        <br />
-        The handler will seem familiar other primitive Step Handlers, but notice that the first argument holds the data
-        provided for the topic or topics your Step subscribes to.
-        <br />
-        <br />
-        💡 The first argument will match the structure of your input schema, defined in the <b>Event</b> Step config.
+        This context is sent to OpenAI along with the available emits registry.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('agent-context') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
-    title: 'Storing Data in State',
-    link: 'https://www.motia.dev/docs/concepts/state-management',
+    title: 'Idempotency Check',
     description: () => (
       <p>
-        Let's take a closer look at storing data in state.
+        Before calling OpenAI, the agent checks if we recently made a decision for this pet in the same state.
         <br />
         <br />
-        In this example we are caching AI agent decisions in <b>State</b> to prevent duplicate processing
-        and improve performance for repeated health reviews.
+        If found, it returns the cached decision instead of making another expensive AI call.
+        This improves performance and reduces API costs.
+        <br />
+        <br />
+        💡 Idempotency is critical for agent endpoints that might be called multiple times.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('state') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('idempotency-check') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'AI Decision Call',
+    description: () => (
+      <p>
+        This is where the agent calls OpenAI to make the actual decision!
+        <br />
+        <br />
+        The agent sends:
+        <ul>
+          <li>Pet health context (symptoms, age, species)</li>
+          <li>Available emits with descriptions and effects</li>
+          <li>Instructions to choose exactly one emit</li>
+        </ul>
+        <br />
+        OpenAI responds with a structured decision including the chosen emit and rationale.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('ai-decision') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Decision Validation',
+    description: () => (
+      <p>
+        After receiving the AI's decision, the agent validates it:
+        <ul>
+          <li>Check if the AI call succeeded</li>
+          <li>Verify the chosen emit is in the registry</li>
+          <li>Validate the response format</li>
+        </ul>
+        <br />
+        If anything is invalid, return clear error messages. Never fire an unvalidated emit!
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('decision-validation') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Firing the Chosen Emit',
+    description: () => (
+      <p>
+        Once validated, the agent fires the emit chosen by the AI.
+        <br />
+        <br />
+        This emit goes to the orchestrator, which validates the transition and applies it.
+        The AI's decision becomes a real workflow state change!
+        <br />
+        <br />
+        💡 This is the key difference between non-routing (enrichment) and routing (decision) agents.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('emit-firing') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Response Formatting',
+    description: () => (
+      <p>
+        The agent returns a detailed response showing what decision was made and why:
+        <ul>
+          <li><b>agentDecision</b>: chosen emit + rationale</li>
+          <li><b>emitFired</b>: the actual topic that was emitted</li>
+          <li><b>artifact</b>: metadata for tracking and debugging</li>
+        </ul>
+        <br />
+        This transparency is crucial for understanding and debugging AI decisions.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('response-formatting') }],
+  },
+
+  // Section 6: AI Adoption Review Agent
+
+  {
+    elementXpath: workbenchXPath.flows.node('tsadoptionreviewagent'),
+    title: 'AI Adoption Review Agent',
+    link: 'https://www.motia.dev/docs/concepts/steps/api',
+    description: () => (
+      <p>
+        The Adoption Review Agent is another agentic routing example, focusing on adoption readiness assessment.
+        <br />
+        <br />
+        The AI evaluates if a pet has complete enough data for adoption and chooses:
+        <ul>
+          <li><b>emit.adoption.needs_data</b> - Missing info → adds needs_data flag</li>
+          <li><b>emit.adoption.ready</b> - Complete profile → pet can be marked available</li>
+        </ul>
+        <br />
+        This demonstrates how agents can enforce data quality requirements in workflows.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
+  },
+  {
+    elementXpath: workbenchXPath.flows.previewButton('tsadoptionreviewagent'),
+    title: 'Code Preview',
+    description: () => <p>Click this icon to view the source code for the Adoption Review Agent Step.</p>,
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Adoption Review Agent Source Code',
+    description: () => (
+      <p>
+        This agent follows the same pattern as the Health Review Agent but focuses on data completeness
+        rather than health assessment.
+        <br />
+        <br />
+        It demonstrates how multiple AI agents can work together in the same workflow, each with
+        their own decision domain and emit registry.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tsadoptionreviewagent') },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Adoption API Configuration',
+    description: () => (
+      <p>
+        Similar to the Health Review Agent, this is an API Step that staff can trigger.
+        <br />
+        <br />
+        The key difference is in the <b>emits</b> registry - these emits focus on adoption readiness
+        rather than health status.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.flows.feature('api-configuration') },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Profile Completeness Check',
+    description: () => (
+      <p>
+        The agent checks if the pet has all necessary adoption data:
+        <ul>
+          <li>Complete AI-generated profile</li>
+          <li>Breed guess present</li>
+          <li>Temperament tags defined</li>
+          <li>Adopter hints provided</li>
+        </ul>
+        <br />
+        Only healthy or available pets can be reviewed for adoption.
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('pet-validation') }],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'AI Decision with Profile Context',
+    description: () => (
+      <p>
+        The AI receives the pet's profile completeness info and decides if it's adoption-ready.
+        <br />
+        <br />
+        This shows how agents can make different types of decisions in the same system:
+        <ul>
+          <li>Health Review: symptom-based medical decisions</li>
+          <li>Adoption Review: data quality and completeness decisions</li>
+        </ul>
+      </p>
+    ),
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('ai-decision') }],
   },
 
   // Orchestrator
@@ -678,40 +989,6 @@ export const steps: TutorialStep[] = [
     ),
   },
 
-  // States
-
-  {
-    elementXpath: workbenchXPath.links.states,
-    title: 'State Management',
-    description: () => (
-      <p>
-        Ok now that we've seen the observability tools, let's take a look at the <b>State Management Tool</b>.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.links.states }],
-  },
-  {
-    elementXpath: workbenchXPath.states.container,
-    title: 'State Management Tool',
-    description: () => (
-      <p>
-        This is your <b>State Management Tool</b>, from here you will be able to see all of your persisted state
-        key/value pairs.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.states.row(1) }],
-  },
-  {
-    elementXpath: workbenchXPath.sidebarContainer,
-    title: 'State Details',
-    description: () => (
-      <p>
-        This section presents the details for a given state key, from here you will be able to manage the value assigned
-        to the selected state key.
-      </p>
-    ),
-    before: [{ type: 'click', selector: workbenchXPath.links.states }],
-  },
 
   // End of Tutorial
 
@@ -720,20 +997,23 @@ export const steps: TutorialStep[] = [
     link: 'https://www.motia.dev/docs',
     description: () => (
       <p>
-        You've completed the Pet Management Workflow Tutorial!
+        You've completed the Pet Management AI Agents Tutorial!
         <br />
         <br />
         You've learned how to build an intelligent pet management system with:
         <ul>
-          <li>🤖 <b>AI Agents</b> - Making intelligent health and adoption decisions</li>
-          <li>🔄 <b>Orchestrator</b> - Central workflow control with guard enforcement</li>
-          <li>📋 <b>Staff Automation</b> - Automated task scheduling and management</li>
-          <li>🛡️ <b>Guard Enforcement</b> - Business rule validation and error handling</li>
+          <li>🤖 <b>AI Profile Enrichment</b> - Automatic content generation with OpenAI</li>
+          <li>🧠 <b>AI Health Review Agent</b> - Intelligent symptom-based decision making</li>
+          <li>📊 <b>AI Adoption Review Agent</b> - Data quality assessment and routing</li>
+          <li>🔄 <b>Pet Lifecycle Orchestrator</b> - Central workflow control with guard enforcement</li>
+          <li>📋 <b>Staff Automation</b> - Treatment scheduling, adoption posting, recovery monitoring</li>
+          <li>🛡️ <b>Guard Enforcement</b> - Business rule validation and idempotency</li>
           <li>⚡ <b>Event-Driven Architecture</b> - Seamless workflow orchestration</li>
+          <li>🔍 <b>Decision Artifacts</b> - Complete AI decision tracking and debugging</li>
         </ul>
         <br />
         This demonstrates how Motia transforms simple CRUD APIs into intelligent workflow automation platforms
-        that guide staff through every step of complex processes.
+        where AI agents make decisions that guide staff through every step of complex processes.
         <br />
         <br />
         Explore more examples in the{' '}
