@@ -6,7 +6,7 @@ exports.config = {
   name: 'JsAiProfileEnrichment',
   description: 'AI agent that enriches pet profiles using OpenAI',
   subscribes: ['js.pet.created'],
-  emits: ['js.pet.profile_enrichment_started', 'js.pet.profile_enrichment_completed'],
+  emits: [],
   flows: ['JsPetManagement']
 };
 
@@ -18,17 +18,7 @@ exports.handler = async (input, context) => {
     logger.info('🤖 AI Profile Enrichment started', { petId, name, species });
   }
 
-  // Emit enrichment started event
-  if (emit) {
-    await emit({
-      topic: 'js.pet.profile_enrichment_started',
-      data: { 
-        petId, 
-        event: 'profile_enrichment_started',
-        startedAt: Date.now() 
-      }
-    });
-  }
+  // Profile enrichment started
 
   try {
     // Get OpenAI API key from environment
@@ -123,17 +113,7 @@ Keep it positive, realistic, and adoption-focused.`;
     }
 
     // Emit enrichment completed event
-    if (emit) {
-      await emit({
-        topic: 'js.pet.profile_enrichment_completed',
-        data: { 
-          petId, 
-          event: 'profile_enrichment_completed',
-          completedAt: Date.now(),
-          profile
-        }
-      });
-    }
+    // Profile enrichment completed successfully
 
   } catch (error) {
     if (logger) {
@@ -154,18 +134,6 @@ Keep it positive, realistic, and adoption-focused.`;
     // Still update with fallback profile
     updateProfile(petId, fallbackProfile);
 
-    // Emit completed event even on error (with fallback profile)
-    if (emit) {
-      await emit({
-        topic: 'js.pet.profile_enrichment_completed',
-        data: { 
-          petId, 
-          event: 'profile_enrichment_completed',
-          completedAt: Date.now(),
-          profile: fallbackProfile,
-          error: error.message
-        }
-      });
-    }
+    // Profile enrichment completed with fallback profile
   }
 };

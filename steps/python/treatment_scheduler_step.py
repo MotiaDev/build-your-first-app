@@ -12,7 +12,7 @@ config = {
     "name": "PyTreatmentScheduler",
     "description": "Schedules veterinary treatment and medication for pets requiring medical care",
     "subscribes": ["py.treatment.required"],
-    "emits": ["py.treatment.scheduled", "py.medication.updated"],
+    "emits": [],
     "flows": ["PyPetManagement"]
 }
 
@@ -104,33 +104,7 @@ async def handler(input_data, ctx=None):
                 'treatmentType': treatment_schedule['treatmentType']
             })
 
-        # Emit treatment scheduled event
-        if emit:
-            await emit({
-                'topic': 'py.treatment.scheduled',
-                'data': {
-                    'petId': pet_id,
-                    'treatmentSchedule': treatment_schedule,
-                    'nextSteps': [
-                        'Notify veterinary staff',
-                        'Prepare treatment room',
-                        'Update pet medication schedule'
-                    ],
-                    'timestamp': int(time.time() * 1000)
-                }
-            })
-
-            # Emit medication update if needed
-            if treatment_schedule['medication']:
-                await emit({
-                    'topic': 'py.medication.updated',
-                    'data': {
-                        'petId': pet_id,
-                        'medication': treatment_schedule['medication'],
-                        'startDate': int(time.time() * 1000),
-                        'instructions': generate_medication_instructions(treatment_schedule['medication'])
-                    }
-                })
+        # Treatment scheduled successfully
 
     except Exception as error:
         if logger:

@@ -1,115 +1,26 @@
-{
-  "stepName": "TsPetLifecycleOrchestrator",
-  "stepType": "event",
-  "description": "Central orchestrator that manages pet status transitions and lifecycle events",
-  "features": [
-    {
-      "title": "Lifecycle Management",
-      "description": "Centralized control over pet status transitions",
-      "details": [
-        "Only component allowed to modify pet.status field",
-        "Enforces business rules for status transitions",
-        "Maintains state consistency across the system",
-        "Provides single source of truth for pet lifecycle"
-      ]
-    },
-    {
-      "title": "Event-Driven Architecture",
-      "description": "Responds to domain events and orchestrates workflow",
-      "details": [
-        "Subscribes to multiple pet-related events",
-        "Processes events in order of business priority",
-        "Emits new events to trigger downstream actions",
-        "Maintains event-driven workflow coordination"
-      ]
-    },
-    {
-      "title": "Transition Rules Engine",
-      "description": "Defines and enforces pet status transition rules",
-      "details": [
-        "Implements comprehensive transition rule matrix",
-        "Validates transition eligibility before execution",
-        "Supports automatic and staff-driven transitions",
-        "Includes guard conditions and validation logic"
-      ]
-    },
-    {
-      "title": "Automatic Progression",
-      "description": "Handles automatic status transitions based on events",
-      "details": [
-        "Automatic new → in_quarantine after feeding reminder",
-        "Automatic healthy → available for adoption",
-        "Automatic ill → under_treatment",
-        "Automatic recovered → healthy → available"
-      ]
-    },
-    {
-      "title": "Staff Integration",
-      "description": "Coordinates with staff decisions and manual actions",
-      "details": [
-        "Responds to staff status update requests",
-        "Validates staff decisions against business rules",
-        "Provides audit trail for all status changes",
-        "Supports manual override capabilities"
-      ]
-    },
-    {
-      "title": "Error Handling",
-      "description": "Robust error handling and validation",
-      "details": [
-        "Validates all incoming events and data",
-        "Handles invalid transitions gracefully",
-        "Provides detailed error logging",
-        "Maintains system stability during failures"
-      ]
-    }
-  ],
-  "workflowIntegration": {
-    "subscribes": [
-      "ts.pet.created",
-      "ts.feeding.reminder.completed", 
-      "ts.status.update.requested",
-      "ts.health.treatment_required",
-      "ts.health.no_treatment_needed",
-      "ts.adoption.needs_data",
-      "ts.adoption.ready"
-    ],
-    "emits": [
-      "ts.pet.status.changed",
-      "ts.pet.workflow.advanced"
-    ],
-    "flow": "TsPetManagement"
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event step configuration for pet lifecycle orchestration with multiple event subscriptions.",
+    "lines": ["113-130"]
   },
-  "transitionRules": [
-    {
-      "from": ["new"],
-      "to": "in_quarantine",
-      "event": "feeding.reminder.completed",
-      "type": "automatic"
-    },
-    {
-      "from": ["in_quarantine"],
-      "to": "healthy", 
-      "event": "status.update.requested",
-      "type": "staff_decision"
-    },
-    {
-      "from": ["healthy"],
-      "to": "available",
-      "event": "status.update.requested", 
-      "type": "automatic"
-    },
-    {
-      "from": ["available"],
-      "to": "pending",
-      "event": "status.update.requested",
-      "type": "staff_decision"
-    },
-    {
-      "from": ["pending"],
-      "to": "adopted",
-      "event": "status.update.requested",
-      "type": "staff_decision"
-    }
-  ]
-}
+  {
+    "id": "input-schema",
+    "title": "Input Validation",
+    "description": "Validates incoming event data and ensures pet exists before processing lifecycle transitions.",
+    "lines": ["154-170"]
+  },
+  {
+    "id": "handler",
+    "title": "Orchestrator Handler",
+    "description": "Core orchestration logic for managing pet status transitions and enforcing business rules.",
+    "lines": ["154-200"]
+  },
+  {
+    "id": "state",
+    "title": "State Management",
+    "description": "Manages pet status updates and maintains lifecycle state consistency across the system.",
+    "lines": ["200-250"]
+  }
+]

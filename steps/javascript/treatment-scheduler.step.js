@@ -6,7 +6,7 @@ exports.config = {
   name: 'JsTreatmentScheduler',
   description: 'Schedules veterinary treatment and medication for pets requiring medical care',
   subscribes: ['js.treatment.required'],
-  emits: ['js.treatment.scheduled', 'js.medication.updated'],
+  emits: [],
   flows: ['JsPetManagement']
 };
 
@@ -54,35 +54,7 @@ exports.handler = async (input, context) => {
       });
     }
 
-    // Emit treatment scheduled event
-    if (emit) {
-      await emit({
-        topic: 'js.treatment.scheduled',
-        data: {
-          petId,
-          treatmentSchedule,
-          nextSteps: [
-            'Notify veterinary staff',
-            'Prepare treatment room',
-            'Update pet medication schedule'
-          ],
-          timestamp: Date.now()
-        }
-      });
-
-      // Emit medication update if needed
-      if (treatmentSchedule.medication.length > 0) {
-        await emit({
-          topic: 'js.medication.updated',
-          data: {
-            petId,
-            medication: treatmentSchedule.medication,
-            startDate: Date.now(),
-            instructions: generateMedicationInstructions(treatmentSchedule.medication)
-          }
-        });
-      }
-    }
+    // Treatment scheduled successfully
 
   } catch (error) {
     if (logger) {

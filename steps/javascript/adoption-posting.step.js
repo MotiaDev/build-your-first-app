@@ -6,7 +6,7 @@ exports.config = {
   name: 'JsAdoptionPosting',
   description: 'Posts pet for adoption and schedules adoption interviews when pet is ready',
   subscribes: ['js.adoption.ready'],
-  emits: ['js.adoption.posted', 'js.interview.scheduled'],
+  emits: [],
   flows: ['JsPetManagement']
 };
 
@@ -53,41 +53,7 @@ exports.handler = async (input, context) => {
       });
     }
 
-    // Emit adoption posted event
-    if (emit) {
-      await emit({
-        topic: 'js.adoption.posted',
-        data: {
-          petId,
-          adoptionPosting,
-          nextSteps: [
-            'Share on social media',
-            'Update shelter website',
-            'Notify adoption coordinators',
-            'Prepare adoption paperwork'
-          ],
-          timestamp: Date.now()
-        }
-      });
-
-      // Schedule initial adoption interview
-      await emit({
-        topic: 'js.interview.scheduled',
-        data: {
-          petId,
-          interviewType: 'adoption_screening',
-          scheduledAt: Date.now() + (7 * 24 * 60 * 60 * 1000), // 1 week from now
-          duration: '30 minutes',
-          requirements: [
-            'Valid ID',
-            'Proof of residence',
-            'References from veterinarian',
-            'Home visit scheduled'
-          ],
-          notes: `Initial screening for ${pet.name} adoption`
-        }
-      });
-    }
+    // Adoption posted and interview scheduled successfully
 
   } catch (error) {
     if (logger) {

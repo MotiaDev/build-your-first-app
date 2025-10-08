@@ -105,12 +105,9 @@ exports.config = {
     'js.adoption.ready'
   ],
   emits: [
-    'js.lifecycle.transition.completed',
-    'js.lifecycle.transition.rejected',
     'js.treatment.required',
     'js.adoption.ready',
-    'js.treatment.completed',
-    'js.health.restored'
+    'js.treatment.completed'
   ],
   flows: ['JsPetManagement']
 };
@@ -181,19 +178,6 @@ exports.handler = async (input, context) => {
         });
       }
       
-      if (emit) {
-        await emit({
-          topic: 'js.lifecycle.transition.rejected',
-          data: {
-            petId,
-            currentStatus: pet.status,
-            requestedStatus,
-            eventType,
-            reason,
-            timestamp: Date.now()
-          }
-        });
-      }
       return;
     }
 
@@ -210,19 +194,6 @@ exports.handler = async (input, context) => {
           });
         }
 
-        if (emit) {
-          await emit({
-            topic: 'js.lifecycle.transition.rejected',
-            data: {
-              petId,
-              currentStatus: pet.status,
-              requestedStatus: rule.to,
-              eventType,
-              reason: `Guard check failed: ${guardResult.reason}`,
-              timestamp: Date.now()
-            }
-          });
-        }
         return;
       }
     }
@@ -278,18 +249,6 @@ exports.handler = async (input, context) => {
     }
 
     if (emit) {
-      await emit({
-        topic: 'js.lifecycle.transition.completed',
-        data: {
-          petId,
-          oldStatus,
-          newStatus: rule.to,
-          eventType,
-          description: rule.description,
-          timestamp: Date.now()
-        }
-      });
-
       // Emit next action events based on status change
       await emitNextActionEvents(petId, rule.to, oldStatus, updatedPet, emit, logger);
 
@@ -362,20 +321,7 @@ async function emitNextActionEvents(petId, newStatus, oldStatus, pet, emit, logg
         break;
 
       case 'healthy':
-        if (oldStatus === 'recovered') {
-          await emit({
-            topic: 'js.health.restored',
-            data: {
-              petId,
-              recoveryComplete: true,
-              nextSteps: ['Schedule routine health check', 'Consider adoption readiness'],
-              timestamp: Date.now()
-            }
-          });
-          if (logger) {
-            logger.info('💚 Health restored event emitted', { petId });
-          }
-        }
+        // Health status updated to healthy
         break;
     }
   } catch (error) {
@@ -427,19 +373,6 @@ async function processAutomaticProgression(petId, currentStatus, emit, logger) {
         }
 
         if (emit) {
-          await emit({
-            topic: 'js.lifecycle.transition.completed',
-            data: {
-              petId,
-              oldStatus,
-              newStatus: rule.to,
-              eventType: 'status.update.requested',
-              description: progression.description,
-              automatic: true,
-              timestamp: Date.now()
-            }
-          });
-
           // Check for further automatic progressions (for chaining like recovered → healthy → available)
           await processAutomaticProgression(petId, rule.to, emit, logger);
         }

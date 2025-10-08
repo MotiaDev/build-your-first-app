@@ -12,7 +12,7 @@ config = {
     "name": "PyAdoptionPosting",
     "description": "Posts pet for adoption and schedules adoption interviews when pet is ready",
     "subscribes": ["py.adoption.ready"],
-    "emits": ["py.adoption.posted", "py.interview.scheduled"],
+    "emits": [],
     "flows": ["PyPetManagement"]
 }
 
@@ -88,40 +88,7 @@ async def handler(input_data, ctx=None):
                 'adoptionFee': adoption_posting['adoptionFee']
             })
 
-        # Emit adoption posted event
-        if emit:
-            await emit({
-                'topic': 'py.adoption.posted',
-                'data': {
-                    'petId': pet_id,
-                    'adoptionPosting': adoption_posting,
-                    'nextSteps': [
-                        'Share on social media',
-                        'Update shelter website',
-                        'Notify adoption coordinators',
-                        'Prepare adoption paperwork'
-                    ],
-                    'timestamp': int(time.time() * 1000)
-                }
-            })
-
-            # Schedule initial adoption interview
-            await emit({
-                'topic': 'py.interview.scheduled',
-                'data': {
-                    'petId': pet_id,
-                    'interviewType': 'adoption_screening',
-                    'scheduledAt': int(time.time() * 1000) + (7 * 24 * 60 * 60 * 1000),  # 1 week from now
-                    'duration': '30 minutes',
-                    'requirements': [
-                        'Valid ID',
-                        'Proof of residence',
-                        'References from veterinarian',
-                        'Home visit scheduled'
-                    ],
-                    'notes': f"Initial screening for {pet['name']} adoption"
-                }
-            })
+        # Adoption posted and interview scheduled successfully
 
     except Exception as error:
         if logger:

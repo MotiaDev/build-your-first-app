@@ -33,7 +33,7 @@ export const steps: TutorialStep[] = [
   // Pet Management Flow Overview
 
   {
-    elementXpath: workbenchXPath.flows.node('createpet'),
+    elementXpath: workbenchXPath.flows.node('tscreatepet'),
     title: 'Pet Creation API',
     link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
@@ -52,7 +52,7 @@ export const steps: TutorialStep[] = [
     ],
   },
   {
-    elementXpath: workbenchXPath.flows.previewButton('createpet'),
+    elementXpath: workbenchXPath.flows.previewButton('tscreatepet'),
     title: 'Code Preview',
     description: () => <p>Clicking on this icon will allow you to visualize the source code for the Pet Creation Step.</p>,
     before: [
@@ -61,6 +61,23 @@ export const steps: TutorialStep[] = [
         selector: workbenchXPath.closePanelButton,
         optional: true,
       },
+    ],
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Step Source Code',
+    description: () => (
+      <p>
+        This is the source code for the Pet Creation API Step. You can see the complete implementation
+        including configuration, request validation, business logic, and event emission.
+        <br />
+        <br />
+        The code is organized with features that you can click through to understand different aspects
+        of the step implementation.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tscreatepet') },
     ],
   },
   {
@@ -94,7 +111,7 @@ export const steps: TutorialStep[] = [
       </div>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('createpet') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tscreatepet') },
       { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
     ],
   },
@@ -123,7 +140,7 @@ export const steps: TutorialStep[] = [
         <i>💡 Both the request body and response payload are defined by zod schemas</i>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('request-body') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('request-validation') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -138,7 +155,7 @@ export const steps: TutorialStep[] = [
         <i>💡 Both the request body and response payload are defined by zod schemas</i>
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('response-payload') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('success-response') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -154,7 +171,7 @@ export const steps: TutorialStep[] = [
         Through the <b>emits</b>, you can specify a list of topics that your Step emits for others to <i>subscribe</i>.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('event-driven-architecture') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('event-emission') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -170,7 +187,7 @@ export const steps: TutorialStep[] = [
         💡 We will cover these in depth further down the tutorial.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('pet-creation') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -189,7 +206,7 @@ export const steps: TutorialStep[] = [
         tracing.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('logger') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('logging') }],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -202,13 +219,13 @@ export const steps: TutorialStep[] = [
         declared in your Step configuration.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.flows.feature('http-response') }],
+    before: [{ type: 'click', selector: workbenchXPath.flows.feature('success-response') }],
   },
 
   // AI Agents
 
   {
-    elementXpath: workbenchXPath.flows.node('healthreviewagent'),
+    elementXpath: workbenchXPath.flows.node('tshealthreviewagent'),
     title: 'AI Health Review Agent',
     link: 'https://www.motia.dev/docs/concepts/steps/api',
     description: () => (
@@ -226,7 +243,29 @@ export const steps: TutorialStep[] = [
         💡 This demonstrates <b>agentic decision making</b> where AI chooses the next action in the workflow.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
+  },
+  {
+    elementXpath: workbenchXPath.flows.previewButton('tshealthreviewagent'),
+    title: 'Code Preview',
+    description: () => <p>Click this icon to view the source code for the Health Review Agent Step.</p>,
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Health Review Agent Source Code',
+    description: () => (
+      <p>
+        This is the source code for the AI Health Review Agent. This step demonstrates how AI agents
+        can make intelligent decisions in your workflow.
+        <br />
+        <br />
+        The agent analyzes pet health data and chooses the appropriate action to emit, effectively
+        making decisions that drive the workflow forward.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tshealthreviewagent') },
+    ],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -246,7 +285,6 @@ export const steps: TutorialStep[] = [
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('processfoodorder') },
       { type: 'click', selector: workbenchXPath.flows.feature('step-configuration') },
     ],
   },
@@ -296,8 +334,8 @@ export const steps: TutorialStep[] = [
         Let's take a closer look at storing data in state.
         <br />
         <br />
-        In this example we are persisting the result of a third party HTTP request in <b>State</b>, scoping it to a
-        group id named "orders".
+        In this example we are caching AI agent decisions in <b>State</b> to prevent duplicate processing
+        and improve performance for repeated health reviews.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('state') }],
@@ -306,7 +344,7 @@ export const steps: TutorialStep[] = [
   // Orchestrator
 
   {
-    elementXpath: workbenchXPath.flows.node('petlifecycleorchestrator'),
+    elementXpath: workbenchXPath.flows.node('tspetlifecycleorchestrator'),
     title: 'Pet Lifecycle Orchestrator',
     link: 'https://www.motia.dev/docs/concepts/steps/event',
     description: () => (
@@ -327,7 +365,46 @@ export const steps: TutorialStep[] = [
         events that trigger specific staff actions.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.closePanelButton }],
+    before: [{ type: 'click', selector: workbenchXPath.closePanelButton, optional: true }],
+  },
+  {
+    elementXpath: workbenchXPath.flows.node('tsdeletionreaper'),
+    title: 'Deletion Reaper Cron Job',
+    link: 'https://www.motia.dev/docs/concepts/steps/cron',
+    description: () => (
+      <p>
+        Let's explore the Deletion Reaper - a scheduled cron job that automatically cleans up soft-deleted pets!
+        <br />
+        <br />
+        This demonstrates how <b>Cron Steps</b> enable automated maintenance tasks that run on a schedule,
+        keeping your system clean and efficient without manual intervention.
+        <br />
+        <br />
+        💡 Cron jobs are perfect for periodic cleanup, reporting, and maintenance tasks.
+      </p>
+    ),
+  },
+  {
+    elementXpath: workbenchXPath.flows.previewButton('tsdeletionreaper'),
+    title: 'Code Preview',
+    description: () => <p>Click this icon to view the source code for the Deletion Reaper Cron Step.</p>,
+  },
+  {
+    elementXpath: workbenchXPath.sidebarContainer,
+    title: 'Deletion Reaper Source Code',
+    description: () => (
+      <p>
+        This is the source code for the Deletion Reaper cron job. It demonstrates how scheduled tasks
+        can automate system maintenance.
+        <br />
+        <br />
+        The job runs daily at 2:00 AM to permanently remove pets that have been soft-deleted and passed
+        their retention period.
+      </p>
+    ),
+    before: [
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tsdeletionreaper') },
+    ],
   },
   {
     elementXpath: workbenchXPath.sidebarContainer,
@@ -342,12 +419,12 @@ export const steps: TutorialStep[] = [
         define the cron schedule for your Step.
         <br />
         <br />
-        For instance, in this example the cron schedule is configured to execute the Step handler every 5 minutes. Let's
+        For instance, in this example the cron schedule is configured to execute the Step handler daily at 2:00 AM. Let's
         take a look at the handler definition.
       </p>
     ),
     before: [
-      { type: 'click', selector: workbenchXPath.flows.previewButton('stateauditjob') },
+      { type: 'click', selector: workbenchXPath.flows.previewButton('tsdeletionreaper') },
       { type: 'click', selector: workbenchXPath.flows.feature('cron-configuration') },
     ],
   },
@@ -361,8 +438,8 @@ export const steps: TutorialStep[] = [
         the <i>trace id</i> associated to your Step's execution.
         <br />
         <br />
-        In this CRON Step example we are evaluating orders persisted in state, and emitting warnings through a topic for
-        each order that hasn't been processed and has a shipping date in the past.
+        In this CRON Step example we are scanning for pets that have been soft deleted past their purge date, and
+        permanently removing them from the system to maintain data hygiene.
       </p>
     ),
     before: [{ type: 'click', selector: workbenchXPath.flows.feature('handler') }],
@@ -425,7 +502,7 @@ export const steps: TutorialStep[] = [
         endpoint in the <b>Call</b> Tab.
       </p>
     ),
-    before: [{ type: 'click', selector: workbenchXPath.endpoints.endpoint('POST', '/basic-tutorial') }],
+    before: [{ type: 'click', selector: workbenchXPath.endpoints.endpoint('POST', '/ts/pets') }],
   },
   {
     elementXpath: workbenchXPath.endpoints.callPanel,
@@ -444,12 +521,13 @@ export const steps: TutorialStep[] = [
         <br />
         <pre className="code-preview">
           <code className="language-bash">
-            curl -X POST http://localhost:3000/basic-tutorial \<br />
+            curl -X POST http://localhost:3000/ts/pets \<br />
             {'  '}-H "Content-Type: application/json" \<br />
             {'  '}-d '
             {JSON.stringify({
-              pet: { name: 'Jack', photoUrl: 'https://images.dog.ceo/breeds/pug/n02110958_13560.jpg' },
-              foodOrder: { id: 'food-order-1', quantity: 0 },
+              name: 'Jack',
+              species: 'dog',
+              ageMonths: 24
             })}
             '
           </code>
@@ -471,8 +549,9 @@ export const steps: TutorialStep[] = [
       {
         type: 'fill-editor',
         content: {
-          pet: { name: 'Jack', photoUrl: 'https://images.dog.ceo/breeds/pug/n02110958_13560.jpg' },
-          foodOrder: { id: 'food-order-1', quantity: 0 },
+          name: 'Jack',
+          species: 'dog',
+          ageMonths: 24
         },
       },
     ],

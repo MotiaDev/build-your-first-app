@@ -1,5 +1,5 @@
 # steps/python/delete_pet.step.py
-config = { "type":"api", "name":"PyDeletePet", "path":"/py/pets/:id", "method":"DELETE", "emits": ["py.pet.soft.deleted"], "flows": ["PyPetManagement"] }
+config = { "type":"api", "name":"PyDeletePet", "path":"/py/pets/:id", "method":"DELETE", "emits": [], "flows": ["PyPetManagement"] }
 
 async def handler(req, ctx=None):
     logger = getattr(ctx, 'logger', None) if ctx else None
@@ -27,15 +27,7 @@ async def handler(req, ctx=None):
             'purgeAt': time.strftime('%Y-%m-%dT%H:%M:%S', time.gmtime(deleted_pet['purgeAt'] / 1000))
         })
 
-    if emit:
-        await emit({
-            'topic': 'py.pet.soft.deleted',
-            'data': {
-                'petId': deleted_pet['id'],
-                'name': deleted_pet['name'],
-                'purgeAt': deleted_pet['purgeAt']
-            }
-        })
+    # Pet soft deleted successfully
 
     return {
         "status": 202,

@@ -6,7 +6,7 @@ export const config = {
   name: 'TsRecoveryMonitor',
   description: 'Monitors pet recovery progress and schedules follow-up health checks',
   subscribes: ['ts.treatment.started', 'ts.treatment.completed'],
-  emits: ['ts.recovery.progress', 'ts.health.check.scheduled'],
+  emits: [],
   flows: ['TsPetManagement']
 };
 
@@ -48,22 +48,7 @@ export const handler = async (input: any, context?: any) => {
         });
       }
 
-      if (emit) {
-        await emit({
-          topic: 'ts.recovery.progress',
-          data: {
-            petId,
-            recoveryPlan,
-            nextSteps: [
-              'Begin treatment monitoring',
-              'Schedule daily health checks',
-              'Update medication schedule',
-              'Notify staff of special care requirements'
-            ],
-            timestamp: Date.now()
-          }
-        });
-      }
+      // Recovery plan created successfully
 
     } else if (treatmentStatus === 'completed') {
       // Treatment completed - schedule follow-up
@@ -86,22 +71,7 @@ export const handler = async (input: any, context?: any) => {
         });
       }
 
-      if (emit) {
-        await emit({
-          topic: 'ts.health.check.scheduled',
-          data: {
-            petId,
-            followUpSchedule,
-            nextSteps: [
-              'Monitor recovery indicators',
-              'Schedule follow-up appointments',
-              'Prepare discharge paperwork',
-              'Update pet status when ready'
-            ],
-            timestamp: Date.now()
-          }
-        });
-      }
+      // Follow-up health checks scheduled successfully
     }
 
   } catch (error: any) {

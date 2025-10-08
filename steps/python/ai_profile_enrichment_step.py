@@ -12,7 +12,7 @@ config = {
     "name": "PyAiProfileEnrichment",
     "description": "AI agent that enriches pet profiles using OpenAI",
     "subscribes": ["py.pet.created"],
-    "emits": ["py.pet.profile_enrichment_started", "py.pet.profile_enrichment_completed"],
+    "emits": [],
     "flows": ["PyPetManagement"]
 }
 
@@ -27,16 +27,7 @@ async def handler(input_data, ctx=None):
     if logger:
         logger.info('🤖 AI Profile Enrichment started', {'petId': pet_id, 'name': name, 'species': species})
 
-    # Emit enrichment started event
-    if emit:
-        await emit({
-            'topic': 'py.pet.profile_enrichment_started',
-            'data': {
-                'petId': pet_id,
-                'event': 'profile_enrichment_started',
-                'startedAt': int(time.time() * 1000)
-            }
-        })
+    # Profile enrichment started
 
     try:
         # Import pet store
@@ -140,16 +131,7 @@ Keep it positive, realistic, and adoption-focused."""
             })
 
         # Emit enrichment completed event
-        if emit:
-            await emit({
-                'topic': 'py.pet.profile_enrichment_completed',
-                'data': {
-                    'petId': pet_id,
-                    'event': 'profile_enrichment_completed',
-                    'completedAt': int(time.time() * 1000),
-                    'profile': profile
-                }
-            })
+        # Profile enrichment completed successfully
 
     except Exception as error:
         if logger:
@@ -176,15 +158,4 @@ Keep it positive, realistic, and adoption-focused."""
         except:
             pass
 
-        # Emit completed event even on error (with fallback profile)
-        if emit:
-            await emit({
-                'topic': 'py.pet.profile_enrichment_completed',
-                'data': {
-                    'petId': pet_id,
-                    'event': 'profile_enrichment_completed',
-                    'completedAt': int(time.time() * 1000),
-                    'profile': fallback_profile,
-                    'error': str(error)
-                }
-            })
+        # Profile enrichment completed with fallback profile

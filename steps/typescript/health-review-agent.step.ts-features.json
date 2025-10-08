@@ -1,113 +1,26 @@
-{
-  "stepName": "TsHealthReviewAgent",
-  "stepType": "api",
-  "description": "AI-powered health review agent that assesses pet health and determines treatment needs",
-  "endpoint": {
-    "method": "POST",
-    "path": "/ts/pets/:id/health-review",
-    "description": "Triggers AI health assessment for a specific pet"
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "API step configuration for health review endpoint with proper path parameters and event emissions.",
+    "lines": ["10-17"]
   },
-  "features": [
-    {
-      "title": "AI Health Assessment",
-      "description": "Uses OpenAI to analyze pet health status and symptoms",
-      "details": [
-        "Integrates with OpenAI API for intelligent health analysis",
-        "Considers pet's current status, symptoms, and profile information",
-        "Makes data-driven decisions about treatment requirements",
-        "Provides detailed rationale for health decisions"
-      ]
-    },
-    {
-      "title": "Smart Decision Making",
-      "description": "Agent framework that chooses appropriate health actions",
-      "details": [
-        "Evaluates pet status against health criteria",
-        "Chooses between treatment_required or no_treatment_needed outcomes",
-        "Uses structured decision framework with predefined options",
-        "Includes confidence scoring and reasoning explanations"
-      ]
-    },
-    {
-      "title": "Idempotency Support",
-      "description": "Prevents duplicate processing and provides cached results",
-      "details": [
-        "Caches recent successful decisions within 1-minute window",
-        "Returns cached results for identical requests",
-        "Prevents unnecessary OpenAI API calls for repeated requests",
-        "Maintains decision history for audit purposes"
-      ]
-    },
-    {
-      "title": "Status Validation",
-      "description": "Ensures health reviews are only performed on appropriate pets",
-      "details": [
-        "Validates pet exists and is retrievable",
-        "Checks pet status is one of: healthy, in_quarantine, available",
-        "Returns 400 error for invalid status transitions",
-        "Provides clear error messages with current status information"
-      ]
-    },
-    {
-      "title": "Event-Driven Workflow",
-      "description": "Emits events based on AI decisions to trigger downstream actions",
-      "details": [
-        "Emits 'ts.health.treatment_required' for pets needing treatment",
-        "Emits 'ts.health.no_treatment_needed' for healthy pets",
-        "Events include agent decision details and context",
-        "Triggers appropriate workflow branches based on health assessment"
-      ]
-    },
-    {
-      "title": "Error Handling",
-      "description": "Comprehensive error handling with fallback responses",
-      "details": [
-        "Handles OpenAI API failures gracefully",
-        "Provides detailed error messages for debugging",
-        "Returns 500 status for agent failures with helpful suggestions",
-        "Logs errors with structured data for monitoring"
-      ]
-    }
-  ],
-  "workflowIntegration": {
-    "triggers": ["External API calls", "Manual health assessments"],
-    "emits": [
-      {
-        "topic": "ts.health.treatment_required",
-        "description": "Triggers treatment scheduling and medical workflow"
-      },
-      {
-        "topic": "ts.health.no_treatment_needed",
-        "description": "Confirms pet health and continues normal workflow"
-      }
-    ],
-    "flow": "TsPetManagement"
+  {
+    "id": "input-schema",
+    "title": "Input Validation",
+    "description": "Validates pet ID parameter and ensures pet exists before proceeding with health review.",
+    "lines": ["19-31"]
   },
-  "inputSchema": {
-    "required": ["id (path parameter)"],
-    "validation": {
-      "id": "Valid pet ID that exists in the system",
-      "pet.status": "Must be healthy, in_quarantine, or available"
-    }
+  {
+    "id": "handler",
+    "title": "AI Agent Handler",
+    "description": "Core AI decision-making logic using OpenAI to analyze pet health and determine treatment needs.",
+    "lines": ["52-100"]
   },
-  "outputSchema": {
-    "success": {
-      "status": 200,
-      "body": {
-        "message": "Health review completed",
-        "petId": "string",
-        "agentDecision": "object with chosenEmit and rationale",
-        "emitFired": "string (topic name)",
-        "artifact": "object with timestamp and success status"
-      }
-    },
-    "cached": {
-      "status": 200,
-      "body": "Same as success but indicates cached result"
-    },
-    "error": {
-      "status": "400/404/500",
-      "body": "Error message with details and suggestions"
-    }
+  {
+    "id": "state",
+    "title": "State Management",
+    "description": "Caches recent AI decisions to prevent duplicate processing and improve performance.",
+    "lines": ["55-73"]
   }
-}
+]

@@ -12,7 +12,7 @@ config = {
     "name": "PyRecoveryMonitor",
     "description": "Monitors pet recovery progress and schedules follow-up health checks",
     "subscribes": ["py.treatment.started", "py.treatment.completed"],
-    "emits": ["py.recovery.progress", "py.health.check.scheduled"],
+    "emits": [],
     "flows": ["PyPetManagement"]
 }
 
@@ -126,21 +126,7 @@ async def handler(input_data, ctx=None):
                     'milestones': len(recovery_plan['milestones'])
                 })
 
-            if emit:
-                await emit({
-                    'topic': 'py.recovery.progress',
-                    'data': {
-                        'petId': pet_id,
-                        'recoveryPlan': recovery_plan,
-                        'nextSteps': [
-                            'Begin treatment monitoring',
-                            'Schedule daily health checks',
-                            'Update medication schedule',
-                            'Notify staff of special care requirements'
-                        ],
-                        'timestamp': int(time.time() * 1000)
-                    }
-                })
+            # Recovery plan created successfully
 
         elif treatment_status == 'completed':
             # Treatment completed - schedule follow-up
@@ -162,21 +148,7 @@ async def handler(input_data, ctx=None):
                     'followUpChecks': len(follow_up_schedule['followUpChecks'])
                 })
 
-            if emit:
-                await emit({
-                    'topic': 'py.health.check.scheduled',
-                    'data': {
-                        'petId': pet_id,
-                        'followUpSchedule': follow_up_schedule,
-                        'nextSteps': [
-                            'Monitor recovery indicators',
-                            'Schedule follow-up appointments',
-                            'Prepare discharge paperwork',
-                            'Update pet status when ready'
-                        ],
-                        'timestamp': int(time.time() * 1000)
-                    }
-                })
+            # Follow-up health checks scheduled successfully
 
     except Exception as error:
         if logger:

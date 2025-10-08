@@ -4,7 +4,7 @@ config = {
     "name": "PyDeletionReaper",
     "description": "Daily job that permanently removes pets scheduled for deletion",
     "cron": "0 2 * * *",  # Daily at 2:00 AM
-    "emits": ["py.pet.purged", "py.reaper.completed"],
+    "emits": [],
     "flows": ["PyPetManagement"]
 }
 
@@ -33,15 +33,7 @@ async def handler(ctx):
             if logger:
                 logger.info('✅ Deletion Reaper completed - no pets to purge')
             
-            if emit:
-                await emit({
-                    'topic': 'py.reaper.completed',
-                    'data': {
-                        'scannedAt': int(time.time() * 1000),
-                        'purgedCount': 0,
-                        'message': 'No pets ready for purging'
-                    }
-                })
+            # No pets ready for purging
             return
 
         purged_count = 0
@@ -60,17 +52,7 @@ async def handler(ctx):
                         'purgeAt': time.strftime('%Y-%m-%dT%H:%M:%S', time.gmtime(pet['purgeAt'] / 1000))
                     })
 
-                if emit:
-                    await emit({
-                        'topic': 'py.pet.purged',
-                        'data': {
-                            'petId': pet['id'],
-                            'name': pet['name'],
-                            'species': pet['species'],
-                            'deletedAt': pet['deletedAt'],
-                            'purgedAt': int(time.time() * 1000)
-                        }
-                    })
+                # Pet purged successfully
             else:
                 if logger:
                     logger.warn('⚠️ Failed to purge pet', {'petId': pet['id'], 'name': pet['name']})
@@ -82,15 +64,7 @@ async def handler(ctx):
                 'failedCount': len(pets_to_reap) - purged_count
             })
 
-        if emit:
-            await emit({
-                'topic': 'py.reaper.completed',
-                'data': {
-                    'scannedAt': int(time.time() * 1000),
-                    'purgedCount': purged_count,
-                    'totalScanned': len(pets_to_reap)
-                }
-            })
+        # Deletion reaper completed successfully
 
     except Exception as error:
         if logger:

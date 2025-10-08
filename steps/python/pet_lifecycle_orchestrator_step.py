@@ -124,12 +124,9 @@ config = {
         "py.adoption.ready"
     ],
     "emits": [
-        "py.lifecycle.transition.completed",
-        "py.lifecycle.transition.rejected",
         "py.treatment.required",
         "py.adoption.ready",
-        "py.treatment.completed",
-        "py.health.restored"
+        "py.treatment.completed"
     ],
     "flows": ["PyPetManagement"]
 }
@@ -195,18 +192,6 @@ async def handler(input_data, ctx=None):
                     'reason': reason
                 })
             
-            if emit:
-                await emit({
-                    'topic': 'py.lifecycle.transition.rejected',
-                    'data': {
-                        'petId': pet_id,
-                        'currentStatus': pet['status'],
-                        'requestedStatus': requested_status,
-                        'eventType': event_type,
-                        'reason': reason,
-                        'timestamp': int(time.time() * 1000)
-                    }
-                })
             return
 
         # Check guards if present
@@ -221,18 +206,6 @@ async def handler(input_data, ctx=None):
                         'currentStatus': pet['status']
                     })
 
-                if emit:
-                    await emit({
-                        'topic': 'py.lifecycle.transition.rejected',
-                        'data': {
-                            'petId': pet_id,
-                            'currentStatus': pet['status'],
-                            'requestedStatus': rule['to'],
-                            'eventType': event_type,
-                            'reason': f"Guard check failed: {guard_result['reason']}",
-                            'timestamp': int(time.time() * 1000)
-                        }
-                    })
                 return
 
         # Check for idempotency
@@ -277,18 +250,6 @@ async def handler(input_data, ctx=None):
             })
 
         if emit:
-            await emit({
-                'topic': 'py.lifecycle.transition.completed',
-                'data': {
-                    'petId': pet_id,
-                    'oldStatus': old_status,
-                    'newStatus': rule['to'],
-                    'eventType': event_type,
-                    'description': rule['description'],
-                    'timestamp': int(time.time() * 1000)
-                }
-            })
-
             # Emit next action events based on status change
             await emit_next_action_events(pet_id, rule['to'], old_status, updated_pet, emit, logger)
 
@@ -344,17 +305,8 @@ async def emit_next_action_events(pet_id, new_status, old_status, pet, emit, log
                 logger.info('✅ Treatment completed event emitted', {'petId': pet_id})
 
         elif new_status == 'healthy' and old_status == 'recovered':
-            await emit({
-                'topic': 'py.health.restored',
-                'data': {
-                    'petId': pet_id,
-                    'recoveryComplete': True,
-                    'nextSteps': ['Schedule routine health check', 'Consider adoption readiness'],
-                    'timestamp': int(time.time() * 1000)
-                }
-            })
-            if logger:
-                logger.info('💚 Health restored event emitted', {'petId': pet_id})
+            # Health status updated to healthy
+            pass
 
     except Exception as error:
         if logger:

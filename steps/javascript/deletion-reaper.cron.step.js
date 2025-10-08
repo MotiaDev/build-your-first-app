@@ -6,7 +6,7 @@ exports.config = {
   name: 'JsDeletionReaper',
   description: 'Daily job that permanently removes pets scheduled for deletion',
   cron: '0 2 * * *', // Daily at 2:00 AM
-  emits: ['js.pet.purged', 'js.reaper.completed'],
+  emits: [],
   flows: ['JsPetManagement']
 };
 
@@ -23,16 +23,7 @@ exports.handler = async ({ emit, logger }) => {
         logger.info('✅ Deletion Reaper completed - no pets to purge');
       }
       
-      if (emit) {
-        await emit({
-          topic: 'js.reaper.completed',
-          data: { 
-            scannedAt: Date.now(),
-            purgedCount: 0,
-            message: 'No pets ready for purging'
-          }
-        });
-      }
+      // No pets ready for purging
       return;
     }
 
@@ -53,18 +44,7 @@ exports.handler = async ({ emit, logger }) => {
           });
         }
 
-        if (emit) {
-          await emit({
-            topic: 'js.pet.purged',
-            data: { 
-              petId: pet.id, 
-              name: pet.name,
-              species: pet.species,
-              deletedAt: pet.deletedAt,
-              purgedAt: Date.now()
-            }
-          });
-        }
+        // Pet purged successfully
       } else {
         if (logger) {
           logger.warn('⚠️ Failed to purge pet', { petId: pet.id, name: pet.name });
@@ -80,16 +60,7 @@ exports.handler = async ({ emit, logger }) => {
       });
     }
 
-    if (emit) {
-      await emit({
-        topic: 'js.reaper.completed',
-        data: { 
-          scannedAt: Date.now(),
-          purgedCount,
-          totalScanned: petsToReap.length
-        }
-      });
-    }
+    // Deletion reaper completed successfully
 
   } catch (error) {
     if (logger) {
