@@ -1,0 +1,58 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "4-11"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "API Endpoint Configuration",
+    "description": "POST endpoint at /js/pets for creating new pets with JavaScript implementation.",
+    "lines": [
+      "4-11"
+    ]
+  },
+  {
+    "id": "request-validation",
+    "title": "Request Validation",
+    "description": "Manual validation of request body data including name, species, and age.",
+    "lines": [
+      "16-22"
+    ]
+  },
+  {
+    "id": "pet-creation",
+    "title": "Pet Creation",
+    "description": "Creates a new pet record in the JavaScript store.",
+    "lines": [
+      "24"
+    ]
+  },
+  {
+    "id": "event-emission",
+    "title": "Event Emission",
+    "description": "Emits 'js.pet.created' and 'js.feeding.reminder.enqueued' events to trigger background jobs.",
+    "lines": [
+      "30-39"
+    ]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns the created pet data with a 201 status code.",
+    "lines": [
+      "41"
+    ]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Logs pet creation events with context information.",
+    "lines": [
+      "26-28"
+    ]
+  }
+]

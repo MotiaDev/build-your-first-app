@@ -1,0 +1,66 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "21-28"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "API Endpoint Configuration",
+    "description": "PUT endpoint at /ts/pets/:id for updating an existing pet.",
+    "lines": [
+      "21-28"
+    ]
+  },
+  {
+    "id": "path-parameter-validation",
+    "title": "Path Parameter Validation",
+    "description": "Zod schema validation for the 'id' path parameter.",
+    "lines": [
+      "7-9"
+    ]
+  },
+  {
+    "id": "request-body-validation",
+    "title": "Request Body Validation",
+    "description": "Zod schema validation for the request body, allowing selective updates.",
+    "lines": [
+      "12-19"
+    ]
+  },
+  {
+    "id": "pet-update",
+    "title": "Pet Update Logic",
+    "description": "Updates the pet in the store with the provided patch data.",
+    "lines": [
+      "85"
+    ]
+  },
+  {
+    "id": "not-found-handling",
+    "title": "Not Found Handling",
+    "description": "Returns a 404 status if the pet is not found.",
+    "lines": [
+      "39-42"
+    ]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns the updated pet data with a 200 status code.",
+    "lines": [
+      "86"
+    ]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Comprehensive error handling for validation errors and unexpected failures.",
+    "lines": [
+      "88-104"
+    ]
+  }
+]

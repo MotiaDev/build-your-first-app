@@ -1,0 +1,42 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "API Endpoint Configuration",
+    "description": "DELETE endpoint at /js/pets/:id for soft-deleting a pet.",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "soft-delete-operation",
+    "title": "Soft Delete Operation",
+    "description": "Performs a soft delete by marking the pet for deletion.",
+    "lines": [
+      "9"
+    ]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns confirmation of deletion or 404 if pet not found.",
+    "lines": [
+      "10"
+    ]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Logs pet deletion operations.",
+    "lines": [
+      "8"
+    ]
+  }
+]

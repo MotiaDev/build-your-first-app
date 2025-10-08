@@ -1,0 +1,42 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "5-12"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "API Endpoint Configuration",
+    "description": "GET endpoint at /ts/pets for listing all pets.",
+    "lines": [
+      "5-12"
+    ]
+  },
+  {
+    "id": "pet-listing",
+    "title": "Pet Listing",
+    "description": "Retrieves all pets from the store.",
+    "lines": [
+      "16"
+    ]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns a list of all pets with a 200 status code.",
+    "lines": [
+      "17"
+    ]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Basic error handling for unexpected failures.",
+    "lines": [
+      "18-23"
+    ]
+  }
+]

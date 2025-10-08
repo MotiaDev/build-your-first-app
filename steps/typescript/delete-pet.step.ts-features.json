@@ -1,0 +1,66 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "11-18"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "API Endpoint Configuration",
+    "description": "DELETE endpoint at /ts/pets/:id for soft-deleting a pet.",
+    "lines": [
+      "11-18"
+    ]
+  },
+  {
+    "id": "path-parameter-validation",
+    "title": "Path Parameter Validation",
+    "description": "Zod schema validation for the 'id' path parameter to ensure it's a valid pet ID.",
+    "lines": [
+      "7-9"
+    ]
+  },
+  {
+    "id": "soft-delete-operation",
+    "title": "Soft Delete Operation",
+    "description": "Performs a soft delete by marking the pet for deletion with a purge timestamp.",
+    "lines": [
+      "25"
+    ]
+  },
+  {
+    "id": "not-found-handling",
+    "title": "Not Found Handling",
+    "description": "Returns a 404 status if the pet is not found.",
+    "lines": [
+      "27-29"
+    ]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns confirmation of deletion scheduling with purge timestamp.",
+    "lines": [
+      "41-48"
+    ]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Comprehensive error handling for invalid path parameters and unexpected failures.",
+    "lines": [
+      "50-66"
+    ]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for pet deletion events with context.",
+    "lines": [
+      "31-37"
+    ]
+  }
+]

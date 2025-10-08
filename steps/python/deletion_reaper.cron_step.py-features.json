@@ -1,0 +1,52 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "2-9"
+    ]
+  },
+  {
+    "id": "cron-configuration",
+    "title": "Cron Job Configuration",
+    "description": "Scheduled job that runs daily at 2:00 AM to permanently remove soft-deleted pets.",
+    "lines": [
+      "2-9"
+    ]
+  },
+  {
+    "id": "cron-schedule",
+    "title": "Cron Schedule",
+    "description": "Configured with cron expression '0 2 * * *' to run daily at 2:00 AM.",
+    "lines": [
+      "6"
+    ]
+  },
+  {
+    "id": "purge-logic",
+    "title": "Purge Logic",
+    "description": "Permanently removes pets that have been soft-deleted and are past their purge date.",
+    "lines": [
+      "22"
+    ]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for deletion reaper job execution and results.",
+    "lines": [
+      "15-17",
+      "25-30"
+    ]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Error handling for cron job failures.",
+    "lines": [
+      "32-36"
+    ]
+  }
+]
+

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "api-configuration",
+    "title": "API Endpoint Configuration",
+    "description": "GET endpoint at /js/pets for listing all pets.",
+    "lines": [
+      "4"
+    ]
+  },
+  {
+    "id": "pet-listing",
+    "title": "Pet Listing",
+    "description": "Retrieves all pets from the JavaScript store.",
+    "lines": [
+      "9"
+    ]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns a list of all pets with a 200 status code.",
+    "lines": [
+      "10"
+    ]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Logs pet listing operations.",
+    "lines": [
+      "8"
+    ]
+  }
+]

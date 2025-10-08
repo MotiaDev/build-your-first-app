@@ -1,0 +1,51 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "All steps should have a defined configuration, this is how you define the step's behavior and how it will be triggered.",
+    "lines": [
+      "4-11"
+    ]
+  },
+  {
+    "id": "event-configuration",
+    "title": "Event Step Configuration",
+    "description": "Background job that subscribes to 'js.feeding.reminder.enqueued' events.",
+    "lines": [
+      "4-11"
+    ]
+  },
+  {
+    "id": "event-subscription",
+    "title": "Event Subscription",
+    "description": "Subscribes to 'js.feeding.reminder.enqueued' events to be triggered when pets are created.",
+    "lines": [
+      "8"
+    ]
+  },
+  {
+    "id": "pet-update-logic",
+    "title": "Pet Update Logic",
+    "description": "Updates the pet record with welcome notes and next feeding time.",
+    "lines": [
+      "31"
+    ]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for feeding reminder job execution.",
+    "lines": [
+      "18-19",
+      "40-46"
+    ]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Error handling for background job failures.",
+    "lines": [
+      "48-52"
+    ]
+  }
+]
