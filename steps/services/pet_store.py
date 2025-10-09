@@ -37,7 +37,7 @@ def save(db: DbShape) -> None:
 def _now() -> int:
     return int(time.time() * 1000)
 
-def create(name: str, species: str, ageMonths: int) -> Pet:
+def create(name: str, species: str, ageMonths: int, symptoms: Optional[List[str]] = None, weightKg: Optional[float] = None) -> Pet:
     db = load()
     pid = str(db['seq'])
     db['seq'] += 1
@@ -50,6 +50,10 @@ def create(name: str, species: str, ageMonths: int) -> Pet:
         'createdAt': _now(),
         'updatedAt': _now()
     }
+    if symptoms is not None:
+        pet['symptoms'] = symptoms
+    if weightKg is not None:
+        pet['weightKg'] = weightKg
     db['pets'][pid] = pet
     save(db)
     return pet

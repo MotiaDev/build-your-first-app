@@ -7,7 +7,8 @@ import { TSStore } from './ts-store';
 const createPetSchema = z.object({
   name: z.string().min(1, 'Name is required').trim(),
   species: z.enum(['dog', 'cat', 'bird', 'other']),
-  ageMonths: z.number().int().min(0, 'Age must be a positive number')
+  ageMonths: z.number().int().min(0, 'Age must be a positive number'),
+  symptoms: z.array(z.string()).optional()
 });
 
 export const config: ApiRouteConfig = {
@@ -27,7 +28,8 @@ export const handler: Handlers['TsCreatePet'] = async (req, { emit, logger }) =>
     const pet = TSStore.create({ 
       name: validatedData.name, 
       species: validatedData.species, 
-      ageMonths: validatedData.ageMonths 
+      ageMonths: validatedData.ageMonths,
+      ...(validatedData.symptoms && { symptoms: validatedData.symptoms })
     });
     
     if (logger) {

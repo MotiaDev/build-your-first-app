@@ -24,7 +24,7 @@ function save(db) {
 
 const now = () => Date.now();
 
-function create({ name, species, ageMonths }) {
+function create({ name, species, ageMonths, symptoms, weightKg }) {
   const db = load();
   const id = String(db.seq++);
   const pet = {
@@ -32,6 +32,8 @@ function create({ name, species, ageMonths }) {
     name: String(name).trim(),
     species,
     ageMonths: Math.max(0, Math.floor(Number(ageMonths))),
+    ...(weightKg && { weightKg }),
+    ...(symptoms && { symptoms }),
     status: 'new',
     createdAt: now(),
     updatedAt: now()
