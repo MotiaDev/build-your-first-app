@@ -1,43 +1,156 @@
-# Pet Store CRUD API with Background Jobs
+# Pet Management System - Progressive Tutorial
 
-A multi-language pet management system built with Motia, demonstrating CRUD operations, background job processing, soft delete patterns, and event-driven architecture across TypeScript, JavaScript, and Python implementations.
+**A Step-by-Step Tutorial: From Basic API to Streaming AI Agents**
 
-## Features
+This comprehensive tutorial demonstrates building an intelligent pet management system with Motia, progressively introducing concepts from simple REST APIs to advanced streaming AI agents. Each section builds upon the previous, showcasing real-world patterns across TypeScript, JavaScript, and Python.
 
-- **Multi-language Support**: Complete implementations in TypeScript, JavaScript, and Python
-- **Pet Management**: Full CRUD operations for pet records
-- **Background Job Processing**: Queue-based and cron-based background jobs
-- **Automated Pet Lifecycle**: Orchestrated status transitions from new to available
+---
+
+## 📚 Tutorial Overview - 5 Progressive Levels
+
+This tutorial is structured as a **progressive learning path** where each level adds complexity and demonstrates new Motia capabilities:
+
+```
+Level 1: API Endpoints          →  Basic CRUD operations
+          ↓
+Level 2: Background Jobs        →  Async processing (Queue + Cron)
+          ↓
+Level 3: Workflow Orchestrator  →  Centralized state management
+          ↓
+Level 4: AI Agents             →  Intelligent decision making
+          ↓
+Level 5: Streaming AI Agents   →  Real-time updates with SSE
+```
+
+### What You'll Build
+
+By the end of this tutorial, you'll have a complete pet management system with:
+
+- ✅ **RESTful APIs** - Full CRUD operations for pet records
+- ✅ **Background Jobs** - Queue-based and scheduled async processing
+- ✅ **Workflow Orchestration** - Automated lifecycle management with guard enforcement
+- ✅ **AI Decision Making** - OpenAI-powered health and adoption reviews
+- ✅ **Real-Time Streaming** - Server-Sent Events for live progress updates
+- ✅ **Multi-Language Support** - Identical functionality in TypeScript, JavaScript, and Python
+
+## 🌟 Features by Tutorial Level
+
+### Level 1: API Endpoints
+- Multi-language support (TypeScript, JavaScript, Python)
+- RESTful API design with proper HTTP methods
+- Request validation using Zod
+- File-based JSON storage
+- Standard error handling
+
+### Level 2: Background Jobs
+- **Queue-Based Jobs**: Event-triggered async processing
+- **Cron-Based Jobs**: Scheduled maintenance tasks
+- Soft delete pattern with 30-day retention
+- Non-blocking API responses
+- Event-driven job triggering
+
+### Level 3: Workflow Orchestrator
+- Centralized state management
+- Automated lifecycle transitions
+- Guard enforcement for valid transitions
+- Staff decision points vs automatic progressions
+- Status validation and rejection handling
+
+### Level 4: AI Agents
 - **AI Profile Enrichment**: Automatic pet profile generation using OpenAI
-- **Agentic Decision Making**: AI agents choose routing decisions with structured rationale
-- **Visible Workflow Automation**: Orchestrator triggers specific staff actions for each status change
-- **Treatment Scheduling**: Automatic vet appointment and medication scheduling
-- **Adoption Management**: Automated adoption posting and interview scheduling
-- **Recovery Monitoring**: Treatment progress tracking with follow-up scheduling
-- **Soft Delete Pattern**: 30-day retention with automatic cleanup
-- **Event-Driven Architecture**: Language-isolated event namespaces with visible connections
-- **File-based Storage**: JSON persistence across all implementations
-- **Language Parity**: Identical functionality across all three languages
-- **RESTful APIs**: Standard HTTP methods for all operations
+- **Health Review Agent**: AI-driven health assessments with emit selection
+- **Adoption Review Agent**: AI-driven adoption readiness evaluation
+- Structured decision artifacts with rationale
+- Idempotent decision caching
 
-## Architecture
+### Level 5: Streaming AI Agents ⭐
+- **Real-Time SSE Streaming**: Live progress updates during pet creation
+- **Progressive Updates**: Stream messages as background jobs execute
+- **AI Enrichment Streaming**: Real-time AI profile generation progress
+- **Health Check Streaming**: Live quarantine and health status updates
+- **Orchestrator Streaming**: Status transition notifications
+- **Non-Blocking UX**: Immediate API response with ongoing updates
 
-### Workflow Organization
+---
 
-The system uses a single workflow definition in `motia-workbench.json`:
+## 🚀 Getting Started
 
-- `"pets"` - Complete pet management operations for all languages
+### Prerequisites
 
-The workflow includes:
-- **CRUD APIs**: Create, Read, Update, Delete operations
-- **Background Jobs**: SetNextFeedingReminder queue jobs and Deletion Reaper cron jobs
-- **Pet Lifecycle Orchestrator**: Automated status transitions through pet lifecycle stages
-- **AI Profile Enrichment**: Automatic pet profile generation using OpenAI
-- **Language Isolation**: Each language operates independently with its own event namespace
+1. **Install Dependencies**
+   ```bash
+   npm install
+   pip install -r requirements.txt
+   ```
 
-### Enhanced Pet Data Model
+2. **Set Up Environment Variables**
+   
+   Create a `.env` file in the project root:
+   ```bash
+   # .env
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+   
+   **Get your OpenAI API key:**
+   - Visit [OpenAI Platform](https://platform.openai.com/api-keys)
+   - Create an account or sign in
+   - Generate a new API key
+   - Copy the key and add it to your environment
 
-Each pet has the following structure:
+3. **Start Motia Server**
+   ```bash
+   npm run dev
+   # or
+   motia dev
+   ```
+
+4. **Open Workbench**
+   - Navigate to Motia Workbench in your browser
+   - Select the appropriate workflow (`TsPetManagement`, `JsPetManagement`, or `PyPetManagement`)
+   - View the visual workflow diagram showing all steps and connections
+
+
+---
+
+## 📖 Level 1: API Endpoints - Basic CRUD
+
+The foundation of our system is a RESTful API for pet management. This level demonstrates basic API design, validation, and data persistence.
+
+### API Endpoints
+
+All three languages provide identical CRUD functionality:
+
+#### TypeScript Endpoints (`/ts/pets`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/ts/pets` | Create a new pet |
+| GET | `/ts/pets` | List all pets |
+| GET | `/ts/pets/:id` | Get pet by ID |
+| PUT | `/ts/pets/:id` | Update pet |
+| DELETE | `/ts/pets/:id` | Soft delete pet |
+
+#### JavaScript Endpoints (`/js/pets`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/js/pets` | Create a new pet |
+| GET | `/js/pets` | List all pets |
+| GET | `/js/pets/:id` | Get pet by ID |
+| PUT | `/js/pets/:id` | Update pet |
+| DELETE | `/js/pets/:id` | Soft delete pet |
+
+#### Python Endpoints (`/py/pets`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/py/pets` | Create a new pet |
+| GET | `/py/pets` | List all pets |
+| GET | `/py/pets/:id` | Get pet by ID |
+| PUT | `/py/pets/:id` | Update pet |
+| DELETE | `/py/pets/:id` | Soft delete pet |
+
+### Pet Data Model
 
 ```json
 {
@@ -48,52 +161,65 @@ Each pet has the following structure:
   "status": "new",
   "createdAt": 1640995200000,
   "updatedAt": 1640995200000,
-  "notes": "Welcome to our pet store! We'll take great care of this pet.",
+  "weightKg": 15.5,
+  "symptoms": ["coughing", "lethargy"],
+  "notes": "Welcome to our pet store!",
   "nextFeedingAt": 1641081600000,
   "deletedAt": null,
   "purgeAt": null,
   "profile": {
-    "bio": "Buddy is a friendly and energetic golden retriever mix who loves playing fetch and meeting new people. He's great with children and would make an excellent family companion.",
+    "bio": "Buddy is a friendly and energetic golden retriever...",
     "breedGuess": "Golden Retriever Mix",
-    "temperamentTags": ["friendly", "energetic", "loyal", "playful", "gentle"],
-    "adopterHints": "Perfect for active families with children. Needs daily exercise and mental stimulation. Great for first-time dog owners due to his gentle nature."
+    "temperamentTags": ["friendly", "energetic", "loyal"],
+    "adopterHints": "Perfect for active families..."
   }
 }
 ```
 
-**Lifecycle Status Values:**
-- `"new"` - Initial status when pet is created
-- `"in_quarantine"` - Pet is in quarantine after feeding reminder setup
-- `"healthy"` - Pet is healthy and cleared from quarantine
-- `"available"` - Pet is ready for adoption
-- `"pending"` - Adoption application in progress
-- `"adopted"` - Pet has been adopted
-- `"ill"` - Pet is identified as ill (random health check)
-- `"under_treatment"` - Pet is receiving medical treatment
-- `"recovered"` - Pet has recovered from illness (transitions back to healthy)
-- `"deleted"` - Pet is soft deleted (scheduled for purging, outside orchestrator)
+### Testing Level 1
 
-**Background Job Fields:**
-- `notes` - Added by SetNextFeedingReminder background job
-- `nextFeedingAt` - Calculated feeding schedule (24 hours from creation)
-- `deletedAt` - Timestamp when pet was soft deleted
-- `purgeAt` - Timestamp when pet will be permanently removed (deletedAt + 30 days)
+```bash
+# Create a pet
+curl -X POST http://localhost:3000/ts/pets \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Buddy",
+    "species": "dog",
+    "ageMonths": 24
+  }'
 
-**Species Values:** `"dog"`, `"cat"`, `"bird"`, `"other"`
+# List all pets
+curl http://localhost:3000/ts/pets
 
-## Background Job System
+# Get specific pet
+curl http://localhost:3000/ts/pets/1
+
+# Update pet
+curl -X PUT http://localhost:3000/ts/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"ageMonths": 25}'
+
+# Soft delete pet
+curl -X DELETE http://localhost:3000/ts/pets/1
+```
+
+---
+
+## 📖 Level 2: Background Jobs - Async Processing
+
+Building on Level 1, we add asynchronous background processing to handle time-consuming tasks without blocking API responses.
 
 ### Queue-Based Job: SetNextFeedingReminder
 
 **Triggered by**: Creating a pet via any `POST /*/pets` endpoint
 
-**Purpose**: Sets next feeding reminder and adds welcome notes after pet creation without blocking the API response
+**Purpose**: Sets next feeding reminder and adds welcome notes after pet creation
 
 **Process**:
 1. Pet creation API completes immediately with `status: 201`
-2. API emits language-specific event (e.g., `js.feeding.reminder.enqueued`)
+2. API emits language-specific event (e.g., `ts.feeding.reminder.enqueued`)
 3. Background job picks up the event and processes asynchronously
-4. Job adds welcome notes and calculates next feeding time
+4. Job adds welcome notes, calculates next feeding time, and sets status to `in_quarantine`
 5. Job emits completion event with processing metrics
 
 **Console Output**:
@@ -122,9 +248,29 @@ Each pet has the following structure:
 ✅ Deletion Reaper completed { totalScanned: 5, purgedCount: 2, failedCount: 0 }
 ```
 
-## Section 3 — Pet Lifecycle Orchestrator with Staff Interaction
+### Testing Level 2
 
-The Pet Lifecycle Orchestrator manages pet status transitions through a realistic shelter workflow with staff decision points. It's the only component allowed to modify pet status, ensuring consistent state management while requiring human oversight at key stages.
+```bash
+# Create a pet and watch console for background job processing
+curl -X POST http://localhost:3000/ts/pets \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Whiskers", "species": "cat", "ageMonths": 12}'
+
+# Check pet record after job completion (wait a few seconds)
+curl http://localhost:3000/ts/pets/1
+
+# Test soft delete
+curl -X DELETE http://localhost:3000/ts/pets/1
+
+# Verify pet is marked as deleted but still exists
+curl http://localhost:3000/ts/pets/1
+```
+
+---
+
+## 📖 Level 3: Workflow Orchestrator - Centralized State Management
+
+Level 3 introduces a Pet Lifecycle Orchestrator that manages all status transitions through a realistic shelter workflow with guard enforcement.
 
 ### Core Architecture
 
@@ -136,32 +282,18 @@ The Pet Lifecycle Orchestrator manages pet status transitions through a realisti
 
 **Language Isolation**: Each language has its own orchestrator with language-specific event namespaces.
 
-### Hybrid Staff + Automatic Workflow
+### Pet Lifecycle States
 
-```
-POST /pets → new
-↓ (SetNextFeedingReminder completes - automatic)
-in_quarantine
-↓ (Staff health check via PUT API)
-healthy
-↓ (AUTOMATIC - orchestrator progression)
-available
-↓ (Staff adoption process via PUT API)
-pending → adopted
-
-Illness Can Happen Anytime:
-in_quarantine → ill (Staff finds illness during quarantine)
-healthy → ill (Staff assessment during health check)
-available → ill (Staff discovers illness before adoption)
-↓ (AUTOMATIC - orchestrator starts treatment)
-under_treatment
-↓ (Staff marks recovered via PUT API)
-recovered
-↓ (AUTOMATIC - orchestrator clears recovery)
-healthy
-↓ (AUTOMATIC - orchestrator marks ready)
-available
-```
+- `new` - Initial status when pet is created
+- `in_quarantine` - Pet is in quarantine after feeding reminder setup
+- `healthy` - Pet is healthy and cleared from quarantine
+- `available` - Pet is ready for adoption
+- `pending` - Adoption application in progress
+- `adopted` - Pet has been adopted
+- `ill` - Pet is identified as ill
+- `under_treatment` - Pet is receiving medical treatment
+- `recovered` - Pet has recovered from illness
+- `deleted` - Pet is soft deleted (outside orchestrator)
 
 ### Transition Rules
 
@@ -176,1250 +308,668 @@ available
 | `status.update.requested` | `recovered` | `healthy` | **Automatic Progression** |
 | `status.update.requested` | `available` | `pending` | **Staff Decision** |
 | `status.update.requested` | `pending` | `adopted` | **Staff Decision** |
-| `status.update.requested` | `pending` | `available` | **Staff Decision** |
 
-### Automatic Progressions
+### Workflow Flow
 
-**Healthy → Available**: When a pet becomes healthy, the orchestrator automatically marks them as available for adoption.
-
-**Ill → Under Treatment**: When a pet is marked as ill, the orchestrator automatically starts treatment.
-
-**Recovered → Healthy → Available**: When a pet recovers, the orchestrator automatically clears them to healthy, then immediately to available.
-
-### Staff Decision Points
-
-**Health Assessment**: Staff evaluates pets in quarantine and decides if they're healthy or need medical attention.
-
-**Illness Detection**: Staff identifies when healthy pets become ill.
-
-**Treatment Completion**: Staff determines when treatment is complete and pets have recovered.
-
-**Adoption Process**: Staff manages adoption applications and final adoption completion.
-
-### Console Output Examples
-
-**Normal Workflow with Automatic Progressions**:
 ```
-🐾 Pet created { petId: '1', name: 'Buddy', species: 'dog', status: 'new' }
-🔄 Setting next feeding reminder { petId: '1' }
-✅ Next feeding reminder set { petId: '1' }
-🔄 Lifecycle orchestrator processing { petId: '1', eventType: 'feeding.reminder.completed' }
-✅ Lifecycle transition completed { petId: '1', oldStatus: 'new', newStatus: 'in_quarantine', description: 'Pet moved to quarantine after feeding setup' }
+POST /pets → new
+↓ (SetNextFeedingReminder completes - automatic)
+in_quarantine
+↓ (Staff health check via PUT API)
+healthy
+↓ (AUTOMATIC - orchestrator progression)
+available
+↓ (Staff adoption process via PUT API)
+pending → adopted
 
-👤 Staff requesting status change { petId: '1', currentStatus: 'in_quarantine', requestedStatus: 'healthy' }
-🔄 Lifecycle orchestrator processing { petId: '1', eventType: 'status.update.requested', requestedStatus: 'healthy' }
-✅ Lifecycle transition completed { petId: '1', oldStatus: 'in_quarantine', newStatus: 'healthy', description: 'Staff health check - pet cleared from quarantine' }
-
-🤖 Orchestrator triggering automatic progression { petId: '1', currentStatus: 'healthy', nextStatus: 'available' }
-🤖 Automatic progression { petId: '1', eventType: 'status.update.requested', requestedStatus: 'available', automatic: true }
-✅ Lifecycle transition completed { petId: '1', oldStatus: 'healthy', newStatus: 'available', description: 'Automatic progression - pet ready for adoption' }
+Illness Can Happen Anytime:
+in_quarantine → ill (Staff finds illness)
+healthy → ill (Staff assessment)
+available → ill (Staff discovers illness)
+↓ (AUTOMATIC - orchestrator starts treatment)
+under_treatment
+↓ (Staff marks recovered via PUT API)
+recovered
+↓ (AUTOMATIC - orchestrator clears recovery)
+healthy
+↓ (AUTOMATIC - orchestrator marks ready)
+available
 ```
 
-**Invalid Transition Attempt**:
-```
-👤 Staff requesting status change { petId: '1', currentStatus: 'in_quarantine', requestedStatus: 'available' }
-⚠️ Transition rejected { petId: '1', currentStatus: 'in_quarantine', requestedStatus: 'available', reason: 'Invalid transition: cannot change from in_quarantine to available' }
-```
+### Testing Level 3
 
-**Illness and Treatment Workflow with Automatic Progressions**:
-```
-👤 Staff requesting status change { petId: '1', currentStatus: 'healthy', requestedStatus: 'ill' }
-✅ Lifecycle transition completed { petId: '1', oldStatus: 'healthy', newStatus: 'ill', description: 'Staff assessment - pet identified as ill' }
-
-🤖 Orchestrator triggering automatic progression { petId: '1', currentStatus: 'ill', nextStatus: 'under_treatment' }
-🤖 Automatic progression { petId: '1', eventType: 'status.update.requested', requestedStatus: 'under_treatment', automatic: true }
-✅ Lifecycle transition completed { petId: '1', oldStatus: 'ill', newStatus: 'under_treatment', description: 'Automatic progression - treatment started' }
-
-👤 Staff requesting status change { petId: '1', currentStatus: 'under_treatment', requestedStatus: 'recovered' }
-✅ Lifecycle transition completed { petId: '1', oldStatus: 'under_treatment', newStatus: 'recovered', description: 'Staff assessment - treatment completed' }
-
-🤖 Orchestrator triggering automatic progression { petId: '1', currentStatus: 'recovered', nextStatus: 'healthy' }
-🤖 Automatic progression { petId: '1', eventType: 'status.update.requested', requestedStatus: 'healthy', automatic: true }
-✅ Lifecycle transition completed { petId: '1', oldStatus: 'recovered', newStatus: 'healthy', description: 'Automatic progression - recovery complete' }
-
-🤖 Orchestrator triggering automatic progression { petId: '1', currentStatus: 'healthy', nextStatus: 'available' }
-🤖 Automatic progression { petId: '1', eventType: 'status.update.requested', requestedStatus: 'available', automatic: true }
-✅ Lifecycle transition completed { petId: '1', oldStatus: 'healthy', newStatus: 'available', description: 'Automatic progression - pet ready for adoption' }
-```
-
-### Integration with Existing System
-
-**CRUD APIs**: The `POST /pets` endpoint creates pets with `status=new` and emits `pet.created` events.
-
-**SetNextFeedingReminder**: After completing, emits `feeding.reminder.completed` to trigger quarantine.
-
-**Background Jobs**: Deletion Reaper remains unchanged and operates outside the lifecycle.
-
-**Soft Delete**: `DELETE /pets/:id` continues to work as before, setting `status=deleted` directly.
-
-### Testing the Staff-Driven Workflow
-
-**Create a Pet and Guide Through Lifecycle**:
 ```bash
 # 1. Create a pet - starts with status=new, automatically moves to in_quarantine
-curl -X POST http://localhost:3000/js/pets \
+curl -X POST http://localhost:3000/ts/pets \
   -H "Content-Type: application/json" \
   -d '{"name": "Buddy", "species": "dog", "ageMonths": 24}'
 
-# 2. Check current status (should be in_quarantine after feeding reminder completes)
-curl http://localhost:3000/js/pets/1
+# 2. Check current status (should be in_quarantine after feeding reminder)
+curl http://localhost:3000/ts/pets/1
 
 # 3. Staff health check - clear from quarantine to healthy
-curl -X PUT http://localhost:3000/js/pets/1 \
+curl -X PUT http://localhost:3000/ts/pets/1 \
   -H "Content-Type: application/json" \
   -d '{"status": "healthy"}'
 
-# 4. Staff marks pet ready for adoption
-curl -X PUT http://localhost:3000/js/pets/1 \
-  -H "Content-Type: application/json" \
-  -d '{"status": "available"}'
+# 4. Check status (should be available - automatic progression)
+curl http://localhost:3000/ts/pets/1
 
-# 5. Adoption application received
-curl -X PUT http://localhost:3000/js/pets/1 \
-  -H "Content-Type: application/json" \
-  -d '{"status": "pending"}'
-
-# 6. Adoption completed
-curl -X PUT http://localhost:3000/js/pets/1 \
-  -H "Content-Type: application/json" \
-  -d '{"status": "adopted"}'
-```
-
-**Test Invalid Transitions**:
-```bash
-# Try to skip quarantine (should be rejected)
-curl -X PUT http://localhost:3000/js/pets/1 \
-  -H "Content-Type: application/json" \
-  -d '{"status": "available"}'
-# Returns 202 with rejection message
-```
-
-**Illness and Treatment Workflow**:
-```bash
-# Mark healthy pet as ill
-curl -X PUT http://localhost:3000/js/pets/1 \
+# 5. Mark as ill
+curl -X PUT http://localhost:3000/ts/pets/1 \
   -H "Content-Type: application/json" \
   -d '{"status": "ill"}'
 
-# Start treatment
-curl -X PUT http://localhost:3000/js/pets/1 \
-  -H "Content-Type: application/json" \
-  -d '{"status": "under_treatment"}'
-
-# Mark as recovered
-curl -X PUT http://localhost:3000/js/pets/1 \
-  -H "Content-Type: application/json" \
-  -d '{"status": "recovered"}'
-
-# Clear back to healthy
-curl -X PUT http://localhost:3000/js/pets/1 \
-  -H "Content-Type: application/json" \
-  -d '{"status": "healthy"}'
+# 6. Check status (should be under_treatment - automatic progression)
+curl http://localhost:3000/ts/pets/1
 ```
 
-### Orchestrator Behavior
+---
 
-**Validation**: Only valid transitions are allowed based on current status and transition rules.
+## 📖 Level 4: AI Agents - Intelligent Decision Making
 
-**Staff Control**: All status changes (except initial quarantine) require explicit staff decisions.
+Level 4 introduces AI-powered agents that make intelligent decisions based on pet context using OpenAI.
 
-**Idempotency**: Attempting to set the same status twice has no effect.
+### Three Types of AI Agents
 
-**Error Handling**: Invalid transitions return 202 with clear rejection reasons.
+#### 1. AI Profile Enrichment (Non-Routing)
 
-## API Endpoints
+**Trigger**: Automatic on `pet.created` event
 
-All three languages provide identical CRUD functionality with background job integration:
+**Purpose**: Generate detailed pet profiles using AI
 
-### JavaScript Endpoints (`/js/pets`)
+**AI-Generated Fields**:
+- `bio` - Warm, engaging 2-3 sentence description
+- `breedGuess` - AI's best guess at breed or breed mix
+- `temperamentTags` - Array of 3-5 personality traits
+- `adopterHints` - Practical advice for potential adopters
 
-| Method | Endpoint | Description | Background Jobs |
-|--------|----------|-------------|-----------------|
-| POST | `/js/pets` | Create a new pet | Triggers PostCreateLite |
-| GET | `/js/pets` | List all pets | None |
-| GET | `/js/pets/:id` | Get pet by ID | None |
-| PUT | `/js/pets/:id` | Update pet | None |
-| DELETE | `/js/pets/:id` | Soft delete pet | Schedules for purging |
-
-### TypeScript Endpoints (`/ts/pets`)
-
-| Method | Endpoint | Description | Background Jobs |
-|--------|----------|-------------|-----------------|
-| POST | `/ts/pets` | Create a new pet | Triggers PostCreateLite |
-| GET | `/ts/pets` | List all pets | None |
-| GET | `/ts/pets/:id` | Get pet by ID | None |
-| PUT | `/ts/pets/:id` | Update pet | None |
-| DELETE | `/ts/pets/:id` | Soft delete pet | Schedules for purging |
-
-### Python Endpoints (`/py/pets`)
-
-| Method | Endpoint | Description | Background Jobs |
-|--------|----------|-------------|-----------------|
-| POST | `/py/pets` | Create a new pet | Triggers PostCreateLite |
-| GET | `/py/pets` | List all pets | None |
-| GET | `/py/pets/:id` | Get pet by ID | None |
-| PUT | `/py/pets/:id` | Update pet | None |
-| DELETE | `/py/pets/:id` | Soft delete pet | Schedules for purging |
-
-## Enhanced API Behavior
-
-### Create Pet (with Background Processing)
-
-**Request:**
-```bash
-curl -X POST http://localhost:3000/js/pets \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Buddy",
-    "species": "dog",
-    "ageMonths": 24
-  }'
-```
-
-**Immediate Response:**
+**Example Output**:
 ```json
 {
-  "id": "1",
-  "name": "Buddy",
-  "species": "dog",
-  "ageMonths": 24,
-  "status": "new",
-  "createdAt": 1640995200000,
-  "updatedAt": 1640995200000
-}
-```
-
-**After Background Job Completion:**
-```json
-{
-  "id": "1",
-  "name": "Buddy",
-  "species": "dog",
-  "ageMonths": 24,
-  "status": "new",
-  "createdAt": 1640995200000,
-  "updatedAt": 1640995250000,
-  "notes": "Welcome to our pet store! We'll take great care of this pet.",
-  "nextFeedingAt": 1641081600000
-}
-```
-
-**Events Emitted:**
-- `js.pet.created` - Immediate creation event
-- `js.job.postcreate.enqueued` - Background job queued
-- `js.job.postcreate.completed` - Background job finished
-
-### Soft Delete Pet
-
-**Request:**
-```bash
-curl -X DELETE http://localhost:3000/js/pets/1
-```
-
-**Response (202 Accepted):**
-```json
-{
-  "message": "Pet scheduled for deletion",
-  "petId": "1",
-  "purgeAt": 1643587200000
-}
-```
-
-**Pet Status After Soft Delete:**
-```json
-{
-  "id": "1",
-  "name": "Buddy",
-  "species": "dog",
-  "ageMonths": 24,
-  "status": "deleted",
-  "deletedAt": 1640995200000,
-  "purgeAt": 1643587200000,
-  "updatedAt": 1640995200000
-}
-```
-
-**Events Emitted:**
-- `js.pet.soft.deleted` - Soft deletion event
-
-## Event System with Language Isolation
-
-The system uses language-specific event namespaces to prevent cross-language triggering:
-
-### JavaScript Events
-- `js.pet.created` - Pet created via JavaScript API
-- `js.job.postcreate.enqueued` - Triggers JavaScript PostCreateLite job only
-- `js.job.postcreate.completed` - JavaScript job completion
-- `js.pet.soft.deleted` - Pet soft deleted via JavaScript API
-- `js.pet.purged` - Pet permanently removed by JavaScript reaper
-- `js.reaper.completed` - JavaScript reaper completion
-
-### TypeScript Events
-- `ts.pet.created` - Pet created via TypeScript API
-- `ts.job.postcreate.enqueued` - Triggers TypeScript PostCreateLite job only
-- `ts.job.postcreate.completed` - TypeScript job completion
-- `ts.pet.soft.deleted` - Pet soft deleted via TypeScript API
-- `ts.pet.purged` - Pet permanently removed by TypeScript reaper
-- `ts.reaper.completed` - TypeScript reaper completion
-
-### Python Events
-- `py.pet.created` - Pet created via Python API
-- `py.job.postcreate.enqueued` - Triggers Python PostCreateLite job only
-- `py.job.postcreate.completed` - Python job completion
-- `py.pet.soft.deleted` - Pet soft deleted via Python API
-- `py.pet.purged` - Pet permanently removed by Python reaper
-- `py.reaper.completed` - Python reaper completion
-
-## File Structure
-
-```
-steps/
-├── javascript/
-│   ├── create-pet.step.js           # POST /js/pets (triggers PostCreateLite)
-│   ├── get-pets.step.js             # GET /js/pets
-│   ├── get-pet.step.js              # GET /js/pets/:id
-│   ├── update-pet.step.js           # PUT /js/pets/:id
-│   ├── delete-pet.step.js           # DELETE /js/pets/:id (soft delete)
-│   ├── postcreate-lite.job.step.js  # Background job (queue-based)
-│   ├── deletion-reaper.cron.step.js # Background job (cron-based)
-│   └── js-store.js                  # Data persistence layer
-├── typescript/
-│   ├── create-pet.step.ts           # POST /ts/pets (triggers PostCreateLite)
-│   ├── get-pets.step.ts             # GET /ts/pets
-│   ├── get-pet.step.ts              # GET /ts/pets/:id
-│   ├── update-pet.step.ts           # PUT /ts/pets/:id
-│   ├── delete-pet.step.ts           # DELETE /ts/pets/:id (soft delete)
-│   ├── postcreate-lite.job.step.ts  # Background job (queue-based)
-│   ├── deletion-reaper.cron.step.ts # Background job (cron-based)
-│   └── ts-store.ts                  # Data persistence layer
-├── python/
-│   ├── create_pet.step.py           # POST /py/pets (triggers PostCreateLite)
-│   ├── get_pets.step.py             # GET /py/pets
-│   ├── get_pet.step.py              # GET /py/pets/:id
-│   ├── update_pet.step.py           # PUT /py/pets/:id
-│   ├── delete_pet.step.py           # DELETE /py/pets/:id (soft delete)
-│   ├── postcreate_lite_job.step.py  # Background job (queue-based)
-│   ├── deletion_reaper.cron.step.py # Background job (cron-based)
-│   └── services/
-│       ├── pet_store.py             # Data persistence layer
-│       └── types.py                 # Type definitions
-└── motia-workbench.json             # Workflow configuration
-```
-
-## Data Storage
-
-All implementations use a shared JSON file for data persistence:
-
-**Location:** `.data/pets.json`
-
-**Structure:**
-```json
-{
-  "seq": 2,
-  "pets": {
-    "1": {
-      "id": "1",
-      "name": "Buddy",
-      "species": "dog",
-      "ageMonths": 24,
-      "status": "new",
-      "createdAt": 1640995200000,
-      "updatedAt": 1640995250000,
-      "notes": "Welcome to our pet store! We'll take great care of this pet.",
-      "nextFeedingAt": 1641081600000
-    }
+  "profile": {
+    "bio": "Luna is a graceful and independent cat with striking green eyes who enjoys sunny windowsills and gentle head scratches.",
+    "breedGuess": "Domestic Shorthair",
+    "temperamentTags": ["independent", "calm", "affectionate", "observant"],
+    "adopterHints": "Ideal for singles or couples seeking a low-maintenance companion. Prefers quiet environments."
   }
 }
 ```
 
-## Testing Examples
+#### 2. Health Review Agent (Routing)
 
-### Background Job Testing
+**Endpoint**: `POST /ts/pets/:id/health-review`
 
-**Test PostCreateLite Job:**
-```bash
-# Create a pet and watch console for background job processing
-curl -X POST http://localhost:3000/js/pets \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Whiskers", "species": "cat", "ageMonths": 12}'
+**Purpose**: AI evaluates pet health and chooses appropriate action
 
-# Check pet record after job completion
-curl http://localhost:3000/js/pets/1
-```
+**Available Decisions**:
+- `emit.health.treatment_required` → Pet needs medical treatment
+- `emit.health.no_treatment_needed` → Pet is healthy
 
-**Expected Console Output:**
-```
-🐾 Pet created { petId: '1', name: 'Whiskers', species: 'cat', status: 'new' }
-🔄 PostCreateLite job started { petId: '1', enqueuedAt: 1640995200000 }
-✅ PostCreateLite job completed { petId: '1', processingTimeMs: 50 }
-```
+**Decision Process**:
+1. Analyze pet symptoms, age, species, current status
+2. LLM chooses appropriate emit based on context
+3. Provides structured rationale for decision
+4. Orchestrator consumes emit and applies transitions
 
-**Test Soft Delete:**
-```bash
-# Soft delete a pet
-curl -X DELETE http://localhost:3000/js/pets/1
+#### 3. Adoption Review Agent (Routing)
 
-# Verify pet is marked as deleted but still exists
-curl http://localhost:3000/js/pets/1
-```
+**Endpoint**: `POST /ts/pets/:id/adoption-review`
 
-**Test Language Isolation:**
-```bash
-# Create pets in different languages
-curl -X POST http://localhost:3000/js/pets -H "Content-Type: application/json" -d '{"name": "JSPet", "species": "dog", "ageMonths": 12}'
-curl -X POST http://localhost:3000/ts/pets -H "Content-Type: application/json" -d '{"name": "TSPet", "species": "cat", "ageMonths": 18}'
-curl -X POST http://localhost:3000/py/pets -H "Content-Type: application/json" -d '{"name": "PyPet", "species": "bird", "ageMonths": 6}'
+**Purpose**: AI evaluates adoption readiness
 
-# Each should only trigger its own language's background job
-```
+**Available Decisions**:
+- `emit.adoption.needs_data` → Pet needs additional data
+- `emit.adoption.ready` → Pet is ready for adoption
 
-### Cron Job Testing
-
-To test the Deletion Reaper cron job, you can temporarily change the cron schedule:
-
-1. **Edit cron schedule** in `deletion-reaper.cron.step.*` files:
-   ```javascript
-   cron: '* * * * *', // Run every minute for testing
-   ```
-
-2. **Create and soft delete a pet:**
-   ```bash
-   curl -X POST http://localhost:3000/js/pets -H "Content-Type: application/json" -d '{"name": "TestPet", "species": "dog", "ageMonths": 12}'
-   curl -X DELETE http://localhost:3000/js/pets/1
-   ```
-
-3. **Manually set purgeAt to past date** in `.data/pets.json`
-
-4. **Watch console for reaper execution** (runs every minute)
-
-## Validation
-
-All create and update operations include validation:
-
-### Create Pet Validation
-- `name`: Required string, non-empty after trim
-- `species`: Must be one of: `"dog"`, `"cat"`, `"bird"`, `"other"`
-- `ageMonths`: Required finite number
-
-### Update Pet Validation
-- `name`: Optional string
-- `species`: Optional, must be valid species
-- `ageMonths`: Optional finite number
-- `status`: Optional, must be one of: `"new"`, `"available"`, `"pending"`, `"adopted"`, `"deleted"`
-
-### Error Responses
-
-**400 Bad Request** - Invalid input data
+**Decision Artifact**:
 ```json
 {
-  "message": "Invalid payload: {name, species, ageMonths}"
-}
-```
-
-**404 Not Found** - Pet doesn't exist
-```json
-{
-  "message": "Not found"
-}
-```
-
-**202 Accepted** - Soft delete scheduled
-```json
-{
-  "message": "Pet scheduled for deletion",
   "petId": "1",
-  "purgeAt": 1643587200000
-}
-```
-
-## Section 4 — Agentic Workflow (AI inside the flow)
-
-The system includes both **AI Profile Enrichment** (non-routing) and **True Agentic Decision Making** where LLM agents choose which emits to fire based on pet context. This demonstrates how AI agents can make routing decisions within event-driven workflows.
-
-### AI Profile Enrichment (Non-Routing)
-
-The original enrichment feature automatically generates detailed pet profiles:
-
-1. **Trigger**: When a pet is created, the `pet.created` event is emitted
-2. **AI Agent Activation**: The AI Profile Enrichment step listens to `pet.created` events
-3. **OpenAI API Call**: The agent calls OpenAI with pet details (name, species)
-4. **Profile Generation**: AI generates bio, breed guess, temperament tags, and adopter hints
-5. **Data Storage**: The generated profile is stored in the pet record under the `profile` field
-6. **Event Emission**: Events are emitted for `profile_enrichment_started` and `profile_enrichment_completed`
-
-### True Agentic Decision Making (Routing)
-
-The system now includes **Agent Decision Steps** where LLM agents choose from a registry of allowed emits based on pet context. The orchestrator remains the only component that can mutate pet status.
-
-#### How Agent Decision Making Works
-
-1. **RESTful Trigger**: Staff calls `POST /pets/{id}/health-review` or `POST /pets/{id}/adoption-review`
-2. **Context Building**: System builds agent context with pet data (species, age, symptoms, flags, profile)
-3. **Emit Registry**: Agent is shown available emits (tools) with descriptions and orchestrator effects
-4. **LLM Decision**: OpenAI chooses exactly one emit and provides structured rationale
-5. **Emit Firing**: System fires the chosen emit; orchestrator consumes it and applies transitions
-6. **Artifact Storage**: Complete decision artifact stored (inputs, available emits, model output, chosen emit, rationale)
-
-### RESTful Agent Endpoints
-
-#### Health Review Agent
-**Endpoint**: `POST /ts/pets/{id}/health-review` (TypeScript), `POST /js/pets/{id}/health-review` (JavaScript), `POST /py/pets/{id}/health-review` (Python)
-
-**Purpose**: AI agent evaluates pet health and chooses appropriate health action
-
-**Available Emits**:
-| Emit ID | Orchestrator Effect | Description |
-|---------|-------------------|-------------|
-| `emit.health.treatment_required` | `healthy → ill → under_treatment` | Pet requires medical treatment due to health concerns |
-| `emit.health.no_treatment_needed` | `stay healthy` | Pet is healthy and requires no medical intervention |
-
-#### Adoption Review Agent
-**Endpoint**: `POST /ts/pets/{id}/adoption-review` (TypeScript), `POST /js/pets/{id}/adoption-review` (JavaScript), `POST /py/pets/{id}/adoption-review` (Python)
-
-**Purpose**: AI agent evaluates adoption readiness and chooses appropriate adoption action
-
-**Available Emits**:
-| Emit ID | Orchestrator Effect | Description |
-|---------|-------------------|-------------|
-| `emit.adoption.needs_data` | `add needs_data flag (blocks available)` | Pet needs additional data before being available for adoption |
-| `emit.adoption.ready` | `healthy → available (respect guards)` | Pet is ready for adoption and can be made available |
-
-### Guards & Orchestrator Rules
-
-The orchestrator enforces guards and only allows valid transitions:
-
-- **`must_be_healthy`**: Pet must be in healthy status
-- **`no_needs_data_flag`**: Pet cannot have the `needs_data` flag (blocks adoption)
-
-If a chosen emit violates guards, the orchestrator logs rejection and does not mutate status.
-
-### Agent Decision Artifacts
-
-Each agent decision creates a stored artifact:
-
-```json
-{
-  "petId": "pet-123",
   "agentType": "health-review",
   "timestamp": 1640995200000,
-  "inputs": {
-    "petId": "pet-123",
-    "species": "dog",
-    "ageMonths": 24,
-    "currentStatus": "healthy",
-    "symptoms": ["coughing", "lethargy"],
-    "flags": [],
-    "profile": { "bio": "...", "breedGuess": "Golden Retriever" }
-  },
-  "availableEmits": [
-    {
-      "id": "emit.health.treatment_required",
-      "description": "Pet requires medical treatment due to health concerns",
-      "orchestratorEffect": "healthy → ill → under_treatment"
-    },
-    {
-      "id": "emit.health.no_treatment_needed", 
-      "description": "Pet is healthy and requires no medical intervention",
-      "orchestratorEffect": "stay healthy"
-    }
-  ],
-  "modelOutput": "{\"chosenEmit\": \"emit.health.treatment_required\", \"rationale\": \"Pet shows concerning symptoms of coughing and lethargy that require veterinary evaluation and treatment.\"}",
   "parsedDecision": {
     "chosenEmit": "emit.health.treatment_required",
-    "rationale": "Pet shows concerning symptoms of coughing and lethargy that require veterinary evaluation and treatment."
+    "rationale": "Pet shows concerning symptoms of coughing and lethargy that require veterinary evaluation."
   },
   "success": true
 }
 ```
 
-### AI Profile Enrichment Fields
-
-The AI profile enrichment agent enriches each pet with:
-
-- **`bio`**: A warm, engaging 2-3 sentence description appealing to potential adopters
-- **`breedGuess`**: AI's best guess at the breed or breed mix
-- **`temperamentTags`**: Array of 3-5 personality traits (e.g., "friendly", "energetic", "calm")
-- **`adopterHints`**: Practical advice for potential adopters (family type, living situation, care needs)
-
-### Sample AI-Enriched Pet Record
-
-```json
-{
-  "id": "pet-123",
-  "name": "Luna",
-  "species": "cat",
-  "ageMonths": 18,
-  "status": "new",
-  "createdAt": 1640995200000,
-  "updatedAt": 1640995201500,
-  "profile": {
-    "bio": "Luna is a graceful and independent cat with striking green eyes who enjoys sunny windowsills and gentle head scratches. She's perfectly content being the only pet and would thrive in a quiet, loving home.",
-    "breedGuess": "Domestic Shorthair",
-    "temperamentTags": ["independent", "calm", "affectionate", "observant", "gentle"],
-    "adopterHints": "Ideal for singles or couples seeking a low-maintenance companion. Prefers quiet environments and would do best as an only pet. Perfect for apartment living."
-  }
-}
-```
-
-### Environment Setup
-
-To enable AI profile enrichment, you need an OpenAI API key:
-
-1. **Get OpenAI API Key**: Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-2. **Set Environment Variable**:
-   ```bash
-   export OPENAI_API_KEY=your_openai_api_key_here
-   ```
-3. **Or create `.env` file**:
-   ```
-   OPENAI_API_KEY=your_openai_api_key_here
-   ```
-
-### AI Agent Behavior
-
-- **Automatic**: Triggers on every pet creation
-- **Idempotent**: Re-enriching overwrites existing profile (no duplicates)
-- **Resilient**: Falls back to default profile if AI call fails
-- **Non-blocking**: Runs asynchronously, doesn't slow down pet creation
-- **Status-safe**: Never modifies pet status, only enriches metadata
-- **Language-isolated**: Each language has its own AI agent step
-
-### Console Output Examples
-
-**AI Enrichment Started:**
-```
-🤖 AI Profile Enrichment started { petId: 'pet-123', name: 'Luna', species: 'cat' }
-```
-
-**AI Enrichment Completed:**
-```
-✅ AI Profile Enrichment completed {
-  petId: 'pet-123',
-  profile: {
-    bio: 'Luna is a graceful and independent cat with...',
-    breedGuess: 'Domestic Shorthair',
-    temperamentTags: ['independent', 'calm', 'affectionate', 'observant', 'gentle'],
-    adopterHints: 'Ideal for singles or couples seeking a low-main...'
-  }
-}
-```
-
-**Error Handling:**
-```
-❌ AI Profile Enrichment failed { petId: 'pet-123', error: 'OpenAI API rate limit exceeded' }
-```
-
-### Testing Agentic Decision Making
-
-#### Health Review Agent Testing
+### Testing Level 4
 
 ```bash
-# 1. Create a pet and wait for it to become healthy
-curl -X POST http://localhost:3000/ts/pets \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Max", "species": "dog", "ageMonths": 36}'
-
-# 2. Add symptoms to the pet (via update)
-curl -X PUT http://localhost:3000/ts/pets/1 \
-  -H "Content-Type: application/json" \
-  -d '{"symptoms": ["coughing", "lethargy"]}'
-
-# 3. Trigger health review - agent will choose treatment_required
-curl -X POST http://localhost:3000/ts/pets/1/health-review \
-  -H "Content-Type: application/json"
-
-# Expected response:
-{
-  "message": "Health review completed",
-  "petId": "1",
-  "agentDecision": {
-    "chosenEmit": "emit.health.treatment_required",
-    "rationale": "Pet shows concerning symptoms that require veterinary evaluation"
-  },
-  "emitFired": "ts.health.treatment_required"
-}
-
-# 4. Check pet status - should be "under_treatment"
-curl http://localhost:3000/ts/pets/1
-```
-
-#### Adoption Review Agent Testing
-
-```bash
-# 1. Create a healthy pet with complete profile
+# Test AI Profile Enrichment (automatic)
 curl -X POST http://localhost:3000/ts/pets \
   -H "Content-Type: application/json" \
   -d '{"name": "Luna", "species": "cat", "ageMonths": 18}'
 
-# 2. Wait for AI enrichment to complete, then trigger adoption review
-curl -X POST http://localhost:3000/ts/pets/1/adoption-review \
-  -H "Content-Type: application/json"
-
-# Expected response:
-{
-  "message": "Adoption review completed", 
-  "petId": "1",
-  "agentDecision": {
-    "chosenEmit": "emit.adoption.ready",
-    "rationale": "Pet has complete profile and is ready for adoption"
-  },
-  "emitFired": "ts.adoption.ready"
-}
-
-# 3. Check pet status - should be "available"
+# Wait 2-3 seconds, then check for AI-generated profile
 curl http://localhost:3000/ts/pets/1
-```
 
-#### Guard Testing
-
-```bash
-# Test guard blocking - add needs_data flag then try adoption
-curl -X PUT http://localhost:3000/ts/pets/1 \
-  -H "Content-Type: application/json" \
-  -d '{"flags": ["needs_data"]}'
-
-curl -X POST http://localhost:3000/ts/pets/1/adoption-review
-
-# Agent may choose adoption.ready, but orchestrator will block due to needs_data flag
-```
-
-### Testing AI Profile Enrichment
-
-Create a pet and watch the AI enrichment happen automatically:
-
-```bash
-# Create a pet - AI enrichment will trigger automatically
+# Test Health Review Agent with symptoms
 curl -X POST http://localhost:3000/ts/pets \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Max",
     "species": "dog",
-    "ageMonths": 36
+    "ageMonths": 36,
+    "symptoms": ["coughing", "lethargy", "fever"]
   }'
 
-# Check the pet record after a few seconds to see the AI-generated profile
-curl http://localhost:3000/ts/pets/[pet-id]
+# Trigger health review
+curl -X POST http://localhost:3000/ts/pets/2/health-review
+
+# Test Adoption Review Agent
+curl -X POST http://localhost:3000/ts/pets/1/adoption-review
 ```
 
-The pet record will include the AI-generated `profile` field with personalized bio, breed guess, temperament tags, and adopter hints.
+---
 
-### Key Differences: Enrichment vs Agentic Routing
+## 📖 Level 5: Streaming AI Agents ⭐ - Real-Time Updates
 
-| Aspect | AI Profile Enrichment | Agentic Decision Making |
-|--------|----------------------|------------------------|
-| **Purpose** | Generate pet profile data | Choose workflow routing decisions |
-| **Trigger** | Automatic on `pet.created` | Manual via RESTful endpoints |
-| **Decision Type** | Data generation (non-routing) | Emit selection (routing) |
-| **LLM Role** | Content creator | Decision maker |
-| **Orchestrator** | Not involved in routing | Consumes chosen emits and applies transitions |
-| **Idempotency** | Overwrites existing profiles | Cached decisions within time window |
-| **Artifacts** | Profile data stored on pet | Decision artifacts stored separately |
-| **Guards** | None | Enforced by orchestrator |
-| **Status Changes** | None | Potential status transitions via orchestrator |
+**The Final Level**: Building on all previous levels, we add real-time streaming to provide immediate user feedback while background processes execute.
 
-**Enrichment** creates content; **Agentic Routing** makes decisions that drive workflow state changes.
+### What is Streaming?
 
-## Getting Started
+Traditional APIs return a single response after all processing completes. With **Motia's native Streams API**, your API can return immediately with a stream that updates in real-time as background jobs, AI agents, and orchestrators process asynchronously.
 
-1. **Install Dependencies**
-   ```bash
-   npm install
-   pip install -r requirements.txt
-   ```
+### Stream Configuration
 
-2. **Set Up Environment Variables**
-   
-   Create a `.env` file in the project root:
-   ```bash
-   # .env
-   OPENAI_API_KEY=your_openai_api_key_here
-   ```
-   
-   **Sample `.env.example` file:**
-   ```bash
-   # Environment Variables for Pet Management System
-   
-   # OpenAI API Configuration
-   # Required for AI Profile Enrichment feature
-   # Get your API key from: https://platform.openai.com/api-keys
-   OPENAI_API_KEY=your_openai_api_key_here
-   
-   # Database Configuration (if needed)
-   # DATABASE_URL=your_database_url_here
-   
-   # Other API Keys (add as needed)
-   # SOME_OTHER_API_KEY=your_other_api_key_here
-   ```
-   
-   Or set the environment variable directly:
-   ```bash
-   export OPENAI_API_KEY=your_openai_api_key_here
-   ```
-   
-   **Get your OpenAI API key:**
-   - Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-   - Create an account or sign in
-   - Generate a new API key
-   - Copy the key and add it to your environment
+The streaming feature is defined in `pet-creation.stream.ts`:
 
-3. **Start Motia Server**
-   ```bash
-   motia dev
-   ```
+```typescript
+import { StreamConfig } from 'motia'
+import { z } from 'zod'
 
-4. **Open Workbench**
-   - Navigate to Motia Workbench
-   - Select the `pets` workflow
-   - View all CRUD operations and background jobs for all three languages
-
-5. **Test APIs and Background Jobs**
-   - Use the provided curl examples
-   - Monitor console output for background job processing and AI enrichment
-   - Check `.data/pets.json` for data persistence and AI-generated profiles
-   - **Note**: AI profile enrichment requires a valid `OPENAI_API_KEY`. Without it, pets will receive fallback profiles.
-
-## Key Learning Points
-
-This example demonstrates:
-
-1. **Multi-language Implementation**: Same functionality in TypeScript, JavaScript, and Python
-2. **RESTful API Design**: Standard HTTP methods and response codes
-3. **Background Job Patterns**: Both queue-based (event-triggered) and cron-based (scheduled) jobs
-4. **AI Integration**: Seamless AI agents within event-driven workflows
-5. **Soft Delete Pattern**: Graceful deletion with recovery window and automatic cleanup
-6. **Event-Driven Architecture**: Language-isolated event namespaces prevent cross-triggering
-7. **Non-Blocking Processing**: Background jobs and AI enrichment don't slow down API responses
-8. **Data Validation**: Input validation and error handling
-9. **File-based Persistence**: Simple JSON storage across languages
-10. **Workflow Visualization**: Using Motia Workbench for system understanding
-11. **Audit Logging**: Comprehensive event emission for system monitoring
-12. **AI Resilience**: Graceful fallbacks when AI services are unavailable
-
-## Section 5 — Visible Workflow Extensions (Staff Action Automation)
-
-The system now includes **Visible Workflow Extensions** that transform the orchestrator from a "black hole" into a **visible workflow controller** that guides staff through each step. Instead of silently updating status, the orchestrator now emits events that trigger specific staff actions.
-
-### The Problem: Hidden Workflow
-
-**Before**: When pet status changed, the orchestrator would silently update the status internally, leaving staff unaware of what actions needed to be taken next.
-
-```
-Pet Status Change → Orchestrator → [Silent Status Update] → END
+export const config: StreamConfig = {
+  name: 'petCreation',
+  schema: z.object({ 
+    message: z.string()
+  }),
+  baseConfig: {
+    storageType: 'default',
+  },
+}
 ```
 
-### The Solution: Visible Workflow
+This stream is available as `context.streams.petCreation` in all steps within the flow.
 
-**After**: The orchestrator now emits specific events that trigger visible staff actions, making the workflow transparent and actionable.
+### How Streaming Works
 
+#### 1. API Initializes Stream
+
+```typescript
+// create-pet.step.ts
+const result = await streams.petCreation.set(traceId, 'message', { 
+  message: `Pet ${pet.name} (ID: ${pet.id}) created successfully` 
+});
+
+return { 
+  status: 201, 
+  body: result  // Returns stream immediately
+};
 ```
-Pet Status Change → Orchestrator → Next Action Event → Staff Task
-     ↓                    ↓              ↓              ↓
-  healthy → ill    →  Status Update  →  Treatment   →  Schedule Vet
-  ill → under_treatment → Status Update → Treatment → Medication
-  healthy → available → Status Update → Adoption → Post Listing
-  under_treatment → recovered → Status Update → Recovery → Follow-up
+
+#### 2. Background Jobs Update Stream
+
+```typescript
+// set-next-feeding-reminder.job.step.ts
+await streams.petCreation.set(traceId, 'message', { 
+  message: `Pet ${pet.name} entered quarantine period` 
+});
+
+await streams.petCreation.set(traceId, 'message', { 
+  message: `Health check passed for ${pet.name} - no symptoms found` 
+});
+
+await streams.petCreation.set(traceId, 'message', { 
+  message: `${pet.name} is healthy and ready for adoption! ✅` 
+});
 ```
 
-### New Workflow Steps
+#### 3. AI Enrichment Streams Progress
 
-#### 1. Treatment Scheduler
-**Purpose**: Automatically schedules veterinary treatment and medication when pets need medical care
+```typescript
+// ai-profile-enrichment.step.ts
+await streams.petCreation.set(traceId, 'enrichment_started', { 
+  message: `AI enrichment started for ${pet.name}` 
+});
 
-**Trigger**: `treatment.required` event from orchestrator
-**Actions**:
-- Determines treatment urgency based on symptoms
-- Schedules vet appointments (2 hours for urgent, 24 hours for normal)
-- Assigns required staff (veterinarian, nurse)
-- Prescribes appropriate medication
-- Generates medication instructions
+await streams.petCreation.set(traceId, `progress_bio`, { 
+  message: `Generated bio for ${pet.name}` 
+});
 
-**Example Output**:
+await streams.petCreation.set(traceId, 'completed', { 
+  message: `AI enrichment completed for ${pet.name}`,
+  profile: generatedProfile
+});
+```
+
+#### 4. Orchestrator Streams Transitions
+
+```typescript
+// pet-lifecycle-orchestrator.step.ts
+await streams.petCreation.set(traceId, transitionTo, {
+  message: `Status transition: ${currentStatus} → ${transitionTo}`,
+  petId,
+  timestamp: Date.now()
+});
+```
+
+### Real-Time Stream Response
+
+When you create a pet, the API returns a stream object immediately:
+
 ```json
 {
-  "petId": "1",
-  "treatmentSchedule": {
-    "scheduledAt": 1640995200000,
-    "urgency": "normal",
-    "treatmentType": "Pain Management",
-    "requiredStaff": ["veterinarian"],
-    "medication": ["Pain Relief (Ibuprofen)"]
-  },
-  "nextSteps": [
-    "Notify veterinary staff",
-    "Prepare treatment room", 
-    "Update pet medication schedule"
+  "streamId": "trace-abc123",
+  "updates": [
+    {
+      "type": "message",
+      "timestamp": 1640995200000,
+      "data": {
+        "message": "Pet Buddy (ID: 1) created successfully - Species: dog, Age: 24 months, Status: new"
+      }
+    }
   ]
 }
 ```
 
-#### 2. Adoption Posting
-**Purpose**: Creates adoption listings and schedules interviews when pets are ready for adoption
+As background jobs execute, the stream receives real-time updates:
 
-**Trigger**: `adoption.ready` event from orchestrator
-**Actions**:
-- Creates adoption posting with pet details
-- Calculates adoption fees based on age and breed
-- Generates adoption requirements
-- Schedules initial screening interviews
-- Prepares adoption paperwork
-
-**Example Output**:
 ```json
 {
-  "petId": "1",
-  "adoptionPosting": {
-    "title": "Buddy - Golden Retriever Available for Adoption",
-    "adoptionFee": 200,
-    "requirements": [
-      "Must be 21 years or older",
-      "Valid photo ID required",
-      "Reference from current veterinarian"
-    ]
-  },
-  "nextSteps": [
-    "Share on social media",
-    "Update shelter website",
-    "Notify adoption coordinators"
+  "streamId": "trace-abc123",
+  "updates": [
+    {
+      "type": "message",
+      "timestamp": 1640995200000,
+      "data": { "message": "Pet Buddy (ID: 1) created successfully..." }
+    },
+    {
+      "type": "message",
+      "timestamp": 1640995201500,
+      "data": { "message": "Pet Buddy entered quarantine period" }
+    },
+    {
+      "type": "message",
+      "timestamp": 1640995203000,
+      "data": { "message": "Health check passed for Buddy - no symptoms found" }
+    },
+    {
+      "type": "enrichment_started",
+      "timestamp": 1640995201000,
+      "data": { "message": "AI enrichment started for Buddy" }
+    },
+    {
+      "type": "progress_bio",
+      "timestamp": 1640995202500,
+      "data": { "message": "Generated bio for Buddy" }
+    },
+    {
+      "type": "completed",
+      "timestamp": 1640995204000,
+      "data": { 
+        "message": "AI enrichment completed for Buddy",
+        "profile": { "bio": "...", "breedGuess": "...", ... }
+      }
+    },
+    {
+      "type": "message",
+      "timestamp": 1640995205000,
+      "data": { "message": "Buddy is healthy and ready for adoption! ✅" }
+    }
   ]
 }
 ```
 
-#### 3. Recovery Monitor
-**Purpose**: Tracks treatment progress and schedules follow-up health checks
+### Testing Level 5 - Streaming
 
-**Trigger**: `treatment.started` or `treatment.completed` events from orchestrator
-**Actions**:
-- Creates recovery plans with milestones
-- Schedules monitoring checkpoints
-- Tracks recovery indicators
-- Schedules follow-up appointments
-- Prepares discharge paperwork
-
-**Example Output**:
-```json
-{
-  "petId": "1",
-  "recoveryPlan": {
-    "expectedRecoveryTime": "1-2 weeks",
-    "milestones": [
-      {"day": 1, "milestone": "Initial treatment response"},
-      {"day": 7, "milestone": "Primary healing indicators"}
-    ],
-    "monitoringSchedule": [
-      {"time": "every 2 hours", "check": "vital signs", "priority": "high"}
-    ]
-  }
-}
-```
-
-### Workflow Event Flow
-
-The orchestrator now explicitly emits these events in its configuration:
-
-```javascript
-// All orchestrators now include these emits
-emits: [
-  'lifecycle.transition.completed',
-  'lifecycle.transition.rejected',
-  'treatment.required',        // → Treatment Scheduler
-  'adoption.ready',           // → Adoption Posting  
-  'treatment.completed',      // → Recovery Monitor
-  'health.restored'          // → Health Check Scheduler
-]
-```
-
-### Visual Workflow in Motia Workbench
-
-The Motia Workbench now shows clear connections:
-
-```
-[Agent Steps] → [Orchestrator] → [Staff Action Steps]
-     ↓              ↓                    ↓
-Health Review → Status Update → Treatment Scheduler
-Adoption Review → Status Update → Adoption Posting
-Manual Update → Status Update → Recovery Monitor
-```
-
-### Comprehensive Testing Guide
-
-This guide will walk you through the complete pet management workflow, demonstrating how AI agents, orchestrators, and staff automation work together.
-
-#### Prerequisites
-```bash
-# 1. Start the Motia server
-npm start
-
-# 2. Verify server is running (should see "Server running on port 3000")
-# 3. Keep the server logs open to observe the workflow in action
-```
-
-#### Test 1: Basic Pet Creation & Lifecycle
-**Purpose**: Understand the automatic pet lifecycle progression
+#### Test 1: Basic Streaming (Healthy Pet)
 
 ```bash
-# Step 1: Create a healthy pet
-curl -X POST http://localhost:3000/ts/pets \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Luna", "species": "cat", "ageMonths": 12}'
-
-# Expected Response: {"id":"X","name":"Luna","species":"cat","ageMonths":12,"status":"new",...}
-# Note the pet ID for subsequent commands
-
-# Step 2: Check pet status after creation
-curl -X GET http://localhost:3000/ts/pets/X
-
-# Expected: Status should be "in_quarantine" (automatic progression from "new")
-# Observe in logs: Feeding reminder setup → AI profile enrichment started → Status: new → in_quarantine
-
-# Step 3: Wait for AI enrichment to complete (check logs)
-# Expected: AI profile enrichment completed with bio, breed guess, temperament tags
-```
-
-#### Test 2: AI Health Review - No Treatment Needed
-**Purpose**: Test AI agent decision making for healthy pets
-
-```bash
-# Step 1: Trigger health review on quarantined pet
-curl -X POST http://localhost:3000/ts/pets/X/health-review
-
-# Expected Response: 
-# {
-#   "message": "Health review completed",
-#   "agentDecision": {
-#     "chosenEmit": "emit.health.no_treatment_needed",
-#     "rationale": "Pet is healthy with no symptoms..."
-#   },
-#   "emitFired": "ts.health.no_treatment_needed"
-# }
-
-# Step 2: Check pet status after health review
-curl -X GET http://localhost:3000/ts/pets/X
-
-# Expected: Status should be "available" (in_quarantine → healthy → available)
-# Observe in logs: 
-# - Health review agent triggered
-# - OpenAI API called and decision made
-# - Orchestrator: Status updated in_quarantine → healthy
-# - Automatic progression: healthy → available
-```
-
-#### Test 3: AI Health Review - Treatment Required
-**Purpose**: Test AI agent decision making for sick pets
-
-```bash
-# Step 1: Create a pet with symptoms
+# Create a healthy pet without symptoms
 curl -X POST http://localhost:3000/ts/pets \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Max", 
-    "species": "dog", 
-    "ageMonths": 18,
-    "symptoms": ["coughing", "lethargy", "fever"],
-    "weightKg": 15.5
+    "name": "Luna",
+    "species": "cat",
+    "ageMonths": 18
   }'
+```
 
-# Expected: Symptoms and weight are now stored in the pet record
+**Expected Stream Updates**:
+1. ✅ "Pet Luna (ID: X) created successfully"
+2. 🔄 "Pet Luna entered quarantine period"
+3. 🤖 "AI enrichment started for Luna"
+4. 📝 "Generated bio for Luna"
+5. 📝 "Generated breed guess for Luna"
+6. ✅ "AI enrichment completed for Luna"
+7. ✅ "Health check passed for Luna - no symptoms found"
+8. ✅ "Luna is healthy and ready for adoption! ✅"
 
-# Step 2: Manually set pet to healthy status (simulate initial assessment)
-curl -X PUT http://localhost:3000/ts/pets/Y \
+#### Test 2: Streaming with Symptoms (Sick Pet)
+
+```bash
+# Create a pet with symptoms
+curl -X POST http://localhost:3000/ts/pets \
   -H "Content-Type: application/json" \
-  -d '{"status": "healthy"}'
-
-# Step 3: Trigger health review on symptomatic pet
-curl -X POST http://localhost:3000/ts/pets/Y/health-review
-
-# Expected Response:
-# {
-#   "message": "Health review completed",
-#   "agentDecision": {
-#     "chosenEmit": "emit.health.treatment_required",
-#     "rationale": "Pet showing concerning symptoms: coughing, lethargy, fever..."
-#   },
-#   "emitFired": "ts.health.treatment_required"
-# }
-
-# Step 4: Check pet status progression
-curl -X GET http://localhost:3000/ts/pets/Y
-
-# Expected: Status should be "available" (healthy → ill → under_treatment → recovered → available)
-# Observe in logs:
-# - AI agent correctly identified symptoms
-# - Orchestrator: Status updated healthy → ill
-# - Orchestrator: Emitted ts.treatment.required
-# - Treatment Scheduler: Treatment scheduled (if step exists)
-# - Automatic progression through treatment stages
+  -d '{
+    "name": "Max",
+    "species": "dog",
+    "ageMonths": 36,
+    "symptoms": ["coughing", "lethargy", "fever"],
+    "weightKg": 25.5
+  }'
 ```
 
-#### Test 4: AI Adoption Review
-**Purpose**: Test AI agent decision making for adoption readiness
+**Expected Stream Updates**:
+1. ✅ "Pet Max (ID: X) created successfully"
+2. 🔄 "Pet Max entered quarantine period"
+3. 🤖 "AI enrichment started for Max"
+4. 📝 AI profile generation progress updates
+5. ✅ "AI enrichment completed for Max"
+6. ⚠️ "Health check failed for Max - symptoms detected: coughing, lethargy, fever"
+7. ❌ "Max needs medical treatment ❌"
+
+#### Test 3: Monitor Stream in Real-Time
+
+You can also fetch the stream directly to see updates:
 
 ```bash
-# Step 1: Trigger adoption review on available pet
-curl -X POST http://localhost:3000/ts/pets/X/adoption-review
-
-# Expected Response:
-# {
-#   "message": "Adoption review completed",
-#   "agentDecision": {
-#     "chosenEmit": "emit.adoption.ready",
-#     "rationale": "Pet has complete profile and is ready for adoption..."
-#   },
-#   "emitFired": "ts.adoption.ready"
-# }
-
-# Step 2: Check pet status
-curl -X GET http://localhost:3000/ts/pets/X
-
-# Expected: Status remains "available" (already available)
-# Observe in logs:
-# - Adoption review agent triggered
-# - AI analyzed complete profile (bio, breed, temperament)
-# - Orchestrator: Emitted ts.adoption.ready
-# - Adoption Posting: Adoption listing created (if step exists)
+# Get stream updates (replace STREAM_ID with actual streamId from response)
+curl http://localhost:3000/streams/STREAM_ID
 ```
 
-#### Test 5: Manual Status Transitions
-**Purpose**: Test orchestrator guard enforcement and manual workflow control
+### Benefits of Streaming
+
+| Traditional API | Streaming API |
+|----------------|---------------|
+| ⏳ Wait for all processing | ✅ Immediate response |
+| 🤷 No progress visibility | 📊 Real-time progress updates |
+| ❌ Timeout on long operations | ✅ No timeout issues |
+| 😴 Poor user experience | 😊 Engaging user experience |
+| 🔇 Silent background jobs | 📢 Visible workflow execution |
+
+### Real-World Use Cases
+
+1. **Order Processing**: Show shipping, payment, fulfillment status in real-time
+2. **Document Generation**: Stream progress as AI generates reports/documents
+3. **Data Import**: Show validation, processing, completion status
+4. **ML Model Training**: Stream training progress, metrics, completion
+5. **Video Processing**: Stream transcoding, quality checks, upload progress
+
+---
+
+## 🖼️ Workbench Screenshot
+
+### Complete Workflow Visualization
+
+The Motia Workbench provides a visual representation of the entire workflow showing all 5 levels:
+
+![Pet Management Workflow - Complete System Architecture](https://github.com/user-attachments/assets/e73af57b-c3c9-4c08-ae71-5e3dc37e5992)
+
+**This screenshot shows the complete TsPetManagement workflow including:**
+
+1. **API Steps** (Left side) - Create, Read, Update, Delete operations
+2. **Background Jobs** - `set-next-feeding-reminder` (queue-based), `deletion-reaper` (cron-based)
+3. **Orchestrator** (Center) - `pet-lifecycle-orchestrator` managing all state transitions
+4. **AI Agents** - `health-review-agent`, `adoption-review-agent`, `ai-profile-enrichment`
+5. **Stream** ⭐ - `pet-creation.stream` providing real-time SSE updates
+6. **Staff Actions** - `treatment-scheduler`, `adoption-posting`, `recovery-monitor`
+7. **Event Connections** - Visual arrows showing data flow between all components
+
+The diagram clearly visualizes how the progressive tutorial builds from simple APIs (Level 1) through background jobs (Level 2), orchestration (Level 3), AI agents (Level 4), and finally streaming (Level 5).
+
+---
+
+## 📁 File Structure
+
+```
+steps/
+├── javascript/
+│   ├── create-pet.step.js              # POST /js/pets (with streaming)
+│   ├── get-pets.step.js                # GET /js/pets
+│   ├── get-pet.step.js                 # GET /js/pets/:id
+│   ├── update-pet.step.js              # PUT /js/pets/:id
+│   ├── delete-pet.step.js              # DELETE /js/pets/:id
+│   ├── set-next-feeding-reminder.job.step.js  # Background job (streams updates)
+│   ├── deletion-reaper.cron.step.js    # Cron job (daily cleanup)
+│   ├── pet-lifecycle-orchestrator.step.js     # Workflow orchestrator (streams transitions)
+│   ├── ai-profile-enrichment.step.js   # AI profile generation (streams progress)
+│   ├── health-review-agent.step.js     # POST /js/pets/:id/health-review
+│   ├── adoption-review-agent.step.js   # POST /js/pets/:id/adoption-review
+│   ├── treatment-scheduler.step.js     # Staff action automation
+│   ├── adoption-posting.step.js        # Staff action automation
+│   ├── recovery-monitor.step.js        # Staff action automation
+│   ├── pet-creation.stream.js          # Stream configuration ⭐
+│   └── js-store.js                     # Data persistence layer
+│
+├── typescript/
+│   ├── create-pet.step.ts              # POST /ts/pets (with streaming)
+│   ├── get-pets.step.ts                # GET /ts/pets
+│   ├── get-pet.step.ts                 # GET /ts/pets/:id
+│   ├── update-pet.step.ts              # PUT /ts/pets/:id
+│   ├── delete-pet.step.ts              # DELETE /ts/pets/:id
+│   ├── set-next-feeding-reminder.job.step.ts  # Background job (streams updates)
+│   ├── deletion-reaper.cron.step.ts    # Cron job (daily cleanup)
+│   ├── pet-lifecycle-orchestrator.step.ts     # Workflow orchestrator (streams transitions)
+│   ├── ai-profile-enrichment.step.ts   # AI profile generation (streams progress)
+│   ├── health-review-agent.step.ts     # POST /ts/pets/:id/health-review
+│   ├── adoption-review-agent.step.ts   # POST /ts/pets/:id/adoption-review
+│   ├── treatment-scheduler.step.ts     # Staff action automation
+│   ├── adoption-posting.step.ts        # Staff action automation
+│   ├── recovery-monitor.step.ts        # Staff action automation
+│   ├── pet-creation.stream.ts          # Stream configuration ⭐
+│   ├── agent-decision-framework.ts     # Shared agent decision logic
+│   └── ts-store.ts                     # Data persistence layer
+│
+├── python/
+│   ├── create_pet_step.py              # POST /py/pets (with streaming)
+│   ├── get_pets_step.py                # GET /py/pets
+│   ├── get_pet_step.py                 # GET /py/pets/:id
+│   ├── update_pet_step.py              # PUT /py/pets/:id
+│   ├── delete_pet_step.py              # DELETE /py/pets/:id
+│   ├── set_next_feeding_reminder.job_step.py  # Background job (streams updates)
+│   ├── deletion_reaper.cron_step.py    # Cron job (daily cleanup)
+│   ├── pet_lifecycle_orchestrator_step.py     # Workflow orchestrator (streams transitions)
+│   ├── ai_profile_enrichment_step.py   # AI profile generation (streams progress)
+│   ├── health_review_agent_step.py     # POST /py/pets/:id/health-review
+│   ├── adoption_review_agent_step.py   # POST /py/pets/:id/adoption-review
+│   ├── treatment_scheduler_step.py     # Staff action automation
+│   ├── adoption_posting_step.py        # Staff action automation
+│   ├── recovery_monitor_step.py        # Staff action automation
+│   ├── pet_creation.stream.py          # Stream configuration ⭐
+│   └── services/
+│       ├── pet_store.py                # Data persistence layer
+│       └── types.py                    # Type definitions
+│
+└── motia-workbench.json                # Workflow configuration
+```
+
+---
+
+## 🎓 Complete Tutorial Walkthrough
+
+Follow this step-by-step guide to experience all 5 levels in sequence:
+
+### Step 1: Basic Pet Creation (Levels 1-2)
 
 ```bash
-# Step 1: Try invalid transition (should be rejected)
-curl -X PUT http://localhost:3000/ts/pets/X \
+# Create a healthy pet
+curl -X POST http://localhost:3000/ts/pets \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Buddy", "species": "dog", "ageMonths": 24}'
+
+# Expected: Immediate API response with stream
+# Expected: Background job processes feeding reminder (watch console)
+# Expected: AI enrichment generates profile (watch console)
+```
+
+### Step 2: Verify Streaming Updates (Level 5)
+
+```bash
+# Get the pet to see final state
+curl http://localhost:3000/ts/pets/1
+
+# Expected: Pet with status "available", complete profile, notes, nextFeedingAt
+```
+
+### Step 3: Test Orchestrator (Level 3)
+
+```bash
+# Try invalid transition
+curl -X PUT http://localhost:3000/ts/pets/1 \
   -H "Content-Type: application/json" \
   -d '{"status": "adopted"}'
 
-# Expected Response: 
-# {"message": "Status change request submitted", "currentStatus": "available", "requestedStatus": "adopted"}
-# Check logs: "Transition rejected: Invalid transition from available to adopted"
+# Expected: Transition rejected (can't go directly from available to adopted)
 
-# Step 2: Valid transition - mark as pending adoption
-curl -X PUT http://localhost:3000/ts/pets/X \
+# Valid transition: pending adoption
+curl -X PUT http://localhost:3000/ts/pets/1 \
   -H "Content-Type: application/json" \
   -d '{"status": "pending"}'
 
-# Expected: Status should change to "pending"
-# Observe in logs: Orchestrator processed valid transition
-
-# Step 3: Complete adoption
-curl -X PUT http://localhost:3000/ts/pets/X \
+# Valid transition: complete adoption
+curl -X PUT http://localhost:3000/ts/pets/1 \
   -H "Content-Type: application/json" \
   -d '{"status": "adopted"}'
-
-# Expected: Status should change to "adopted"
 ```
 
-#### Test 6: Treatment Recovery Flow
-**Purpose**: Test the complete treatment and recovery workflow
+### Step 4: Test AI Health Review (Level 4)
 
 ```bash
-# Step 1: Create a pet and manually set to under_treatment
+# Create a pet with symptoms
 curl -X POST http://localhost:3000/ts/pets \
   -H "Content-Type: application/json" \
-  -d '{"name": "Bella", "species": "dog", "ageMonths": 36}'
+  -d '{
+    "name": "Max",
+    "species": "dog",
+    "ageMonths": 36,
+    "symptoms": ["coughing", "lethargy", "fever"],
+    "weightKg": 25.5
+  }'
 
-# Step 2: Set to under_treatment status
-curl -X PUT http://localhost:3000/ts/pets/Z \
-  -H "Content-Type: application/json" \
-  -d '{"status": "under_treatment"}'
+# Wait for pet to reach "healthy" or "available" status
+# Then trigger AI health review
+curl -X POST http://localhost:3000/ts/pets/2/health-review
 
-# Step 3: Mark treatment as completed
-curl -X PUT http://localhost:3000/ts/pets/Z \
-  -H "Content-Type: application/json" \
-  -d '{"status": "recovered"}'
-
-# Expected: Status progression: under_treatment → recovered → healthy → available
-# Observe in logs:
-# - Orchestrator: Status updated under_treatment → recovered
-# - Orchestrator: Emitted ts.treatment.completed
-# - Recovery Monitor: Recovery plan created (if step exists)
-# - Automatic progression: recovered → healthy → available
+# Expected: AI agent chooses "treatment_required"
+# Expected: Orchestrator automatically transitions: healthy → ill → under_treatment
 ```
 
-#### Test 7: Error Handling & Edge Cases
-**Purpose**: Test system resilience and guard enforcement
+### Step 5: Test AI Adoption Review (Level 4)
 
 ```bash
-# Step 1: Try health review on adopted pet (should be rejected)
-curl -X POST http://localhost:3000/ts/pets/X/health-review
+# Trigger adoption review on available pet
+curl -X POST http://localhost:3000/ts/pets/2/adoption-review
 
-# Expected: Error message about invalid status
-
-# Step 2: Try adoption review on ill pet (should be rejected)
-curl -X POST http://localhost:3000/ts/pets/Y/adoption-review
-
-# Expected: Error message about invalid status
-
-# Step 3: Try to get non-existent pet
-curl -X GET http://localhost:3000/ts/pets/999
-
-# Expected: 404 error
+# Expected: AI agent evaluates readiness
+# Expected: Decision artifact with rationale
 ```
 
-#### Test 8: Multi-Language Consistency
-**Purpose**: Verify identical behavior across TypeScript, JavaScript, and Python
+### Step 6: Test Multi-Language Parity
 
 ```bash
 # Test JavaScript implementation
 curl -X POST http://localhost:3000/js/pets \
   -H "Content-Type: application/json" \
-  -d '{"name": "JS_Pet", "species": "cat", "ageMonths": 6}'
+  -d '{"name": "JS_Pet", "species": "cat", "ageMonths": 12}'
 
-curl -X POST http://localhost:3000/js/pets/JS_PET_ID/health-review
+curl -X POST http://localhost:3000/js/pets/1/health-review
 
-# Test Python implementation  
+# Test Python implementation
 curl -X POST http://localhost:3000/py/pets \
   -H "Content-Type: application/json" \
-  -d '{"name": "Py_Pet", "species": "dog", "ageMonths": 12}'
+  -d '{"name": "Py_Pet", "species": "bird", "ageMonths": 6}'
 
-curl -X POST http://localhost:3000/py/pets/PY_PET_ID/health-review
+curl -X POST http://localhost:3000/py/pets/1/health-review
 
-# Expected: Identical behavior and responses across all languages
+# Expected: Identical behavior across all three languages
 ```
-
-#### Test 9: Workflow Visualization
-**Purpose**: Observe the complete workflow in Motia Workbench
-
-1. **Open Motia Workbench** in your browser
-2. **Navigate to the Pet Management workflow**
-3. **Observe visual connections**:
-   - Agent steps connected to orchestrator
-   - Orchestrator connected to staff action steps
-   - Event flow arrows showing data movement
-4. **Trigger events** and watch real-time updates
-5. **Check step logs** to see detailed execution traces
-
-#### Expected Workflow Behavior Summary
-
-| Test Scenario | AI Decision | Orchestrator Action | Staff Action Triggered |
-|---------------|-------------|-------------------|----------------------|
-| Healthy Pet Review | No Treatment Needed | Status: healthy → available | Adoption Posting |
-| Sick Pet Review | Treatment Required | Status: healthy → ill → under_treatment | Treatment Scheduler |
-| Adoption Review | Ready for Adoption | Status: available (unchanged) | Adoption Posting |
-| Treatment Completion | Manual Update | Status: under_treatment → recovered | Recovery Monitor |
-| Invalid Transition | N/A | Transition Rejected | No Action |
-
-#### Key Observations
-
-1. **🤖 AI Intelligence**: Agents make contextual decisions based on pet data
-2. **🔄 Orchestrator Control**: Central authority manages all status transitions
-3. **📋 Staff Automation**: Each status change triggers specific staff tasks
-4. **🛡️ Guard Enforcement**: Invalid transitions are properly rejected
-5. **⚡ Automatic Progression**: Pets move through lifecycle stages automatically
-6. **📊 Complete Audit**: Every decision and action is logged and traceable
-7. **🌐 Language Parity**: Identical behavior across TypeScript, JavaScript, and Python
-
-This comprehensive testing demonstrates how the pet management system transforms from a simple CRUD API into an intelligent workflow automation platform that guides staff through every step of pet care.
-
-### Benefits of Visible Workflow
-
-1. **🚀 Transparency**: Staff can see exactly what actions are triggered by status changes
-2. **📋 Actionable**: Each status change results in specific staff tasks
-3. **🔄 Traceable**: Complete audit trail of decisions and actions
-4. **⚡ Efficient**: Automatic scheduling and task assignment
-5. **🎯 Guided**: Clear next steps for staff at each stage
-6. **📊 Monitorable**: Visible workflow progress in Motia Workbench
-
-This transforms the pet management system from a simple status tracker into a **comprehensive workflow automation platform** that guides staff through every step of pet care.
 
 ---
 
-This is a demonstration project for Motia workflow capabilities, showcasing modern backend patterns including CRUD operations, background job processing, event-driven architecture, and visible workflow automation.
+## 🔑 Key Learning Points
+
+This progressive tutorial demonstrates:
+
+### Level 1 - API Endpoints
+✅ RESTful API design with proper HTTP methods  
+✅ Request validation using Zod  
+✅ File-based data persistence  
+✅ Multi-language implementation (TypeScript, JavaScript, Python)  
+
+### Level 2 - Background Jobs
+✅ Queue-based jobs (event-triggered)  
+✅ Cron-based jobs (scheduled)  
+✅ Non-blocking API responses  
+✅ Event-driven job triggering  
+✅ Soft delete pattern with cleanup  
+
+### Level 3 - Workflow Orchestrator
+✅ Centralized state management  
+✅ Guard enforcement for valid transitions  
+✅ Automatic progressions vs staff decisions  
+✅ Status validation and rejection handling  
+✅ Event-driven workflow control  
+
+### Level 4 - AI Agents
+✅ AI Profile Enrichment (content generation)  
+✅ Agentic Decision Making (routing decisions)  
+✅ Structured decision artifacts with rationale  
+✅ Idempotent decision caching  
+✅ OpenAI integration patterns  
+
+### Level 5 - Streaming AI Agents ⭐
+✅ **Real-time Server-Sent Events (SSE)**  
+✅ **Progressive updates during async processing**  
+✅ **Stream initialization and management**  
+✅ **Multi-step workflow streaming**  
+✅ **Non-blocking user experience**  
+✅ **Visible workflow execution**  
+
+---
+
+## 🎯 Tutorial Objectives Achieved
+
+By completing this tutorial, you've learned:
+
+1. **Progressive Complexity**: How to build from simple APIs to advanced streaming AI agents
+2. **Motia Patterns**: API steps, event steps, cron steps, streams, and agent patterns
+3. **Real-World Architecture**: Orchestrators, background jobs, AI integration, streaming
+4. **Multi-Language Development**: Identical functionality across TypeScript, JavaScript, Python
+5. **Production-Ready Features**: Validation, error handling, idempotency, guard enforcement
+6. **Modern UX**: Real-time feedback and progressive updates
+
+---
+
+## 🚀 Next Steps
+
+Now that you've completed the tutorial, you can:
+
+1. **Customize the Workflow**: Add your own status states and transition rules
+2. **Extend AI Agents**: Create new agent endpoints with custom decision logic
+3. **Add More Streams**: Implement streaming in other workflows
+4. **Build Your Own**: Apply these patterns to your own domain and use cases
+5. **Explore Motia Docs**: Learn about advanced features and patterns
+
+---
+
+## 📚 Additional Resources
+
+- [Motia Documentation](https://www.motia.dev/docs)
+- [Motia Examples Repository](https://github.com/MotiaDev/motia-examples)
+- [OpenAI API Documentation](https://platform.openai.com/docs)
+- [Server-Sent Events (SSE) Guide](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
+
+---
+
+## 🤝 Contributing
+
+This is a demonstration project for Motia workflow capabilities. Feel free to use it as a template for your own projects!
+
+---
+
+**Built with ❤️ using Motia - The Modern Workflow Platform**
