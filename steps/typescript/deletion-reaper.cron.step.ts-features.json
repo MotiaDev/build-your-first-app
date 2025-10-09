@@ -1,0 +1,26 @@
+[
+  {
+    "id": "cron-configuration",
+    "title": "Cron Configuration",
+    "description": "Scheduled execution configuration for the deletion reaper running daily at 2:00 AM.",
+    "lines": ["4-11"]
+  },
+  {
+    "id": "handler",
+    "title": "Cron Handler",
+    "description": "Core deletion processing logic that scans for and permanently removes expired soft-deleted pets.",
+    "lines": ["13-100"]
+  },
+  {
+    "id": "purge-logic",
+    "title": "Purge Logic",
+    "description": "Identifies pets ready for permanent deletion and processes them in batches.",
+    "lines": ["19-75"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Comprehensive logging and statistics reporting for deletion operations.",
+    "lines": ["14-16", "22-24", "47-52", "70-75"]
+  }
+]

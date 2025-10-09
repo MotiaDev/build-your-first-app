@@ -1,0 +1,32 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Basic step configuration for the get pet API, including path parameters and method.",
+    "lines": ["11-18"]
+  },
+  {
+    "id": "path-parameter-validation",
+    "title": "Path Parameter Validation",
+    "description": "Zod schema validation for the 'id' path parameter to ensure it's a valid pet ID.",
+    "lines": ["7-9", "23"]
+  },
+  {
+    "id": "pet-retrieval",
+    "title": "Pet Retrieval Logic",
+    "description": "Retrieves a single pet by its ID from the TypeScript store.",
+    "lines": ["25-29"]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns the complete pet object if found, with HTTP 200 status.",
+    "lines": ["31"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Handles cases where the pet is not found (404) or validation errors occur (400).",
+    "lines": ["27-29", "33-48"]
+  }
+]

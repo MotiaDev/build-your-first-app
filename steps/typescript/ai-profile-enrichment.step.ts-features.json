@@ -1,0 +1,38 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event step configuration for AI-powered pet profile enrichment.",
+    "lines": ["4-11"]
+  },
+  {
+    "id": "handler",
+    "title": "AI Profile Handler",
+    "description": "Uses OpenAI to generate comprehensive pet profiles for adoption listings.",
+    "lines": ["13-183"]
+  },
+  {
+    "id": "openai-integration",
+    "title": "OpenAI Integration",
+    "description": "Integrates with OpenAI API to generate intelligent pet profiles.",
+    "lines": ["31-143"]
+  },
+  {
+    "id": "profile-generation",
+    "title": "Profile Generation Logic",
+    "description": "Creates structured profile data including bio, breed guess, temperament, and adopter hints.",
+    "lines": ["60-110"]
+  },
+  {
+    "id": "fallback-handling",
+    "title": "Fallback Profile",
+    "description": "Creates fallback profile when AI generation fails.",
+    "lines": ["163-178"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for AI profile enrichment operations.",
+    "lines": ["17-19", "104-112", "154-157"]
+  }
+]

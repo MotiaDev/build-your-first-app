@@ -1,0 +1,38 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Basic step configuration for the delete pet API, including path parameters and method.",
+    "lines": ["11-18"]
+  },
+  {
+    "id": "path-parameter-validation",
+    "title": "Path Parameter Validation",
+    "description": "Zod schema validation for the 'id' path parameter to ensure it's a valid pet ID.",
+    "lines": ["7-9", "23"]
+  },
+  {
+    "id": "soft-delete",
+    "title": "Soft Delete Logic",
+    "description": "Marks pet as deleted without permanent removal, setting deletedAt timestamp and purgeAt date.",
+    "lines": ["25-28"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for monitoring soft delete operations with pet details and purge date.",
+    "lines": ["30-35"]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns confirmation message with pet ID and scheduled purge date.",
+    "lines": ["37-44"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Handles cases where the pet is not found (404) or validation errors occur (400).",
+    "lines": ["27-28", "46-61"]
+  }
+]

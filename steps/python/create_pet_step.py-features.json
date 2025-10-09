@@ -1,0 +1,38 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Basic step configuration with type, name, path, method, and workflow flows.",
+    "lines": ["10-17"]
+  },
+  {
+    "id": "request-validation",
+    "title": "Request Body Validation",
+    "description": "Manual validation for pet data including name, species, and age.",
+    "lines": ["22-29"]
+  },
+  {
+    "id": "pet-creation",
+    "title": "Pet Object Creation",
+    "description": "Creates pet object with validated data, generates unique ID, and stores in Python store.",
+    "lines": ["31-37"]
+  },
+  {
+    "id": "event-emission",
+    "title": "Workflow Trigger",
+    "description": "Emits 'py.pet.created' and 'py.feeding.reminder.enqueued' events to trigger background jobs.",
+    "lines": ["43-54"]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns pet details including ID, name, species, status, and creation timestamp.",
+    "lines": ["56"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for monitoring and debugging with contextual data.",
+    "lines": ["39-41"]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "API step configuration for AI-powered adoption readiness review.",
+    "lines": ["10-17"]
+  },
+  {
+    "id": "input-validation",
+    "title": "Input Validation",
+    "description": "Validates pet ID and ensures pet exists before proceeding with adoption review.",
+    "lines": ["19-31"]
+  },
+  {
+    "id": "handler",
+    "title": "AI Adoption Review Handler",
+    "description": "Uses OpenAI to assess pet adoption readiness and determine next actions.",
+    "lines": ["52-100"]
+  },
+  {
+    "id": "state",
+    "title": "State Management",
+    "description": "Caches recent AI decisions to prevent duplicate processing.",
+    "lines": ["55-73"]
+  }
+]

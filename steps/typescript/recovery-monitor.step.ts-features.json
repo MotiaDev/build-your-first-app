@@ -1,0 +1,32 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event step configuration for monitoring pet recovery progress.",
+    "lines": ["4-11"]
+  },
+  {
+    "id": "handler",
+    "title": "Event Handler",
+    "description": "Monitors recovery progress and schedules follow-up health checks.",
+    "lines": ["13-81"]
+  },
+  {
+    "id": "recovery-monitoring",
+    "title": "Recovery Monitoring Logic",
+    "description": "Tracks recovery milestones and creates monitoring schedules.",
+    "lines": ["30-51"]
+  },
+  {
+    "id": "follow-up-scheduling",
+    "title": "Follow-up Scheduling",
+    "description": "Schedules follow-up health checks after treatment completion.",
+    "lines": ["53-75"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for recovery monitoring operations.",
+    "lines": ["17-19", "42-48", "68-72", "78-80"]
+  }
+]

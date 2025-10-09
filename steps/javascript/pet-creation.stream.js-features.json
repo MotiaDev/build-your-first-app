@@ -1,0 +1,14 @@
+[
+  {
+    "id": "stream-configuration",
+    "title": "Stream Configuration",
+    "description": "Defines the structure and behavior of the pet creation stream for real-time updates.",
+    "lines": ["1-13"]
+  },
+  {
+    "id": "schema-definition",
+    "title": "Schema Definition",
+    "description": "Zod schema for type-safe stream updates with message and enrichment data.",
+    "lines": ["6-12"]
+  }
+]

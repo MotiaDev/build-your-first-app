@@ -1,0 +1,44 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Basic step configuration with type, name, path, method, and workflow flows.",
+    "lines": ["16-22"]
+  },
+  {
+    "id": "request-validation",
+    "title": "Request Body Schema",
+    "description": "Zod schema validation for pet data including name, species, age, and optional weight and symptoms with proper error handling.",
+    "lines": ["7-14"]
+  },
+  {
+    "id": "pet-creation",
+    "title": "Pet Object Creation",
+    "description": "Creates pet object with validated data, generates unique ID, and stores in TypeScript store.",
+    "lines": ["28-36"]
+  },
+  {
+    "id": "event-emission",
+    "title": "Workflow Trigger",
+    "description": "Emits 'ts.pet.created' and 'ts.feeding.reminder.enqueued' events to trigger background jobs and workflow orchestration.",
+    "lines": ["46-56"]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns stream result with pet creation details including ID, name, species, status, and success message.",
+    "lines": ["58-61"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for monitoring and debugging with emoji prefix and contextual data.",
+    "lines": ["38-40"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Comprehensive error handling for Zod validation errors and unexpected server errors.",
+    "lines": ["63-78"]
+  }
+]

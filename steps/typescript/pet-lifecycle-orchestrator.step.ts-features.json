@@ -1,0 +1,26 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event step configuration for pet lifecycle orchestration with multiple event subscriptions.",
+    "lines": ["113-134"]
+  },
+  {
+    "id": "input-validation",
+    "title": "Input Validation",
+    "description": "Validates incoming event data and ensures pet exists before processing lifecycle transitions.",
+    "lines": ["154-170"]
+  },
+  {
+    "id": "handler",
+    "title": "Orchestrator Handler",
+    "description": "Core orchestration logic for managing pet status transitions and enforcing business rules.",
+    "lines": ["154-545"]
+  },
+  {
+    "id": "state",
+    "title": "State Management",
+    "description": "Manages pet status updates and maintains lifecycle state consistency across the system.",
+    "lines": ["200-250"]
+  }
+]

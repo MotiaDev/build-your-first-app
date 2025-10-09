@@ -1,0 +1,38 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event step configuration for setting feeding reminders and welcome notes.",
+    "lines": ["4-11"]
+  },
+  {
+    "id": "event-subscription",
+    "title": "Event Subscription",
+    "description": "Subscribes to 'js.feeding.reminder.enqueued' to trigger the background job.",
+    "lines": ["8"]
+  },
+  {
+    "id": "handler",
+    "title": "Event Handler",
+    "description": "Processes the enqueued event to calculate and set the next feeding time, add notes, and update pet status.",
+    "lines": ["13-90"]
+  },
+  {
+    "id": "pet-update-logic",
+    "title": "Pet Update Logic",
+    "description": "Updates the pet record with the calculated next feeding time, welcome note, and quarantine status.",
+    "lines": ["22-32"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for tracking the reminder setup process and any errors.",
+    "lines": ["17-19", "34-46", "85-87"]
+  },
+  {
+    "id": "not-found-handling",
+    "title": "Pet Not Found Handling",
+    "description": "Handles cases where the pet specified in the event is not found in the store.",
+    "lines": ["34-39"]
+  }
+]

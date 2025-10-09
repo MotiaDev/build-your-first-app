@@ -1,0 +1,38 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Basic step configuration for the update pet API, including path parameters and method.",
+    "lines": ["21-28"]
+  },
+  {
+    "id": "request-validation",
+    "title": "Request Validation",
+    "description": "Zod schema validation for path parameters (pet ID) and request body for selective updates.",
+    "lines": ["7-19"]
+  },
+  {
+    "id": "pet-update",
+    "title": "Pet Update Logic",
+    "description": "Handles both status updates (via orchestrator) and general pet information updates.",
+    "lines": ["30-84"]
+  },
+  {
+    "id": "event-emission",
+    "title": "Event Emission",
+    "description": "Emits 'ts.pet.status.update.requested' to trigger the lifecycle orchestrator for status changes.",
+    "lines": ["54-63"]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns updated pet details or a status change request confirmation.",
+    "lines": ["66-72", "83"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Comprehensive error handling for validation failures, pet not found, and internal server errors.",
+    "lines": ["86-101"]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "API step configuration for listing all pets.",
+    "lines": ["5-12"]
+  },
+  {
+    "id": "handler",
+    "title": "List Pets Handler",
+    "description": "Retrieves and returns all pets from the TypeScript store.",
+    "lines": ["14-22"]
+  },
+  {
+    "id": "success-response",
+    "title": "Success Response",
+    "description": "Returns array of all pets with HTTP 200 status.",
+    "lines": ["16"]
+  },
+  {
+    "id": "error-handling",
+    "title": "Error Handling",
+    "description": "Handles internal server errors with appropriate status code.",
+    "lines": ["17-21"]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event step configuration for creating adoption listings.",
+    "lines": ["4-11"]
+  },
+  {
+    "id": "handler",
+    "title": "Adoption Posting Handler",
+    "description": "Creates adoption listings and schedules adoption interviews.",
+    "lines": ["13-62"]
+  },
+  {
+    "id": "adoption-listing",
+    "title": "Adoption Listing Creation",
+    "description": "Generates comprehensive adoption listings with pet details and AI-generated profiles.",
+    "lines": ["28-54"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for adoption posting operations.",
+    "lines": ["17-19", "47-54", "59-61"]
+  }
+]

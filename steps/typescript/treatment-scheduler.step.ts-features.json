@@ -1,0 +1,26 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "Event step configuration for treatment scheduling with event subscriptions.",
+    "lines": ["4-11"]
+  },
+  {
+    "id": "handler",
+    "title": "Event Handler",
+    "description": "Processes treatment requirement events and schedules appropriate medical care.",
+    "lines": ["65-110"]
+  },
+  {
+    "id": "treatment-logic",
+    "title": "Treatment Scheduling Logic",
+    "description": "Determines treatment urgency, type, and schedules based on pet symptoms.",
+    "lines": ["76-105"]
+  },
+  {
+    "id": "logging",
+    "title": "Logging",
+    "description": "Structured logging for treatment scheduling operations and errors.",
+    "lines": ["73-74", "96-104", "108-110"]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "step-configuration",
+    "title": "Step Configuration",
+    "description": "API step configuration for health review endpoint with proper path parameters and event emissions.",
+    "lines": ["10-17"]
+  },
+  {
+    "id": "input-validation",
+    "title": "Input Validation",
+    "description": "Validates pet ID parameter and ensures pet exists before proceeding with health review.",
+    "lines": ["19-31"]
+  },
+  {
+    "id": "handler",
+    "title": "AI Agent Handler",
+    "description": "Core AI decision-making logic using OpenAI to analyze pet health and determine treatment needs.",
+    "lines": ["52-100"]
+  },
+  {
+    "id": "state",
+    "title": "State Management",
+    "description": "Caches recent AI decisions to prevent duplicate processing and improve performance.",
+    "lines": ["55-73"]
+  }
+]
