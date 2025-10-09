@@ -474,48 +474,6 @@ curl -X POST http://localhost:3000/ts/pets/1/adoption-review
 
 Traditional APIs return a single response after all processing completes. With **Motia's native Streams API**, your API can return immediately with a stream that updates in real-time as background jobs, AI agents, and orchestrators process asynchronously.
 
-### Streaming Architecture
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                    CLIENT REQUEST                                 │
-│  POST /ts/pets { name: "Buddy", species: "dog", ageMonths: 24 } │
-└───────────────────────────┬──────────────────────────────────────┘
-                            ↓
-┌──────────────────────────────────────────────────────────────────┐
-│           CREATE PET API (Immediate Response)                     │
-│  1. Validate request                                              │
-│  2. Create pet record → status: "new"                            │
-│  3. Initialize stream: streams.petCreation.set(traceId, ...)     │
-│  4. Emit events: pet.created, feeding.reminder.enqueued          │
-│  5. Return stream immediately (201 Created)                       │
-└───────────────────────────┬──────────────────────────────────────┘
-                            ↓
-        ┌───────────────────┴───────────────────┐
-        ↓                                       ↓
-┌─────────────────────────┐       ┌────────────────────────────────┐
-│ FEEDING REMINDER JOB    │       │ AI PROFILE ENRICHMENT          │
-│ (Background Stream      │       │ (Background Stream Updates)    │
-│  Updates)               │       │                                │
-│ 1. Stream: "Pet entered │       │ 1. Stream: "Enrichment started"│
-│    quarantine"          │       │ 2. Call OpenAI API             │
-│ 2. Check symptoms       │       │ 3. Stream: "Progress: bio"     │
-│ 3. Stream: "Health      │       │ 4. Stream: "Progress: breed"   │
-│    check passed/failed" │       │ 5. Stream: "Completed"         │
-│ 4. Update status        │       │ 6. Update pet profile          │
-│ 5. Emit completion      │       │ 7. Emit completion             │
-└───────────┬─────────────┘       └────────────┬───────────────────┘
-            ↓                                  ↓
-┌────────────────────────────────────────────────────────────────┐
-│              ORCHESTRATOR (Stream Status Changes)              │
-│  1. Listen for feeding.reminder.completed                      │
-│  2. Stream: "Status: new → in_quarantine"                     │
-│  3. Apply transition rules                                     │
-│  4. Stream: "Status: in_quarantine → healthy"                 │
-│  5. Stream: "Status: healthy → available"                     │
-└────────────────────────────────────────────────────────────────┘
-```
-
 ### Stream Configuration
 
 The streaming feature is defined in `pet-creation.stream.ts`:
