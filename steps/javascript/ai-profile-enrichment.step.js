@@ -11,11 +11,18 @@ exports.config = {
 };
 
 exports.handler = async (input, context) => {
-  const { logger } = context || {};
+  const { logger, streams, traceId } = context || {};
   const { petId, name, species } = input;
 
   if (logger) {
     logger.info('🤖 AI Profile Enrichment started', { petId, name, species });
+  }
+
+  // Stream enrichment started event
+  if (streams && traceId) {
+    await streams.petCreation.set(traceId, 'enrichment_started', { 
+      message: `AI enrichment started for ${name}`
+    });
   }
 
   // Profile enrichment started (no emit - no subscribers)
@@ -112,6 +119,27 @@ Keep it positive, realistic, and adoption-focused.`;
       });
     }
 
+    // Stream each field as it's processed
+    const enrichmentFields = ['bio', 'breedGuess', 'temperamentTags', 'adopterHints'];
+    for (const field of enrichmentFields) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      const value = profile[field];
+      
+      if (streams && traceId) {
+        await streams.petCreation.set(traceId, `progress_${field}`, { 
+          message: `Generated ${field} for ${name}`
+        });
+      }
+    }
+
+    // Stream enrichment completed event
+    if (streams && traceId) {
+      await streams.petCreation.set(traceId, 'completed', { 
+        message: `AI enrichment completed for ${name}`
+      });
+    }
+
     // Profile enrichment completed successfully (no emit - no subscribers)
 
   } catch (error) {
@@ -132,6 +160,13 @@ Keep it positive, realistic, and adoption-focused.`;
 
     // Still update with fallback profile
     updateProfile(petId, fallbackProfile);
+
+    // Stream fallback profile completion
+    if (streams && traceId) {
+      await streams.petCreation.set(traceId, 'completed', { 
+        message: `AI enrichment completed with fallback profile for ${name}`
+      });
+    }
 
     // Fallback profile created (no emit - no subscribers)
   }
