@@ -1,4 +1,5 @@
 // steps/typescript/pet-lifecycle-orchestrator.step.ts
+import { EventConfig, Handlers } from 'motia';
 import { TSStore, Pet } from './ts-store';
 
 type LifecycleEvent = 
@@ -85,8 +86,7 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
+export const handler: Handlers['TsPetLifecycleOrchestrator'] = async (input, { emit, logger }) => {
   const { petId, event: eventType, requestedStatus, automatic } = input;
 
   if (logger) {
