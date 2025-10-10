@@ -1,4 +1,5 @@
 // steps/typescript/set-next-feeding-reminder.job.step.ts
+import { EventConfig, Handlers } from 'motia';
 import { TSStore } from './ts-store';
 
 export const config = {
@@ -10,8 +11,7 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
+export const handler: Handlers['TsSetNextFeedingReminder'] = async (input, { emit, logger, streams, traceId }) => {
   const { petId, enqueuedAt } = input;
 
   if (logger) {
@@ -22,10 +22,11 @@ export const handler = async (input: any, context?: any) => {
     // Calculate next feeding time (24 hours from now)
     const nextFeedingAt = Date.now() + (24 * 60 * 60 * 1000);
     
-    // Fill in non-critical details
+    // Fill in non-critical details and change status to in_quarantine
     const updates = {
       notes: 'Welcome to our pet store! We\'ll take great care of this pet.',
-      nextFeedingAt: nextFeedingAt
+      nextFeedingAt: nextFeedingAt,
+      status: 'in_quarantine' as const
     };
 
     const updatedPet = TSStore.update(petId, updates);
@@ -45,8 +46,38 @@ export const handler = async (input: any, context?: any) => {
       });
     }
 
+    // Stream status updates using the simple pattern
+    if (streams && traceId) {
+      await (streams as any).petCreation.set(traceId, 'message', { 
+        message: `Pet ${updatedPet.name} entered quarantine period` 
+      } as any);
+
+      // Check symptoms and stream appropriate updates
+      if (!updatedPet.symptoms || updatedPet.symptoms.length === 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await (streams as any).petCreation.set(traceId, 'message', { 
+          message: `Health check passed for ${updatedPet.name} - no symptoms found` 
+        } as any);
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await (streams as any).petCreation.set(traceId, 'message', { 
+          message: `${updatedPet.name} is healthy and ready for adoption! ✅` 
+        } as any);
+      } else {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await (streams as any).petCreation.set(traceId, 'message', { 
+          message: `Health check failed for ${updatedPet.name} - symptoms detected: ${updatedPet.symptoms.join(', ')}` 
+        } as any);
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await (streams as any).petCreation.set(traceId, 'message', { 
+          message: `${updatedPet.name} needs medical treatment ❌` 
+        } as any);
+      }
+    }
+
     if (emit) {
-      await emit({
+      (emit as any)({
         topic: 'ts.feeding.reminder.completed',
         data: { 
           petId, 

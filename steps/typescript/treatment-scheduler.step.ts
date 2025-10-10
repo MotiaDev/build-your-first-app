@@ -1,4 +1,5 @@
 // steps/typescript/treatment-scheduler.step.ts
+import { EventConfig, Handlers } from 'motia';
 import { TSStore } from './ts-store';
 
 export const config = {
@@ -10,9 +11,8 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
-  const { petId, symptoms, urgency } = input;
+export const handler: Handlers['TsTreatmentScheduler'] = async (input, { logger }) => {
+  const { petId, symptoms = [], urgency } = input as { petId: string; symptoms?: string[]; urgency?: string };
 
   if (logger) {
     logger.info('🏥 Treatment Scheduler triggered', { petId, symptoms, urgency });
@@ -54,7 +54,7 @@ export const handler = async (input: any, context?: any) => {
       });
     }
 
-    // Treatment scheduled successfully
+    // Treatment scheduled successfully (no emit - no subscribers)
 
   } catch (error: any) {
     if (logger) {

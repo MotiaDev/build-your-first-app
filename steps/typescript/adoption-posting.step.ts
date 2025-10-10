@@ -1,4 +1,5 @@
 // steps/typescript/adoption-posting.step.ts
+import { EventConfig, Handlers } from 'motia';
 import { TSStore } from './ts-store';
 
 export const config = {
@@ -10,8 +11,7 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
+export const handler: Handlers['TsAdoptionPosting'] = async (input, { logger }) => {
   const { petId, profile } = input;
 
   if (logger) {
@@ -53,7 +53,7 @@ export const handler = async (input: any, context?: any) => {
       });
     }
 
-    // Adoption posted and interview scheduled successfully
+    // Adoption posted and interview scheduled (no emit - no subscribers)
 
   } catch (error: any) {
     if (logger) {

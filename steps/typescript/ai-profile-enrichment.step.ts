@@ -1,4 +1,5 @@
 // steps/typescript/ai-profile-enrichment.step.ts
+import { EventConfig, Handlers } from 'motia';
 import { TSStore, PetProfile } from './ts-store';
 
 export const config = {
@@ -10,15 +11,21 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
+export const handler: Handlers['TsAiProfileEnrichment'] = async (input, { logger, streams, traceId }) => {
   const { petId, name, species } = input;
 
   if (logger) {
     logger.info('🤖 AI Profile Enrichment started', { petId, name, species });
   }
 
-  // Profile enrichment started
+  // Stream enrichment started event
+  if (streams && traceId) {
+    await (streams as any).petCreation.set(traceId, 'enrichment_started', { 
+      message: `AI enrichment started for ${name}`
+    } as any);
+  }
+
+  // Profile enrichment started (no emit - no subscribers)
 
   try {
     // Get OpenAI API key from environment
@@ -40,7 +47,11 @@ Please provide a JSON response with these fields:
 
 Keep it positive, realistic, and adoption-focused.`;
 
-    // Call OpenAI API
+    // Stream progress for each field as we generate them
+    const enrichmentFields = ['bio', 'breedGuess', 'temperamentTags', 'adopterHints'];
+    const enrichedProfile: any = {};
+
+    // Call OpenAI API with streaming to show progress
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -89,7 +100,7 @@ Keep it positive, realistic, and adoption-focused.`;
       };
       
       if (logger) {
-        logger.warn('⚠️ AI response parsing failed, using fallback profile', { petId, parseError: parseError.message });
+        logger.warn('⚠️ AI response parsing failed, using fallback profile', { petId, parseError: parseError instanceof Error ? parseError.message : String(parseError) });
       }
     }
 
@@ -112,8 +123,29 @@ Keep it positive, realistic, and adoption-focused.`;
       });
     }
 
-    // Emit enrichment completed event
-    // Profile enrichment completed successfully
+    // Stream each field as it's processed
+    for (const field of enrichmentFields) {
+      // Simulate processing time for each field
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      const value = profile[field as keyof PetProfile];
+      
+      // Stream progress for this field
+      if (streams && traceId) {
+        await (streams as any).petCreation.set(traceId, `progress_${field}`, { 
+          message: `Generated ${field} for ${name}`
+        } as any);
+      }
+    }
+
+    // Stream enrichment completed event
+    if (streams && traceId) {
+      await (streams as any).petCreation.set(traceId, 'completed', { 
+        message: `AI enrichment completed for ${name}`
+      } as any);
+    }
+
+    // Profile enrichment completed successfully (no emit - no subscribers)
 
   } catch (error: any) {
     if (logger) {
@@ -134,6 +166,13 @@ Keep it positive, realistic, and adoption-focused.`;
     // Still update with fallback profile
     TSStore.updateProfile(petId, fallbackProfile);
 
-    // Profile enrichment completed with fallback profile
+    // Stream fallback profile completion
+    if (streams && traceId) {
+      await (streams as any).petCreation.set(traceId, 'completed', { 
+        message: `AI enrichment completed with fallback profile for ${name}`
+      } as any);
+    }
+
+    // Fallback profile created (no emit - no subscribers)
   }
 };

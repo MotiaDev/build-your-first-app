@@ -1,4 +1,5 @@
 // steps/typescript/pet-lifecycle-orchestrator.step.ts
+import { EventConfig, Handlers } from 'motia';
 import { TSStore, Pet } from './ts-store';
 
 type LifecycleEvent = 
@@ -151,8 +152,7 @@ const checkGuards = (pet: Pet, guards: string[]): { passed: boolean, reason?: st
   return { passed: true };
 };
 
-export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
+export const handler: Handlers['TsPetLifecycleOrchestrator'] = async (input, { emit, logger, streams, traceId }) => {
   const { petId, event: eventType, requestedStatus, automatic } = input;
 
   if (logger) {
@@ -268,12 +268,19 @@ export const handler = async (input: any, context?: any) => {
       });
     }
 
-    if (emit) {
+    // Stream the status change
+    if (streams && traceId) {
+      await (streams as any).petCreation.set(traceId, rule.to, {
+        message: `Status transition: ${oldStatus} → ${rule.to} - ${rule.description}`
+      } as any);
+    }
+
+    if (emit && updatedPet) {
       // Emit next action events based on status change
       await emitNextActionEvents(petId, rule.to, oldStatus, updatedPet, emit, logger);
 
       // Check for automatic progressions after successful transition
-      await processAutomaticProgression(petId, rule.to, emit, logger);
+      await processAutomaticProgression(petId, rule.to, emit, logger, streams, traceId);
     }
 
   } catch (error: any) {
@@ -341,7 +348,9 @@ async function emitNextActionEvents(petId: string, newStatus: Pet["status"], old
         break;
 
       case 'healthy':
-        // Health status updated to healthy
+        if (oldStatus === 'recovered' && logger) {
+          logger.info('💚 Health restored', { petId });
+        }
         break;
     }
   } catch (error: any) {
@@ -351,9 +360,9 @@ async function emitNextActionEvents(petId: string, newStatus: Pet["status"], old
   }
 }
 
-async function processAutomaticProgression(petId: string, currentStatus: Pet["status"], emit: any, logger: any) {
+async function processAutomaticProgression(petId: string, currentStatus: Pet["status"], emit: any, logger: any, streams?: any, traceId?: string) {
   // Define automatic progressions
-  const automaticProgressions: Record<Pet["status"], { to: Pet["status"], description: string }> = {
+  const automaticProgressions: Partial<Record<Pet["status"], { to: Pet["status"], description: string }>> = {
     'healthy': { to: 'available', description: 'Automatic progression - pet ready for adoption' },
     'ill': { to: 'under_treatment', description: 'Automatic progression - treatment started' },
     'recovered': { to: 'healthy', description: 'Automatic progression - recovery complete' }
@@ -390,6 +399,7 @@ async function processAutomaticProgression(petId: string, currentStatus: Pet["st
               guard: guardResult.reason
             });
           }
+          // Guard check failed, transition rejected (no emit - no subscribers)
           return;
         }
       }
@@ -418,9 +428,16 @@ async function processAutomaticProgression(petId: string, currentStatus: Pet["st
           });
         }
 
+        // Stream the automatic progression
+        if (streams && traceId) {
+          await (streams as any).petCreation.set(traceId, rule.to, {
+            message: `Automatic: ${oldStatus} → ${rule.to} - ${progression.description}`
+          } as any);
+        }
+
         if (emit) {
           // Check for further automatic progressions (for chaining like recovered → healthy → available)
-          await processAutomaticProgression(petId, rule.to, emit, logger);
+          await processAutomaticProgression(petId, rule.to, emit, logger, streams, traceId);
         }
       } else if (logger) {
         logger.error('❌ Failed to apply automatic progression', { petId, oldStatus, newStatus: rule.to });
