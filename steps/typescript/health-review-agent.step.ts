@@ -1,4 +1,5 @@
 // steps/typescript/health-review-agent.step.ts
+import { ApiRouteConfig, Handlers } from 'motia';
 import { TSStore } from './ts-store';
 import { 
   HEALTH_REVIEW_EMITS, 
@@ -7,7 +8,7 @@ import {
   getAgentArtifacts
 } from './agent-decision-framework';
 
-export const config = {
+export const config: ApiRouteConfig = {
   type: 'api',
   name: 'TsHealthReviewAgent',
   path: '/ts/pets/:id/health-review',
@@ -16,8 +17,7 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async (req: any, context?: any) => {
-  const { emit, logger } = context || {};
+export const handler: Handlers['TsHealthReviewAgent'] = async (req, { emit, logger }) => {
   const petId = req.pathParams?.id;
 
   if (!petId) {
@@ -135,8 +135,8 @@ export const handler = async (req: any, context?: any) => {
 
     // Fire the chosen emit
     if (emit) {
-      await emit({
-        topic: chosenEmitDef.topic,
+      (emit as any)({
+        topic: chosenEmitDef.topic as 'ts.health.treatment_required' | 'ts.health.no_treatment_needed',
         data: {
           petId,
           event: chosenEmitDef.id.replace('emit.', ''), // Convert "emit.health.treatment_required" to "health.treatment_required"
