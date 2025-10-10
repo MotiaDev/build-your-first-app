@@ -1,4 +1,5 @@
 // steps/typescript/set-next-feeding-reminder.job.step.ts
+import { EventConfig, Handlers } from 'motia';
 import { TSStore } from './ts-store';
 
 export const config = {
@@ -10,8 +11,7 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async (input: any, context?: any) => {
-  const { emit, logger } = context || {};
+export const handler: Handlers['TsSetNextFeedingReminder'] = async (input, { emit, logger }) => {
   const { petId, enqueuedAt } = input;
 
   if (logger) {

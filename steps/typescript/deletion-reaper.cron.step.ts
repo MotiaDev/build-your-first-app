@@ -1,7 +1,8 @@
 // steps/typescript/deletion-reaper.cron.step.ts
+import { CronConfig, Handlers } from 'motia';
 import { TSStore } from './ts-store';
 
-export const config = {
+export const config: CronConfig = {
   type: 'cron',
   name: 'TsDeletionReaper',
   description: 'Daily job that permanently removes pets scheduled for deletion',
@@ -10,7 +11,7 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async ({ emit, logger }: any) => {
+export const handler: Handlers['TsDeletionReaper'] = async ({ emit, logger }) => {
   if (logger) {
     logger.info('🔄 Deletion Reaper started - scanning for pets to purge');
   }
@@ -23,16 +24,7 @@ export const handler = async ({ emit, logger }: any) => {
         logger.info('✅ Deletion Reaper completed - no pets to purge');
       }
       
-      if (emit) {
-        await emit({
-          topic: 'ts.reaper.completed',
-          data: { 
-            scannedAt: Date.now(),
-            purgedCount: 0,
-            message: 'No pets ready for purging'
-          }
-        });
-      }
+      // No emit - no subscribers for ts.reaper.completed
       return;
     }
 
@@ -53,18 +45,7 @@ export const handler = async ({ emit, logger }: any) => {
           });
         }
 
-        if (emit) {
-          await emit({
-            topic: 'ts.pet.purged',
-            data: { 
-              petId: pet.id, 
-              name: pet.name,
-              species: pet.species,
-              deletedAt: pet.deletedAt,
-              purgedAt: Date.now()
-            }
-          });
-        }
+        // No emit - no subscribers for ts.pet.purged
       } else {
         if (logger) {
           logger.warn('⚠️ Failed to purge pet', { petId: pet.id, name: pet.name });
@@ -80,16 +61,7 @@ export const handler = async ({ emit, logger }: any) => {
       });
     }
 
-    if (emit) {
-      await emit({
-        topic: 'ts.reaper.completed',
-        data: { 
-          scannedAt: Date.now(),
-          purgedCount,
-          totalScanned: petsToReap.length
-        }
-      });
-    }
+    // No emit - no subscribers for ts.reaper.completed
 
   } catch (error: any) {
     if (logger) {
