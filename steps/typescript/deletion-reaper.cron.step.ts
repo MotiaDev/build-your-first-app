@@ -1,8 +1,9 @@
 // steps/typescript/deletion-reaper.cron.step.ts
+import { CronConfig, Handlers } from 'motia';
 import { TSStore } from './ts-store';
 
-export const config = {
-  type: 'cron',
+export const config: CronConfig = {
+  type: 'cron' as const,
   name: 'TsDeletionReaper',
   description: 'Daily job that permanently removes pets scheduled for deletion',
   cron: '0 2 * * *', // Daily at 2:00 AM
@@ -10,7 +11,7 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async ({ logger }: any) => {
+export const handler: Handlers['TsDeletionReaper'] = async ({ logger }) => {
   if (logger) {
     logger.info('🔄 Deletion Reaper started - scanning for pets to purge');
   }

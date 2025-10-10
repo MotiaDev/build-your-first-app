@@ -1,4 +1,5 @@
 // steps/typescript/ai-profile-enrichment.step.ts
+import { EventConfig, Handlers } from 'motia';
 import { TSStore, PetProfile } from './ts-store';
 
 export const config = {
@@ -10,8 +11,7 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async (input: any, context?: any) => {
-  const { logger, streams, traceId } = context || {};
+export const handler: Handlers['TsAiProfileEnrichment'] = async (input, { logger, streams, traceId }) => {
   const { petId, name, species } = input;
 
   if (logger) {
@@ -21,8 +21,8 @@ export const handler = async (input: any, context?: any) => {
   // Stream enrichment started event
   if (streams && traceId) {
     await streams.petCreation.set(traceId, 'enrichment_started', { 
-      type: "enrichment.started" 
-    });
+      message: `AI enrichment started for ${name}`
+    } as any);
   }
 
   // Profile enrichment started (no emit - no subscribers)
@@ -100,7 +100,7 @@ Keep it positive, realistic, and adoption-focused.`;
       };
       
       if (logger) {
-        logger.warn('⚠️ AI response parsing failed, using fallback profile', { petId, parseError: parseError.message });
+        logger.warn('⚠️ AI response parsing failed, using fallback profile', { petId, parseError: parseError instanceof Error ? parseError.message : String(parseError) });
       }
     }
 
@@ -114,10 +114,8 @@ Keep it positive, realistic, and adoption-focused.`;
       // Stream progress for this field
       if (streams && traceId) {
         await streams.petCreation.set(traceId, `progress_${field}`, { 
-          type: "enrichment.progress", 
-          field, 
-          value 
-        });
+          message: `Generated ${field} for ${name}`
+        } as any);
       }
     }
 
@@ -143,9 +141,8 @@ Keep it positive, realistic, and adoption-focused.`;
     // Stream enrichment completed event
     if (streams && traceId) {
       await streams.petCreation.set(traceId, 'completed', { 
-        type: "enrichment.completed", 
-        profile 
-      });
+        message: `AI enrichment completed for ${name}`
+      } as any);
     }
 
     // Profile enrichment completed successfully (no emit - no subscribers)
@@ -172,10 +169,8 @@ Keep it positive, realistic, and adoption-focused.`;
     // Stream fallback profile completion
     if (streams && traceId) {
       await streams.petCreation.set(traceId, 'completed', { 
-        type: "enrichment.completed", 
-        profile: fallbackProfile,
-        error: error.message
-      });
+        message: `AI enrichment completed with fallback profile for ${name}`
+      } as any);
     }
 
     // Fallback profile created (no emit - no subscribers)
