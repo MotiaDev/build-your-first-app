@@ -1,41 +1,101 @@
-# Pet Store CRUD API with Background Jobs
+# Pet Management System with AI Agents
 
-A multi-language pet management system built with Motia, demonstrating CRUD operations, background job processing, soft delete patterns, and event-driven architecture across TypeScript, JavaScript, and Python implementations.
+A multi-language pet management system built with Motia, demonstrating CRUD operations, AI-powered decision making, workflow orchestration, and background job processing.
 
-## Features
+## What You'll Learn
 
-- **Multi-language Support**: Complete implementations in TypeScript, JavaScript, and Python
-- **Pet Management**: Full CRUD operations for pet records
-- **Background Job Processing**: Queue-based and cron-based background jobs
-- **Automated Pet Lifecycle**: Orchestrated status transitions from new to available
-- **AI Profile Enrichment**: Automatic pet profile generation using OpenAI
-- **Agentic Decision Making**: AI agents choose routing decisions with structured rationale
-- **Visible Workflow Automation**: Orchestrator triggers specific staff actions for each status change
-- **Treatment Scheduling**: Automatic vet appointment and medication scheduling
-- **Adoption Management**: Automated adoption posting and interview scheduling
-- **Recovery Monitoring**: Treatment progress tracking with follow-up scheduling
-- **Soft Delete Pattern**: 30-day retention with automatic cleanup
-- **Event-Driven Architecture**: Language-isolated event namespaces with visible connections
-- **File-based Storage**: JSON persistence across all implementations
-- **Language Parity**: Identical functionality across all three languages
-- **RESTful APIs**: Standard HTTP methods for all operations
+- **API Steps** - RESTful endpoints in TypeScript, JavaScript, and Python
+- **Event Steps** - Background job processing with queue and cron patterns
+- **AI Agents** - OpenAI-powered health and adoption reviews
+- **Workflow Orchestration** - Automated pet lifecycle management
+- **Staff Automation** - Triggered tasks for treatment, adoption, and recovery
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- Python 3.9+ (optional, for Python examples)
+- OpenAI API key (for AI features)
+
+### Installation
+
+```bash
+# Install dependencies
+npm run install
+pip install -r requirements.txt  # Optional, for Python
+
+# Set up environment
+echo "OPENAI_API_KEY=your_key_here" > .env
+
+# Start Motia
+npm run dev
+```
+
+Open the Workbench at the URL shown in the terminal (usually `http://localhost:3000`).
+
+## Testing the System
+
+### 1. Create a Pet (Triggers AI Profile Enrichment)
+
+```bash
+curl -X POST http://localhost:3000/ts/pets \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Luna", "species": "cat", "ageMonths": 12}'
+```
+
+**What happens:**
+- Pet created with `status: "new"`
+- AI enrichment adds bio, breed guess, temperament tags
+- Feeding reminder scheduled
+- Status automatically moves to `"in_quarantine"`
+
+### 2. AI Health Review
+
+```bash
+# Get the pet ID from step 1, then:
+curl -X POST http://localhost:3000/ts/pets/1/health-review
+```
+
+**What happens:**
+- AI analyzes pet data (symptoms, age, flags)
+- Decides: treatment needed or no treatment
+- If healthy: `in_quarantine` → `healthy` → `available`
+- If sick: triggers treatment workflow
+
+### 3. AI Adoption Review
+
+```bash
+curl -X POST http://localhost:3000/ts/pets/1/adoption-review
+```
+
+**What happens:**
+- AI checks if pet is adoption-ready
+- Evaluates profile completeness, health flags
+- Approves or rejects adoption readiness
+- If approved: triggers adoption posting workflow
+
+### 4. Update Pet Status
+
+```bash
+curl -X PUT http://localhost:3000/ts/pets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "healthy"}'
+```
+
+### 5. Delete Pet (Soft Delete)
+
+```bash
+curl -X DELETE http://localhost:3000/ts/pets/1
+```
+
+**What happens:**
+- Pet marked as `deleted` with 30-day retention
+- Cron job runs daily at 2 AM to purge old deleted pets
 
 ## Architecture
 
-### Workflow Organization
-
-The system uses a single workflow definition in `motia-workbench.json`:
-
-- `"pets"` - Complete pet management operations for all languages
-
-The workflow includes:
-- **CRUD APIs**: Create, Read, Update, Delete operations
-- **Background Jobs**: SetNextFeedingReminder queue jobs and Deletion Reaper cron jobs
-- **Pet Lifecycle Orchestrator**: Automated status transitions through pet lifecycle stages
-- **AI Profile Enrichment**: Automatic pet profile generation using OpenAI
-- **Language Isolation**: Each language operates independently with its own event namespace
-
-### Enhanced Pet Data Model
+### Pet Data Model
 
 Each pet has the following structure:
 
@@ -919,81 +979,6 @@ The pet record will include the AI-generated `profile` field with personalized b
 
 **Enrichment** creates content; **Agentic Routing** makes decisions that drive workflow state changes.
 
-## Getting Started
-
-1. **Install Dependencies**
-   ```bash
-   npm install
-   pip install -r requirements.txt
-   ```
-
-2. **Set Up Environment Variables**
-   
-   Create a `.env` file in the project root:
-   ```bash
-   # .env
-   OPENAI_API_KEY=your_openai_api_key_here
-   ```
-   
-   **Sample `.env.example` file:**
-   ```bash
-   # Environment Variables for Pet Management System
-   
-   # OpenAI API Configuration
-   # Required for AI Profile Enrichment feature
-   # Get your API key from: https://platform.openai.com/api-keys
-   OPENAI_API_KEY=your_openai_api_key_here
-   
-   # Database Configuration (if needed)
-   # DATABASE_URL=your_database_url_here
-   
-   # Other API Keys (add as needed)
-   # SOME_OTHER_API_KEY=your_other_api_key_here
-   ```
-   
-   Or set the environment variable directly:
-   ```bash
-   export OPENAI_API_KEY=your_openai_api_key_here
-   ```
-   
-   **Get your OpenAI API key:**
-   - Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-   - Create an account or sign in
-   - Generate a new API key
-   - Copy the key and add it to your environment
-
-3. **Start Motia Server**
-   ```bash
-   motia dev
-   ```
-
-4. **Open Workbench**
-   - Navigate to Motia Workbench
-   - Select the `pets` workflow
-   - View all CRUD operations and background jobs for all three languages
-
-5. **Test APIs and Background Jobs**
-   - Use the provided curl examples
-   - Monitor console output for background job processing and AI enrichment
-   - Check `.data/pets.json` for data persistence and AI-generated profiles
-   - **Note**: AI profile enrichment requires a valid `OPENAI_API_KEY`. Without it, pets will receive fallback profiles.
-
-## Key Learning Points
-
-This example demonstrates:
-
-1. **Multi-language Implementation**: Same functionality in TypeScript, JavaScript, and Python
-2. **RESTful API Design**: Standard HTTP methods and response codes
-3. **Background Job Patterns**: Both queue-based (event-triggered) and cron-based (scheduled) jobs
-4. **AI Integration**: Seamless AI agents within event-driven workflows
-5. **Soft Delete Pattern**: Graceful deletion with recovery window and automatic cleanup
-6. **Event-Driven Architecture**: Language-isolated event namespaces prevent cross-triggering
-7. **Non-Blocking Processing**: Background jobs and AI enrichment don't slow down API responses
-8. **Data Validation**: Input validation and error handling
-9. **File-based Persistence**: Simple JSON storage across languages
-10. **Workflow Visualization**: Using Motia Workbench for system understanding
-11. **Audit Logging**: Comprehensive event emission for system monitoring
-12. **AI Resilience**: Graceful fallbacks when AI services are unavailable
 
 ## Section 5 — Visible Workflow Extensions (Staff Action Automation)
 
@@ -1397,29 +1382,18 @@ curl -X POST http://localhost:3000/py/pets/PY_PET_ID/health-review
 | Treatment Completion | Manual Update | Status: under_treatment → recovered | Recovery Monitor |
 | Invalid Transition | N/A | Transition Rejected | No Action |
 
-#### Key Observations
+## What You've Learned
 
-1. **🤖 AI Intelligence**: Agents make contextual decisions based on pet data
-2. **🔄 Orchestrator Control**: Central authority manages all status transitions
-3. **📋 Staff Automation**: Each status change triggers specific staff tasks
-4. **🛡️ Guard Enforcement**: Invalid transitions are properly rejected
-5. **⚡ Automatic Progression**: Pets move through lifecycle stages automatically
-6. **📊 Complete Audit**: Every decision and action is logged and traceable
-7. **🌐 Language Parity**: Identical behavior across TypeScript, JavaScript, and Python
+This example demonstrates:
 
-This comprehensive testing demonstrates how the pet management system transforms from a simple CRUD API into an intelligent workflow automation platform that guides staff through every step of pet care.
-
-### Benefits of Visible Workflow
-
-1. **🚀 Transparency**: Staff can see exactly what actions are triggered by status changes
-2. **📋 Actionable**: Each status change results in specific staff tasks
-3. **🔄 Traceable**: Complete audit trail of decisions and actions
-4. **⚡ Efficient**: Automatic scheduling and task assignment
-5. **🎯 Guided**: Clear next steps for staff at each stage
-6. **📊 Monitorable**: Visible workflow progress in Motia Workbench
-
-This transforms the pet management system from a simple status tracker into a **comprehensive workflow automation platform** that guides staff through every step of pet care.
+- **Multi-language implementation** - TypeScript, JavaScript, and Python
+- **AI-powered decision making** - Health and adoption reviews with OpenAI
+- **Workflow orchestration** - Automated pet lifecycle management
+- **Staff automation** - Triggered tasks for treatment, adoption, and recovery
+- **Background jobs** - Queue-based (events) and cron-based (scheduled) processing
+- **Event-driven architecture** - Language-isolated namespaces
+- **Soft delete pattern** - 30-day retention with automatic cleanup
 
 ---
 
-This is a demonstration project for Motia workflow capabilities, showcasing modern backend patterns including CRUD operations, background job processing, event-driven architecture, and visible workflow automation.
+For more information, visit [motia.dev](https://motia.dev)

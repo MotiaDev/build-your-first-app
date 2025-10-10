@@ -19,7 +19,13 @@ exports.handler = async (req, context) => {
   if (!name || !speciesOk || !ageOk) {
     return { status: 400, body: { message: 'Invalid payload: {name, species, ageMonths}' } };
   }
-  const pet = create({ name, species: b.species, ageMonths: Number(b.ageMonths) });
+  const pet = create({ 
+    name, 
+    species: b.species, 
+    ageMonths: Number(b.ageMonths),
+    ...(Array.isArray(b.symptoms) && { symptoms: b.symptoms }),
+    ...(b.weightKg && { weightKg: Number(b.weightKg) })
+  });
   
   if (logger) {
     logger.info('🐾 Pet created', { petId: pet.id, name: pet.name, species: pet.species, status: pet.status });

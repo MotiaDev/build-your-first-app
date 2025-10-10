@@ -26,6 +26,9 @@ async def handler(req, ctx=None):
     name = b.get("name")
     species = b.get("species")
     age = b.get("ageMonths")
+    symptoms = b.get("symptoms")
+    weight_kg = b.get("weightKg")
+    
     if not isinstance(name, str) or not name.strip():
         return {"status": 400, "body": {"message": "Invalid name"}}
     if species not in ["dog","cat","bird","other"]:
@@ -34,7 +37,15 @@ async def handler(req, ctx=None):
         age_val = int(age)
     except Exception:
         return {"status": 400, "body": {"message": "Invalid ageMonths"}}
-    pet = pet_store.create(name, species, age_val)
+    
+    # Create pet with optional fields
+    pet = pet_store.create(
+        name, 
+        species, 
+        age_val,
+        symptoms=symptoms if isinstance(symptoms, list) else None,
+        weightKg=float(weight_kg) if weight_kg is not None else None
+    )
     
     if logger:
         logger.info('🐾 Pet created', {
