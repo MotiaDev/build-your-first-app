@@ -1,4 +1,5 @@
 // steps/typescript/recovery-monitor.step.ts
+import { EventConfig, Handlers } from 'motia';
 import { TSStore } from './ts-store';
 
 export const config = {
@@ -10,8 +11,7 @@ export const config = {
   flows: ['TsPetManagement']
 };
 
-export const handler = async (input: any, context?: any) => {
-  const { logger } = context || {};
+export const handler: Handlers['TsRecoveryMonitor'] = async (input, { logger }) => {
   const { petId, treatmentType, treatmentStatus } = input;
 
   if (logger) {
