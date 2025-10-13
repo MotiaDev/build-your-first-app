@@ -19,6 +19,8 @@ config = {
 async def handler(input_data, ctx=None):
     logger = getattr(ctx, 'logger', None) if ctx else None
     emit = getattr(ctx, 'emit', None) if ctx else None
+    streams = getattr(ctx, 'streams', None) if ctx else None
+    trace_id = getattr(ctx, 'traceId', None) if ctx else None
     
     pet_id = input_data.get('petId')
     name = input_data.get('name')
@@ -27,15 +29,10 @@ async def handler(input_data, ctx=None):
     if logger:
         logger.info('🤖 AI Profile Enrichment started', {'petId': pet_id, 'name': name, 'species': species})
 
-    # Emit enrichment started event
-    if emit:
-        await emit({
-            'topic': 'py.pet.profile_enrichment_started',
-            'data': {
-                'petId': pet_id,
-                'event': 'profile_enrichment_started',
-                'startedAt': int(time.time() * 1000)
-            }
+    # Stream enrichment started event
+    if streams and streams.petCreation and trace_id:
+        await streams.petCreation.set(trace_id, 'enrichment_started', { 
+            'message': f'AI enrichment started for {name}'
         })
 
     try:
@@ -139,16 +136,22 @@ Keep it positive, realistic, and adoption-focused."""
                 }
             })
 
-        # Emit enrichment completed event
-        if emit:
-            await emit({
-                'topic': 'py.pet.profile_enrichment_completed',
-                'data': {
-                    'petId': pet_id,
-                    'event': 'profile_enrichment_completed',
-                    'completedAt': int(time.time() * 1000),
-                    'profile': profile
-                }
+        # Stream each field as it's processed
+        enrichment_fields = ['bio', 'breedGuess', 'temperamentTags', 'adopterHints']
+        for field in enrichment_fields:
+            await asyncio.sleep(0.3)
+            
+            value = profile.get(field)
+            
+            if streams and streams.petCreation and trace_id:
+                await streams.petCreation.set(trace_id, f'progress_{field}', { 
+                    'message': f'Generated {field} for {name}'
+                })
+
+        # Stream enrichment completed event
+        if streams and streams.petCreation and trace_id:
+            await streams.petCreation.set(trace_id, 'completed', { 
+                'message': f'AI enrichment completed for {name}'
             })
 
     except Exception as error:
@@ -176,15 +179,8 @@ Keep it positive, realistic, and adoption-focused."""
         except:
             pass
 
-        # Emit completed event even on error (with fallback profile)
-        if emit:
-            await emit({
-                'topic': 'py.pet.profile_enrichment_completed',
-                'data': {
-                    'petId': pet_id,
-                    'event': 'profile_enrichment_completed',
-                    'completedAt': int(time.time() * 1000),
-                    'profile': fallback_profile,
-                    'error': str(error)
-                }
+        # Stream fallback profile completion
+        if streams and streams.petCreation and trace_id:
+            await streams.petCreation.set(trace_id, 'completed', { 
+                'message': f'AI enrichment completed with fallback profile for {name}'
             })
