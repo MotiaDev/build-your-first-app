@@ -34,7 +34,7 @@ export const steps: TutorialStep[] = [
   {
     elementXpath: workbenchXPath.flows.node('tscreatepet'),
     title: 'Pet Creation API with Streaming',
-    link: 'https://www.motia.dev/docs/concepts/steps/api',
+    link: 'https://www.motia.dev/docs/concepts/src/api',
     description: () => (
       <p>
         Let's start by examining the Pet Creation API Step with <b>real-time streaming</b>! This endpoint creates new pets
@@ -224,7 +224,7 @@ export const steps: TutorialStep[] = [
   {
     elementXpath: workbenchXPath.flows.node('tshealthreviewagent'),
     title: 'AI Health Review Agent',
-    link: 'https://www.motia.dev/docs/concepts/steps/api',
+    link: 'https://www.motia.dev/docs/concepts/src/api',
     description: () => (
       <p>
         Let's explore the AI Health Review Agent! This is where the magic happens - AI agents make intelligent decisions
@@ -403,7 +403,7 @@ export const steps: TutorialStep[] = [
   {
     elementXpath: workbenchXPath.flows.node('tssetnextfeedingreminder'),
     title: 'Feeding Reminder with Stream Updates',
-    link: 'https://www.motia.dev/docs/concepts/steps/event',
+    link: 'https://www.motia.dev/docs/concepts/src/event',
     description: () => (
       <p>
         Now let's explore how background jobs update the stream! The Feeding Reminder job demonstrates
@@ -479,7 +479,7 @@ export const steps: TutorialStep[] = [
   {
     elementXpath: workbenchXPath.flows.node('tspetlifecycleorchestrator'),
     title: 'Pet Lifecycle Orchestrator',
-    link: 'https://www.motia.dev/docs/concepts/steps/event',
+    link: 'https://www.motia.dev/docs/concepts/src/event',
     description: () => (
       <p>
         The Pet Lifecycle Orchestrator is the central brain of our system! It manages all pet status transitions
@@ -503,7 +503,7 @@ export const steps: TutorialStep[] = [
   {
     elementXpath: workbenchXPath.flows.node('tsdeletionreaper'),
     title: 'Deletion Reaper Cron Job',
-    link: 'https://www.motia.dev/docs/concepts/steps/cron',
+    link: 'https://www.motia.dev/docs/concepts/src/cron',
     description: () => (
       <p>
         Let's explore the Deletion Reaper - a scheduled cron job that automatically cleans up soft-deleted pets!
@@ -542,7 +542,7 @@ export const steps: TutorialStep[] = [
   {
     elementXpath: workbenchXPath.sidebarContainer,
     title: 'Cron Schedule',
-    link: 'https://www.motia.dev/docs/concepts/steps/cron',
+    link: 'https://www.motia.dev/docs/concepts/src/cron',
     description: () => (
       <p>
         <b>CRON</b> Steps are similar to the other primitives, they are composed by a configuration and a handler.

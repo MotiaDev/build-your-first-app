@@ -40,6 +40,8 @@ declare module 'motia' {
     'JsAiProfileEnrichment': EventHandler<never, never>
     'JsAdoptionReviewAgent': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'js.adoption.needs_data'; data: never } | { topic: 'js.adoption.ready'; data: never }>
     'JsAdoptionPosting': EventHandler<never, never>
+    'LogGreeting': EventHandler<{ requestId: string; greeting: string; processedBy: string }, never>
+    'HelloAPI': ApiRouteHandler<Record<string, unknown>, ApiResponse<200, { message: string; status: string; appName: string }>, { topic: 'process-greeting'; data: { timestamp: string; appName: string; greetingPrefix: string; requestId: string } }>
     'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.pet.status.update.requested'; data: never }>
     'PyTreatmentScheduler': EventHandler<never, never>
     'PySetNextFeedingReminder': EventHandler<never, { topic: 'py.feeding.reminder.completed'; data: never }>
@@ -54,5 +56,7 @@ declare module 'motia' {
     'PyAiProfileEnrichment': EventHandler<never, never>
     'PyAdoptionReviewAgent': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'py.adoption.needs_data'; data: never } | { topic: 'py.adoption.ready'; data: never }>
     'PyAdoptionPosting': EventHandler<never, never>
+    'ProcessGreeting': EventHandler<{ timestamp: string; appName: string; greetingPrefix: string; requestId: string }, { topic: 'greeting-processed'; data: { requestId: string; greeting: string; processedBy: string } }>
   }
+    
 }
