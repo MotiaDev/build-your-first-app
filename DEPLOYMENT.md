@@ -3,8 +3,6 @@
 Deployment to Motia Cloud requires the project to be **actively running in Motia Workbench**.
 A non-running project **cannot be imported or deployed**.
 
----
-
 ### Deployment Flow (Two Main Steps)
 
 #### Step 1️⃣ Create and Run Project via Terminal / Workbench
@@ -20,11 +18,9 @@ A non-running project **cannot be imported or deployed**.
 4. Confirm the project status in Motia Workbench shows **Running**
 
 > The project must remain in the **Running** state for Motia Cloud to detect it.
->
-> 
 
----<img width="1824" height="862" alt="Screenshot 2025-12-16 223646" src="https://github.com/user-attachments/assets/0580cac7-0969-4b70-afb1-51dd2aa31421" />
 
+<img width="1723" height="689" alt="Screenshot 2025-12-19 105211" src="https://github.com/user-attachments/assets/61556197-7ef9-4613-b453-37bb472d91c1" />
 
 #### Step 2️⃣ Import Running Project into Motia Cloud
 
@@ -41,11 +37,8 @@ Motia Cloud will import the active project and deploy:
 - AI agents
 - Streaming endpoints
 
----
 
-### 🖼️ Reference Screenshots
-
-The following screenshots illustrate this process:
+---<img width="1824" height="862" alt="Screenshot 2025-12-16 223646" src="https://github.com/user-attachments/assets/0580cac7-0969-4b70-afb1-51dd2aa31421" />
 
 - **Terminal / Workbench** showing all states running successfully  
 - **Motia Cloud** showing the project imported using the running port and deployed
