@@ -28,8 +28,6 @@ This method is recommended for users who prefer a visual, workflow-driven deploy
 
 > The project must remain in the **Running** state for Motia Cloud to detect it.
 
-
-
 <img width="1723" height="689" alt="Screenshot 2025-12-19 105211" src="https://github.com/user-attachments/assets/61556197-7ef9-4613-b453-37bb472d91c1" />
 
 #### Step 2️⃣ Import Running Project into Motia Cloud
@@ -48,7 +46,7 @@ Motia Cloud will import the active project and deploy:
 - Streaming endpoints
 
 
----<img width="1824" height="862" alt="Screenshot 2025-12-16 223646" src="https://github.com/user-attachments/assets/0580cac7-0969-4b70-afb1-51dd2aa31421" />
+<img width="1824" height="862" alt="Screenshot 2025-12-16 223646" src="https://github.com/user-attachments/assets/0580cac7-0969-4b70-afb1-51dd2aa31421" />
 
 ### 🖼️ Screenshots
 
@@ -56,3 +54,5 @@ Motia Cloud will import the active project and deploy:
 - **Motia Cloud** showing the project imported using the running port and deployed  
 
 > Screenshots are provided for visual reference only.
+> ![Uploading Screenshot 2025-12-19 105211.png…]()
+
