@@ -5,7 +5,7 @@ A non-running project **cannot be imported or deployed**.
 
 ### - Deployment via Motia Workbench (UI-based)
 
-This project can be deployed directly from the **Motia Workbench** without using the CLI.
+This project can be deployed directly from the **Motia Workbench** without using the CLI
 This method is recommended for users who prefer a visual workflow-driven deployment.
 
 
