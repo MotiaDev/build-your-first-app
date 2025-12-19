@@ -1,9 +1,3 @@
-### ⚠️ Important: Project Must Be in Running State
-
-Deployment to Motia Cloud requires the project to be **actively running in Motia Workbench**.
-A non-running project **cannot be imported or deployed**.
-
----
 
 ### Deployment via Motia Workbench (UI-based)
 
@@ -11,6 +5,14 @@ This project can be deployed directly from the **Motia Workbench** without using
 This method is recommended for users who prefer a visual, workflow-driven deployment.
 
 ---
+
+### ⚠️ Important: Project Must Be in Running State
+
+Deployment to Motia Cloud requires the project to be **actively running in Motia Workbench**.
+A non-running project **cannot be imported or deployed**.
+
+---
+
 
 ### Deployment Flow (Two Main Steps)
 
