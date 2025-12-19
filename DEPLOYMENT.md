@@ -20,8 +20,11 @@ A non-running project **cannot be imported or deployed**.
 4. Confirm the project status in Motia Workbench shows **Running**
 
 > The project must remain in the **Running** state for Motia Cloud to detect it.
+>
+> 
 
----
+---<img width="1824" height="862" alt="Screenshot 2025-12-16 223646" src="https://github.com/user-attachments/assets/0580cac7-0969-4b70-afb1-51dd2aa31421" />
+
 
 #### Step 2️⃣ Import Running Project into Motia Cloud
 
