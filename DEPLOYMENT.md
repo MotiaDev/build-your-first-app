@@ -1,53 +1,50 @@
-## Deployment via Motia Workbench (UI-based)
+### ⚠️ Important: Project Must Be in Running State
 
-This project can be deployed directly from the **Motia Workbench** without using the CLI.
-This method is recommended for users who prefer a visual workflow-driven deployment.
+Deployment to Motia Cloud requires the project to be **actively running in Motia Workbench**.
+A non-running project **cannot be imported or deployed**.
 
 ---
 
-### Create Project in Motia Workbench
+### Deployment Flow (Two Main Steps)
 
-1. Open **Motia Workbench** in your browser
-2. Create a new project
-3. Import or build the Pet Management workflow
-4. Register all steps successfully:
+#### Step 1️⃣ Create and Run Project via Terminal / Workbench
+
+1. Create the Motia project locally using the terminal
+2. Start the project so that all steps are registered
+3. Verify that **all states are running successfully**, including:
    - API steps
    - Background jobs
    - Orchestrator
    - AI agents
    - Streams
-5. Verify the workflow graph renders correctly
-6. Ensure the project is in **Running** state
+4. Confirm the project status in Motia Workbench shows **Running**
 
-At this point, the project should be fully functional inside the Workbench.
-
----
-
-### 2️⃣ Configure Environment Variables
-
-In the Workbench project settings, configure:
-
-
-This is required for AI agents (Profile Enrichment, Health Review, Adoption Review).
+> The project must remain in the **Running** state for Motia Cloud to detect it.
 
 ---
 
-### 3️⃣ Import Project into Motia Cloud
+#### Step 2️⃣ Import Running Project into Motia Cloud
 
 1. Open **Motia Cloud**
 2. Navigate to **Projects**
 3. Select **Import Existing Project**
-4. Choose the **running port name** from Workbench
-5. Confirm import
+4. Choose the **running port name** exposed by Motia Workbench
+5. Click **Deploy**
 
-Motia Cloud will:
-- Package the workflow
-- Deploy APIs, jobs, agents, and streams
-- Expose a public URL
+Motia Cloud will import the active project and deploy:
+- REST APIs
+- Background jobs
+- Workflow orchestrator
+- AI agents
+- Streaming endpoints
 
 ---
 
-### 4️⃣ Verify Deployment
+### 🖼️ Reference Screenshots
 
-Once deployment completes, Motia Cloud provides a **public base URL**:
+The following screenshots illustrate this process:
 
+- **Terminal / Workbench** showing all states running successfully  
+- **Motia Cloud** showing the project imported using the running port and deployed
+
+> Screenshots are provided for visual reference only.
