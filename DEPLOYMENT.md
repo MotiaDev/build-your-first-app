@@ -54,5 +54,5 @@ Motia Cloud will import the active project and deploy:
 - **Motia Cloud** showing the project imported using the running port and deployed  
 
 > Screenshots are provided for visual reference only.
-> ![Uploading Screenshot 2025-12-19 105211.png…]()
+
 
