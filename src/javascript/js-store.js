@@ -1,6 +1,6 @@
 // src/javascript/js-store.js
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
 const DATA_DIR = path.join(process.cwd(), '.data')
 const FILE = path.join(DATA_DIR, 'pets.json')
@@ -24,7 +24,7 @@ function save(db) {
 
 const now = () => Date.now()
 
-function create({ name, species, ageMonths }) {
+export function create({ name, species, ageMonths }) {
   const db = load()
   const id = String(db.seq++)
   const pet = {
@@ -41,17 +41,17 @@ function create({ name, species, ageMonths }) {
   return pet
 }
 
-function list() {
+export function list() {
   const db = load()
   return Object.values(db.pets).sort((a, b) => b.updatedAt - a.updatedAt)
 }
 
-function get(id) {
+export function get(id) {
   const db = load()
   return db.pets[id] || null
 }
 
-function update(id, patch) {
+export function update(id, patch) {
   const db = load()
   const cur = db.pets[id]
   if (!cur) return null
@@ -70,12 +70,10 @@ function update(id, patch) {
   return next
 }
 
-function remove(id) {
+export function remove(id) {
   const db = load()
   if (!db.pets[id]) return false
   delete db.pets[id]
   save(db)
   return true
 }
-
-module.exports = { create, list, get, update, remove }

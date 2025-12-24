@@ -1,7 +1,7 @@
 // src/javascript/delete-pet.step.js
-const { remove } = require('./js-store')
+import { remove } from './js-store.js'
 
-exports.config = {
+export const config = {
   type: 'api',
   name: 'JsDeletePet',
   path: '/js/pets/:id',
@@ -9,7 +9,7 @@ exports.config = {
   emits: [],
   flows: ['JsPetManagement'],
 }
-exports.handler = async (req) => {
+export const handler = async (req) => {
   const ok = remove(req.pathParams.id)
   return ok
     ? { status: 204, body: {} }

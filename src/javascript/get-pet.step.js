@@ -1,7 +1,7 @@
 // src/javascript/get-pet.step.js
-const { get } = require('./js-store')
+import { get } from './js-store.js'
 
-exports.config = {
+export const config = {
   type: 'api',
   name: 'JsGetPet',
   path: '/js/pets/:id',
@@ -9,7 +9,7 @@ exports.config = {
   emits: [],
   flows: ['JsPetManagement'],
 }
-exports.handler = async (req) => {
+export const handler = async (req) => {
   const pet = get(req.pathParams.id)
   return pet
     ? { status: 200, body: pet }
