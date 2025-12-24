@@ -12,9 +12,21 @@ declare module 'motia' {
   }
 
   interface Handlers {
-    'LogGreeting': EventHandler<{ requestId: string; greeting: string; processedBy: string }, never>
-    'HelloAPI': ApiRouteHandler<Record<string, unknown>, ApiResponse<200, { message: string; status: string; appName: string }>, { topic: 'process-greeting'; data: { timestamp: string; appName: string; greetingPrefix: string; requestId: string } }>
-    'ProcessGreeting': EventHandler<{ timestamp: string; appName: string; greetingPrefix: string; requestId: string }, { topic: 'greeting-processed'; data: { requestId: string; greeting: string; processedBy: string } }>
+    'TsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'TsCreatePet': ApiRouteHandler<{ name: string; species: 'dog' | 'cat' | 'bird' | 'other'; ageMonths: unknown }, unknown, never>
+    'JsUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'JsListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'JsGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'JsDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'JsCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyUpdatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyListPets': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyGetPet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
   }
     
 }
