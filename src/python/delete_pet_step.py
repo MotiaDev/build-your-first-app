@@ -1,4 +1,4 @@
-# steps/python/delete_pet.step.py
+# src/python/delete_pet.step.py
 config = { "type":"api", "name":"PyDeletePet", "path":"/py/pets/:id", "method":"DELETE", "emits": [], "flows": ["PyPetManagement"] }
 
 async def handler(req, _ctx=None):

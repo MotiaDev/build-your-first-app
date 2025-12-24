@@ -1,4 +1,4 @@
-# steps/python/get_pet.step.py
+# src/python/get_pet.step.py
 config = { "type":"api", "name":"PyGetPet", "path":"/py/pets/:id", "method":"GET", "emits": [], "flows": ["PyPetManagement"] }
 
 async def handler(req, _ctx=None):

@@ -1,4 +1,4 @@
-# services/types.py
+# src/services/types.py
 from typing import TypedDict, Literal, Optional
 
 Species = Literal['dog','cat','bird','other']
