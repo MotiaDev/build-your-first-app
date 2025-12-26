@@ -6,7 +6,7 @@ async def handler(_req, _ctx=None):
         import sys
         import os
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-        from services import pet_store
+        from src.services.pet_store import list_all
     except ImportError:
         return {"status": 500, "body": {"message": "Import error"}}
-    return {"status": 200, "body": pet_store.list_all()}
+    return {"status": 200, "body": list_all()}

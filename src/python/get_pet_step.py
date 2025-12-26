@@ -6,9 +6,9 @@ async def handler(req, _ctx=None):
         import sys
         import os
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-        from services import pet_store
+        from src.services.pet_store import get
     except ImportError:
         return {"status": 500, "body": {"message": "Import error"}}
     pid = req.get("pathParams", {}).get("id")
-    pet = pet_store.get(pid)
+    pet = get(pid)
     return {"status": 200, "body": pet} if pet else {"status": 404, "body": {"message": "Not found"}}

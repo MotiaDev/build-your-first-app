@@ -16,7 +16,7 @@ async def handler(req, ctx=None):
         import sys
         import os
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-        from services import pet_store
+        from src.services.pet_store import get, update
     except ImportError:
         return {"status": 500, "body": {"message": "Import error"}}
     
@@ -24,7 +24,7 @@ async def handler(req, ctx=None):
     b = req.get("body") or {}
     
     # Check if pet exists
-    current_pet = pet_store.get(pet_id)
+    current_pet = get(pet_id)
     if not current_pet:
         return {"status": 404, "body": {"message": "Not found"}}
 
@@ -78,5 +78,5 @@ async def handler(req, ctx=None):
     if isinstance(b.get("nextFeedingAt"), (int, float)):
         patch["nextFeedingAt"] = int(b["nextFeedingAt"])
 
-    updated = pet_store.update(pet_id, patch)
+    updated = update(pet_id, patch)
     return {"status": 200, "body": updated} if updated else {"status": 404, "body": {"message": "Not found"}}
