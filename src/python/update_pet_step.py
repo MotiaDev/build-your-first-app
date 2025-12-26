@@ -6,7 +6,7 @@ async def handler(req, _ctx=None):
         import sys
         import os
         sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
-        from src.services.pet_store import pet_store
+        from src.services.pet_store import update
     except ImportError:
         return {"status": 500, "body": {"message": "Import error"}}
     pid = req.get("pathParams", {}).get("id")
@@ -18,5 +18,5 @@ async def handler(req, _ctx=None):
         try: patch["ageMonths"] = int(b["ageMonths"])
         except Exception: pass
     if b.get("status") in ["new","available","pending","adopted"]: patch["status"] = b["status"]
-    updated = pet_store.update(pid, patch)
+    updated = update(pid, patch)
     return {"status": 200, "body": updated} if updated else {"status": 404, "body": {"message":"Not found"}}
