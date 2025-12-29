@@ -5,7 +5,7 @@ import time
 
 # Add parent directory to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from services import pet_store
+from src.services.pet_store import get
 
 config = {
     "type": "event",
@@ -57,7 +57,7 @@ async def handler(input_data, ctx=None):
         logger.info('🏠 Adoption Posting triggered', {'petId': pet_id})
 
     try:
-        pet = pet_store.get(pet_id)
+        pet = get(pet_id)
         if not pet:
             if logger:
                 logger.error('❌ Pet not found for adoption posting', {'petId': pet_id})

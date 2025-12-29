@@ -5,7 +5,7 @@ import time
 
 # Add parent directory to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from services import pet_store
+from src.services.pet_store import get
 
 config = {
     "type": "api",
@@ -231,7 +231,7 @@ async def handler(req, ctx=None):
         return {"status": 400, "body": {"message": "Pet ID is required"}}
 
     # Get pet
-    pet = pet_store.get(pet_id)
+    pet = get(pet_id)
     if not pet:
         return {"status": 404, "body": {"message": "Pet not found"}}
 
