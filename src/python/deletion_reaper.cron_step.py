@@ -17,7 +17,7 @@ async def handler(ctx):
         import os
         import time
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-        from services import pet_store
+        from src.services.pet_store import find_deleted_pets_ready_to_purge, remove
     except ImportError:
         if logger:
             logger.error('❌ Deletion Reaper failed - import error')
@@ -27,7 +27,7 @@ async def handler(ctx):
         logger.info('🔄 Deletion Reaper started - scanning for pets to purge')
 
     try:
-        pets_to_reap = pet_store.find_deleted_pets_ready_to_purge()
+        pets_to_reap = find_deleted_pets_ready_to_purge()
         
         if not pets_to_reap:
             if logger:
@@ -39,7 +39,7 @@ async def handler(ctx):
         purged_count = 0
         
         for pet in pets_to_reap:
-            success = pet_store.remove(pet['id'])
+            success = remove(pet['id'])
             
             if success:
                 purged_count += 1

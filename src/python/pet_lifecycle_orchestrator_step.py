@@ -1,10 +1,10 @@
 # src/python/pet_lifecycle_orchestrator.step.py
 import sys
 import os
+import time
 
 # Add parent directory to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from services import pet_store
 
 # Guard checking functions
 def check_guards(pet, guards):
@@ -140,7 +140,7 @@ async def handler(input_data, ctx=None):
         import os
         import time
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-        from services import pet_store
+        from src.services.pet_store import get, update_status, add_flag, remove_flag
     except ImportError:
         if logger:
             logger.error('❌ Lifecycle orchestrator failed - import error')
@@ -156,7 +156,7 @@ async def handler(input_data, ctx=None):
         logger.info(log_message, {'petId': pet_id, 'eventType': event_type, 'requestedStatus': requested_status, 'automatic': automatic})
 
     try:
-        pet = pet_store.get(pet_id)
+        pet = get(pet_id)
         if not pet:
             if logger:
                 logger.error('❌ Pet not found for lifecycle transition', {'petId': pet_id, 'eventType': event_type})
@@ -220,7 +220,7 @@ async def handler(input_data, ctx=None):
 
         # Apply the transition
         old_status = pet['status']
-        updated_pet = pet_store.update_status(pet_id, rule['to'])
+        updated_pet = update_status(pet_id, rule['to'])
         
         if not updated_pet:
             if logger:
@@ -231,11 +231,11 @@ async def handler(input_data, ctx=None):
         if rule.get('flagAction'):
             flag_action = rule['flagAction']
             if flag_action['action'] == 'add':
-                updated_pet = pet_store.add_flag(pet_id, flag_action['flag'])
+                updated_pet = add_flag(pet_id, flag_action['flag'])
                 if logger:
                     logger.info('🏷️ Flag added by orchestrator', {'petId': pet_id, 'flag': flag_action['flag']})
             elif flag_action['action'] == 'remove':
-                updated_pet = pet_store.remove_flag(pet_id, flag_action['flag'])
+                updated_pet = remove_flag(pet_id, flag_action['flag'])
                 if logger:
                     logger.info('🏷️ Flag removed by orchestrator', {'petId': pet_id, 'flag': flag_action['flag']})
 
@@ -338,8 +338,8 @@ async def check_automatic_progressions(pet_id, current_status, emit, logger):
                 import sys
                 import os
                 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-                from services import pet_store
-                fresh_pet = pet_store.get(pet_id)
+                from src.services.pet_store import get
+                fresh_pet = get(pet_id)
                 if fresh_pet and fresh_pet['status'] == current_status:
                     await emit({
                         'topic': 'py.pet.status.update.requested',

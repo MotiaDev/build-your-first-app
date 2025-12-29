@@ -18,7 +18,7 @@ async def handler(input_data, ctx=None):
         import os
         import time
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-        from services import pet_store
+        from src.services.pet_store import update
     except ImportError:
         if logger:
             logger.error('❌ Failed to set feeding reminder - import error')
@@ -40,7 +40,7 @@ async def handler(input_data, ctx=None):
             'nextFeedingAt': next_feeding_at
         }
 
-        updated_pet = pet_store.update(pet_id, updates)
+        updated_pet = update(pet_id, updates)
         
         if not updated_pet:
             if logger:

@@ -1,11 +1,5 @@
 # src/python/ai_profile_enrichment.step.py
 import json
-import os
-import asyncio
-import urllib.request
-import urllib.parse
-import urllib.error
-import time
 
 config = {
     "type": "event",
@@ -34,7 +28,9 @@ async def handler(input_data, ctx=None):
         import sys
         import os
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-        from services import pet_store
+        from src.services.pet_store import update_profile
+        import urllib.request
+        import urllib.error
 
         # Get OpenAI API key from environment
         api_key = os.getenv('OPENAI_API_KEY')
@@ -114,7 +110,7 @@ Keep it positive, realistic, and adoption-focused."""
                 logger.warn('⚠️ AI response parsing failed, using fallback profile', {'petId': pet_id, 'parseError': str(parse_error)})
 
         # Update pet with AI-generated profile
-        updated_pet = pet_store.update_profile(pet_id, profile)
+        updated_pet = update_profile(pet_id, profile)
         
         if not updated_pet:
             raise Exception(f'Pet not found: {pet_id}')
@@ -153,8 +149,8 @@ Keep it positive, realistic, and adoption-focused."""
             import sys
             import os
             sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-            from services import pet_store
-            pet_store.update_profile(pet_id, fallback_profile)
+            from src.services.pet_store import update_profile
+            update_profile(pet_id, fallback_profile)
         except:
             pass
 
