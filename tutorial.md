@@ -15,7 +15,7 @@ The Pet Management System includes:
 
 1. Start the Motia server:
 ```bash
-npm start
+npm run dev
 ```
 
 2. Verify server is running (should see "Server running on port 3000")
