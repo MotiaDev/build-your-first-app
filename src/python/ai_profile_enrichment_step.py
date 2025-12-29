@@ -1,8 +1,6 @@
 # src/python/ai_profile_enrichment.step.py
 import json
 import asyncio
-import urllib.request
-import urllib.error
 
 config = {
     "type": "event",
@@ -38,6 +36,8 @@ async def handler(input_data, ctx=None):
         import os
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
         from src.services.pet_store import update_profile
+        import urllib.request
+        import urllib.error
 
         # Get OpenAI API key from environment
         api_key = os.getenv('OPENAI_API_KEY')
