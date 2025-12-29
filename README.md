@@ -275,10 +275,10 @@ src/
 │   ├── delete_pet.step.py           # DELETE /py/pets/:id (soft delete)
 │   ├── postcreate_lite_job.step.py  # Background job (queue-based)
 │   ├── deletion_reaper.cron.step.py # Background job (cron-based)
-├── services/
-│   ├── pet_store.py                 # Data persistence layer
-│   └── types.py                     # Type definitions
-└── motia-workbench.json             # Workflow configuration
+└── services/
+    ├── pet_store.py                 # Data persistence layer
+    └── types.py                     # Type definitions
+motia-workbench.json                 # Workflow configuration
 ```
 
 ## Data Storage
