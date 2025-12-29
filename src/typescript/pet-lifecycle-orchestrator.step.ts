@@ -1,4 +1,4 @@
-// steps/typescript/pet-lifecycle-orchestrator.step.ts
+// src/typescript/pet-lifecycle-orchestrator.step.ts
 import { EventConfig, Handlers } from 'motia';
 import { TSStore, Pet } from './ts-store';
 

@@ -1,4 +1,4 @@
-# steps/python/treatment_scheduler.step.py
+# src/python/treatment_scheduler.step.py
 import sys
 import os
 import time

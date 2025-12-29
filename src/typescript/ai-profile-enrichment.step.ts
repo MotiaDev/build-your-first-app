@@ -1,6 +1,6 @@
-// steps/typescript/ai-profile-enrichment.step.ts
-import { EventConfig, Handlers } from 'motia';
-import { TSStore, PetProfile } from './ts-store';
+// src/typescript/ai-profile-enrichment.step.ts
+import { EventConfig, Handlers } from 'motia'
+import { TSStore, PetProfile } from './ts-store'
 
 export const config = {
   type: 'event',
@@ -8,30 +8,33 @@ export const config = {
   description: 'AI agent that enriches pet profiles using OpenAI',
   subscribes: ['ts.pet.created'],
   emits: [],
-  flows: ['TsPetManagement']
-};
+  flows: ['TsPetManagement'],
+}
 
-export const handler: Handlers['TsAiProfileEnrichment'] = async (input, { logger, streams, traceId }) => {
-  const { petId, name, species } = input;
+export const handler: Handlers['TsAiProfileEnrichment'] = async (
+  input,
+  { logger, streams, traceId }
+) => {
+  const { petId, name, species } = input
 
   if (logger) {
-    logger.info('🤖 AI Profile Enrichment started', { petId, name, species });
+    logger.info('🤖 AI Profile Enrichment started', { petId, name, species })
   }
 
   // Stream enrichment started event
   if (streams && traceId) {
-    await (streams as any).petCreation.set(traceId, 'enrichment_started', { 
-      message: `AI enrichment started for ${name}`
-    } as any);
+    await (streams as any).petCreation.set(traceId, 'enrichment_started', {
+      message: `AI enrichment started for ${name}`,
+    } as any)
   }
 
   // Profile enrichment started (no emit - no subscribers)
 
   try {
     // Get OpenAI API key from environment
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY
     if (!apiKey) {
-      throw new Error('OPENAI_API_KEY environment variable is not set');
+      throw new Error('OPENAI_API_KEY environment variable is not set')
     }
 
     // Create AI prompt for pet profile generation
@@ -45,17 +48,22 @@ Please provide a JSON response with these fields:
 - temperamentTags: An array of 3-5 personality traits (e.g., "friendly", "energetic", "calm")
 - adopterHints: Practical advice for potential adopters (family type, living situation, care needs)
 
-Keep it positive, realistic, and adoption-focused.`;
+Keep it positive, realistic, and adoption-focused.`
 
     // Stream progress for each field as we generate them
-    const enrichmentFields = ['bio', 'breedGuess', 'temperamentTags', 'adopterHints'];
-    const enrichedProfile: any = {};
+    const enrichmentFields = [
+      'bio',
+      'breedGuess',
+      'temperamentTags',
+      'adopterHints',
+    ]
+    const enrichedProfile: any = {}
 
     // Call OpenAI API with streaming to show progress
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -63,116 +71,134 @@ Keep it positive, realistic, and adoption-focused.`;
         messages: [
           {
             role: 'system',
-            content: 'You are a pet adoption specialist who creates compelling, accurate pet profiles. Always respond with valid JSON only.'
+            content:
+              'You are a pet adoption specialist who creates compelling, accurate pet profiles. Always respond with valid JSON only.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         max_tokens: 500,
         temperature: 0.7,
       }),
-    });
+    })
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `OpenAI API error: ${response.status} ${response.statusText}`
+      )
     }
 
-    const data = await response.json();
-    const aiResponse = data.choices[0]?.message?.content;
+    const data = await response.json()
+    const aiResponse = data.choices[0]?.message?.content
 
     if (!aiResponse) {
-      throw new Error('No response from OpenAI API');
+      throw new Error('No response from OpenAI API')
     }
 
     // Parse AI response
-    let profile: PetProfile;
+    let profile: PetProfile
     try {
-      profile = JSON.parse(aiResponse);
+      profile = JSON.parse(aiResponse)
     } catch (parseError) {
       // Fallback profile if AI response is not valid JSON
       profile = {
         bio: `${name} is a wonderful ${species} looking for a loving home. This pet has a unique personality and would make a great companion.`,
-        breedGuess: species === 'dog' ? 'Mixed Breed' : species === 'cat' ? 'Domestic Shorthair' : 'Mixed Breed',
+        breedGuess:
+          species === 'dog'
+            ? 'Mixed Breed'
+            : species === 'cat'
+            ? 'Domestic Shorthair'
+            : 'Mixed Breed',
         temperamentTags: ['friendly', 'loving', 'loyal'],
-        adopterHints: `${name} would do well in a caring home with patience and love.`
-      };
-      
+        adopterHints: `${name} would do well in a caring home with patience and love.`,
+      }
+
       if (logger) {
-        logger.warn('⚠️ AI response parsing failed, using fallback profile', { petId, parseError: parseError instanceof Error ? parseError.message : String(parseError) });
+        logger.warn('⚠️ AI response parsing failed, using fallback profile', {
+          petId,
+          parseError:
+            parseError instanceof Error
+              ? parseError.message
+              : String(parseError),
+        })
       }
     }
 
     // Update pet with AI-generated profile
-    const updatedPet = TSStore.updateProfile(petId, profile);
-    
+    const updatedPet = TSStore.updateProfile(petId, profile)
+
     if (!updatedPet) {
-      throw new Error(`Pet not found: ${petId}`);
+      throw new Error(`Pet not found: ${petId}`)
     }
 
     if (logger) {
-      logger.info('✅ AI Profile Enrichment completed', { 
-        petId, 
+      logger.info('✅ AI Profile Enrichment completed', {
+        petId,
         profile: {
           bio: profile.bio.substring(0, 50) + '...',
           breedGuess: profile.breedGuess,
           temperamentTags: profile.temperamentTags,
-          adopterHints: profile.adopterHints.substring(0, 50) + '...'
-        }
-      });
+          adopterHints: profile.adopterHints.substring(0, 50) + '...',
+        },
+      })
     }
 
     // Stream each field as it's processed
     for (const field of enrichmentFields) {
       // Simulate processing time for each field
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      const value = profile[field as keyof PetProfile];
-      
+      await new Promise((resolve) => setTimeout(resolve, 300))
+
+      const value = profile[field as keyof PetProfile]
+
       // Stream progress for this field
       if (streams && traceId) {
-        await (streams as any).petCreation.set(traceId, `progress_${field}`, { 
-          message: `Generated ${field} for ${name}`
-        } as any);
+        await (streams as any).petCreation.set(traceId, `progress_${field}`, {
+          message: `Generated ${field} for ${name}`,
+        } as any)
       }
     }
 
     // Stream enrichment completed event
     if (streams && traceId) {
-      await (streams as any).petCreation.set(traceId, 'completed', { 
-        message: `AI enrichment completed for ${name}`
-      } as any);
+      await (streams as any).petCreation.set(traceId, 'completed', {
+        message: `AI enrichment completed for ${name}`,
+      } as any)
     }
 
     // Profile enrichment completed successfully (no emit - no subscribers)
-
   } catch (error: any) {
     if (logger) {
-      logger.error('❌ AI Profile Enrichment failed', { 
-        petId, 
-        error: error.message 
-      });
+      logger.error('❌ AI Profile Enrichment failed', {
+        petId,
+        error: error.message,
+      })
     }
 
     // Create fallback profile on error
     const fallbackProfile: PetProfile = {
       bio: `${name} is a lovely ${species} with a unique personality, ready to find their forever home.`,
-      breedGuess: species === 'dog' ? 'Mixed Breed' : species === 'cat' ? 'Domestic Shorthair' : 'Mixed Breed',
+      breedGuess:
+        species === 'dog'
+          ? 'Mixed Breed'
+          : species === 'cat'
+          ? 'Domestic Shorthair'
+          : 'Mixed Breed',
       temperamentTags: ['friendly', 'adaptable'],
-      adopterHints: `${name} is looking for a patient and loving family.`
-    };
+      adopterHints: `${name} is looking for a patient and loving family.`,
+    }
 
     // Still update with fallback profile
-    TSStore.updateProfile(petId, fallbackProfile);
+    TSStore.updateProfile(petId, fallbackProfile)
 
     // Stream fallback profile completion
     if (streams && traceId) {
-      await (streams as any).petCreation.set(traceId, 'completed', { 
-        message: `AI enrichment completed with fallback profile for ${name}`
-      } as any);
+      await (streams as any).petCreation.set(traceId, 'completed', {
+        message: `AI enrichment completed with fallback profile for ${name}`,
+      } as any)
     }
 
     // Fallback profile created (no emit - no subscribers)
   }
-};
+}

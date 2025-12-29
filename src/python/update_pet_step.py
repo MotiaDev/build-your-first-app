@@ -1,4 +1,4 @@
-# steps/python/update_pet.step.py
+# src/python/update_pet.step.py
 config = { 
     "type": "api", 
     "name": "PyUpdatePet", 

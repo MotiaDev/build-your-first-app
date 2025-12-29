@@ -1,4 +1,4 @@
-# steps/python/recovery_monitor.step.py
+# src/python/recovery_monitor.step.py
 import sys
 import os
 import time

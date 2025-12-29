@@ -1,4 +1,4 @@
-# steps/python/set_next_feeding_reminder.job.step.py
+# src/python/set_next_feeding_reminder.job.step.py
 
 config = {
     "type": "event",

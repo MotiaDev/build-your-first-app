@@ -1,4 +1,4 @@
-# steps/python/pet_lifecycle_orchestrator.step.py
+# src/python/pet_lifecycle_orchestrator.step.py
 import sys
 import os
 

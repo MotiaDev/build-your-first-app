@@ -1,4 +1,4 @@
-# steps/python/adoption_review_agent.step.py
+# src/python/adoption_review_agent.step.py
 import sys
 import os
 import time

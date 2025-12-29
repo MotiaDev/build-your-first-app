@@ -1,4 +1,4 @@
-# steps/python/adoption_posting.step.py
+# src/python/adoption_posting.step.py
 import sys
 import os
 import time

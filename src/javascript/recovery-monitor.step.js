@@ -1,30 +1,35 @@
-// steps/javascript/recovery-monitor.step.js
-import { get, updateStatus } from './js-store.js';
+// src/javascript/recovery-monitor.step.js
+import { get, updateStatus } from './js-store.js'
 
 export const config = {
   type: 'event',
   name: 'JsRecoveryMonitor',
-  description: 'Monitors pet recovery progress and schedules follow-up health checks',
+  description:
+    'Monitors pet recovery progress and schedules follow-up health checks',
   subscribes: ['js.treatment.started', 'js.treatment.completed'],
   emits: [],
-  flows: ['JsPetManagement']
-};
+  flows: ['JsPetManagement'],
+}
 
 export const handler = async (input, context) => {
-  const { emit, logger } = context || {};
-  const { petId, treatmentType, treatmentStatus } = input;
+  const { emit, logger } = context || {}
+  const { petId, treatmentType, treatmentStatus } = input
 
   if (logger) {
-    logger.info('🩺 Recovery Monitor triggered', { petId, treatmentType, treatmentStatus });
+    logger.info('🩺 Recovery Monitor triggered', {
+      petId,
+      treatmentType,
+      treatmentStatus,
+    })
   }
 
   try {
-    const pet = get(petId);
+    const pet = get(petId)
     if (!pet) {
       if (logger) {
-        logger.error('❌ Pet not found for recovery monitoring', { petId });
+        logger.error('❌ Pet not found for recovery monitoring', { petId })
       }
-      return;
+      return
     }
 
     if (treatmentStatus === 'started') {
@@ -36,59 +41,66 @@ export const handler = async (input, context) => {
         expectedRecoveryTime: getExpectedRecoveryTime(treatmentType),
         monitoringSchedule: generateMonitoringSchedule(treatmentType),
         milestones: generateRecoveryMilestones(treatmentType),
-        currentPhase: 'initial_treatment'
-      };
+        currentPhase: 'initial_treatment',
+      }
 
       if (logger) {
         logger.info('📋 Recovery plan created', {
           petId,
           treatmentType,
           expectedRecoveryTime: recoveryPlan.expectedRecoveryTime,
-          milestones: recoveryPlan.milestones.length
-        });
+          milestones: recoveryPlan.milestones.length,
+        })
       }
 
       // Recovery plan created successfully
-
     } else if (treatmentStatus === 'completed') {
       // Treatment completed - schedule follow-up
       const followUpSchedule = {
         petId,
         treatmentCompletedAt: Date.now(),
         followUpChecks: [
-          { type: 'immediate', scheduledAt: Date.now() + (2 * 60 * 60 * 1000) }, // 2 hours
-          { type: 'daily', scheduledAt: Date.now() + (24 * 60 * 60 * 1000) }, // 1 day
-          { type: 'weekly', scheduledAt: Date.now() + (7 * 24 * 60 * 60 * 1000) } // 1 week
+          { type: 'immediate', scheduledAt: Date.now() + 2 * 60 * 60 * 1000 }, // 2 hours
+          { type: 'daily', scheduledAt: Date.now() + 24 * 60 * 60 * 1000 }, // 1 day
+          { type: 'weekly', scheduledAt: Date.now() + 7 * 24 * 60 * 60 * 1000 }, // 1 week
         ],
         recoveryIndicators: getRecoveryIndicators(treatmentType),
-        readyForDischarge: false
-      };
+        readyForDischarge: false,
+      }
 
       if (logger) {
         logger.info('✅ Treatment completed, scheduling follow-up', {
           petId,
-          followUpChecks: followUpSchedule.followUpChecks.length
-        });
+          followUpChecks: followUpSchedule.followUpChecks.length,
+        })
       }
 
       // Follow-up health checks scheduled successfully
     }
-
   } catch (error) {
     if (logger) {
-      logger.error('❌ Recovery monitoring failed', { petId, error: error.message });
+      logger.error('❌ Recovery monitoring failed', {
+        petId,
+        error: error.message,
+      })
     }
   }
-};
+}
 
 function getExpectedRecoveryTime(treatmentType) {
   switch (treatmentType.toLowerCase()) {
-    case 'emergency surgery': return '2-4 weeks';
-    case 'respiratory treatment': return '1-2 weeks';
-    case 'pain management': return '3-7 days';
-    case 'antibiotic treatment': return '7-14 days';
-    case 'fever management': return '3-5 days';
-    default: return '1-2 weeks';
+    case 'emergency surgery':
+      return '2-4 weeks'
+    case 'respiratory treatment':
+      return '1-2 weeks'
+    case 'pain management':
+      return '3-7 days'
+    case 'antibiotic treatment':
+      return '7-14 days'
+    case 'fever management':
+      return '3-5 days'
+    default:
+      return '1-2 weeks'
   }
 }
 
@@ -97,24 +109,24 @@ function generateMonitoringSchedule(treatmentType) {
     { time: 'every 2 hours', check: 'vital signs', priority: 'high' },
     { time: 'every 6 hours', check: 'medication compliance', priority: 'high' },
     { time: 'daily', check: 'wound healing', priority: 'medium' },
-    { time: 'daily', check: 'appetite and hydration', priority: 'medium' }
-  ];
+    { time: 'daily', check: 'appetite and hydration', priority: 'medium' },
+  ]
 
   if (treatmentType.toLowerCase().includes('surgery')) {
     baseSchedule.push(
       { time: 'every 4 hours', check: 'incision site', priority: 'high' },
       { time: 'daily', check: 'mobility assessment', priority: 'medium' }
-    );
+    )
   }
 
   if (treatmentType.toLowerCase().includes('respiratory')) {
     baseSchedule.push(
       { time: 'every 3 hours', check: 'breathing pattern', priority: 'high' },
       { time: 'daily', check: 'oxygen levels', priority: 'high' }
-    );
+    )
   }
 
-  return baseSchedule;
+  return baseSchedule
 }
 
 function generateRecoveryMilestones(treatmentType) {
@@ -122,17 +134,17 @@ function generateRecoveryMilestones(treatmentType) {
     { day: 1, milestone: 'Initial treatment response', status: 'pending' },
     { day: 3, milestone: 'Pain management effectiveness', status: 'pending' },
     { day: 7, milestone: 'Primary healing indicators', status: 'pending' },
-    { day: 14, milestone: 'Full recovery assessment', status: 'pending' }
-  ];
+    { day: 14, milestone: 'Full recovery assessment', status: 'pending' },
+  ]
 
   if (treatmentType.toLowerCase().includes('surgery')) {
     milestones.push(
       { day: 2, milestone: 'Incision healing check', status: 'pending' },
       { day: 10, milestone: 'Stitch removal readiness', status: 'pending' }
-    );
+    )
   }
 
-  return milestones;
+  return milestones
 }
 
 function getRecoveryIndicators(treatmentType) {
@@ -140,16 +152,24 @@ function getRecoveryIndicators(treatmentType) {
     'Normal appetite',
     'Active behavior',
     'No signs of pain',
-    'Normal vital signs'
-  ];
+    'Normal vital signs',
+  ]
 
   if (treatmentType.toLowerCase().includes('surgery')) {
-    baseIndicators.push('Incision healing well', 'No signs of infection', 'Good mobility');
+    baseIndicators.push(
+      'Incision healing well',
+      'No signs of infection',
+      'Good mobility'
+    )
   }
 
   if (treatmentType.toLowerCase().includes('respiratory')) {
-    baseIndicators.push('Normal breathing pattern', 'Good oxygen saturation', 'No coughing');
+    baseIndicators.push(
+      'Normal breathing pattern',
+      'Good oxygen saturation',
+      'No coughing'
+    )
   }
 
-  return baseIndicators;
+  return baseIndicators
 }

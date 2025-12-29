@@ -1,98 +1,118 @@
-// steps/javascript/treatment-scheduler.step.js
-import { get, updateStatus } from './js-store.js';
+// src/javascript/treatment-scheduler.step.js
+import { get, updateStatus } from './js-store.js'
 
 export const config = {
   type: 'event',
   name: 'JsTreatmentScheduler',
-  description: 'Schedules veterinary treatment and medication for pets requiring medical care',
+  description:
+    'Schedules veterinary treatment and medication for pets requiring medical care',
   subscribes: ['js.treatment.required'],
   emits: [],
-  flows: ['JsPetManagement']
-};
+  flows: ['JsPetManagement'],
+}
 
 export const handler = async (input, context) => {
-  const { emit, logger } = context || {};
-  const { petId, symptoms, urgency } = input;
+  const { emit, logger } = context || {}
+  const { petId, symptoms, urgency } = input
 
   if (logger) {
-    logger.info('🏥 Treatment Scheduler triggered', { petId, symptoms, urgency });
+    logger.info('🏥 Treatment Scheduler triggered', {
+      petId,
+      symptoms,
+      urgency,
+    })
   }
 
   try {
-    const pet = get(petId);
+    const pet = get(petId)
     if (!pet) {
       if (logger) {
-        logger.error('❌ Pet not found for treatment scheduling', { petId });
+        logger.error('❌ Pet not found for treatment scheduling', { petId })
       }
-      return;
+      return
     }
 
     // Determine treatment urgency based on symptoms
-    const urgentSymptoms = ['bleeding', 'severe pain', 'breathing difficulty', 'unconscious'];
-    const isUrgent = symptoms.some(symptom => 
-      urgentSymptoms.some(urgent => symptom.toLowerCase().includes(urgent))
-    );
+    const urgentSymptoms = [
+      'bleeding',
+      'severe pain',
+      'breathing difficulty',
+      'unconscious',
+    ]
+    const isUrgent = symptoms.some((symptom) =>
+      urgentSymptoms.some((urgent) => symptom.toLowerCase().includes(urgent))
+    )
 
     // Schedule treatment based on urgency
     const treatmentSchedule = {
       petId,
-      scheduledAt: isUrgent ? Date.now() + (2 * 60 * 60 * 1000) : Date.now() + (24 * 60 * 60 * 1000), // 2 hours for urgent, 24 hours for normal
+      scheduledAt: isUrgent
+        ? Date.now() + 2 * 60 * 60 * 1000
+        : Date.now() + 24 * 60 * 60 * 1000, // 2 hours for urgent, 24 hours for normal
       urgency: isUrgent ? 'urgent' : 'normal',
       symptoms,
       treatmentType: determineTreatmentType(symptoms),
       estimatedDuration: isUrgent ? '2-4 hours' : '1-2 hours',
       requiredStaff: isUrgent ? ['veterinarian', 'nurse'] : ['veterinarian'],
-      medication: determineMedication(symptoms)
-    };
+      medication: determineMedication(symptoms),
+    }
 
     if (logger) {
       logger.info('📅 Treatment scheduled', {
         petId,
         urgency: treatmentSchedule.urgency,
         scheduledAt: new Date(treatmentSchedule.scheduledAt).toISOString(),
-        treatmentType: treatmentSchedule.treatmentType
-      });
+        treatmentType: treatmentSchedule.treatmentType,
+      })
     }
 
     // Treatment scheduled successfully
-
   } catch (error) {
     if (logger) {
-      logger.error('❌ Treatment scheduling failed', { petId, error: error.message });
+      logger.error('❌ Treatment scheduling failed', {
+        petId,
+        error: error.message,
+      })
     }
   }
-};
+}
 
 function determineTreatmentType(symptoms) {
-  const symptomStr = symptoms.join(' ').toLowerCase();
-  
-  if (symptomStr.includes('bleeding')) return 'Emergency Surgery';
-  if (symptomStr.includes('breathing')) return 'Respiratory Treatment';
-  if (symptomStr.includes('pain')) return 'Pain Management';
-  if (symptomStr.includes('infection')) return 'Antibiotic Treatment';
-  if (symptomStr.includes('fever')) return 'Fever Management';
-  
-  return 'General Medical Examination';
+  const symptomStr = symptoms.join(' ').toLowerCase()
+
+  if (symptomStr.includes('bleeding')) return 'Emergency Surgery'
+  if (symptomStr.includes('breathing')) return 'Respiratory Treatment'
+  if (symptomStr.includes('pain')) return 'Pain Management'
+  if (symptomStr.includes('infection')) return 'Antibiotic Treatment'
+  if (symptomStr.includes('fever')) return 'Fever Management'
+
+  return 'General Medical Examination'
 }
 
 function determineMedication(symptoms) {
-  const medication = [];
-  const symptomStr = symptoms.join(' ').toLowerCase();
-  
-  if (symptomStr.includes('pain')) medication.push('Pain Relief (Ibuprofen)');
-  if (symptomStr.includes('infection')) medication.push('Antibiotics (Amoxicillin)');
-  if (symptomStr.includes('fever')) medication.push('Fever Reducer (Acetaminophen)');
-  if (symptomStr.includes('anxiety')) medication.push('Anti-anxiety (Diazepam)');
-  
-  return medication;
+  const medication = []
+  const symptomStr = symptoms.join(' ').toLowerCase()
+
+  if (symptomStr.includes('pain')) medication.push('Pain Relief (Ibuprofen)')
+  if (symptomStr.includes('infection'))
+    medication.push('Antibiotics (Amoxicillin)')
+  if (symptomStr.includes('fever'))
+    medication.push('Fever Reducer (Acetaminophen)')
+  if (symptomStr.includes('anxiety')) medication.push('Anti-anxiety (Diazepam)')
+
+  return medication
 }
 
 function generateMedicationInstructions(medication) {
-  return medication.map(med => {
-    if (med.includes('Pain Relief')) return 'Give 1 tablet every 8 hours with food';
-    if (med.includes('Antibiotics')) return 'Give 1 tablet every 12 hours for 7 days';
-    if (med.includes('Fever Reducer')) return 'Give 1 tablet every 6 hours as needed';
-    if (med.includes('Anti-anxiety')) return 'Give 1 tablet every 12 hours during stressful periods';
-    return 'Follow veterinarian instructions';
-  });
+  return medication.map((med) => {
+    if (med.includes('Pain Relief'))
+      return 'Give 1 tablet every 8 hours with food'
+    if (med.includes('Antibiotics'))
+      return 'Give 1 tablet every 12 hours for 7 days'
+    if (med.includes('Fever Reducer'))
+      return 'Give 1 tablet every 6 hours as needed'
+    if (med.includes('Anti-anxiety'))
+      return 'Give 1 tablet every 12 hours during stressful periods'
+    return 'Follow veterinarian instructions'
+  })
 }
