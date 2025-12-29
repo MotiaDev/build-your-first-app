@@ -1,20 +1,20 @@
 // steps/typescript/create-pet.step.ts
-import { ApiRouteConfig, Handlers } from 'motia';
-import { z } from 'zod';
-import { TSStore } from './ts-store';
+import { ApiRouteConfig, Handlers } from 'motia'
+import { z } from 'zod'
+import { TSStore } from './ts-store'
 
 // Define request body schema with Zod for type safety and validation
 const createPetSchema = z.object({
   name: z.string().min(1, 'Name is required').trim(),
   species: z.enum(['dog', 'cat', 'bird', 'other']),
-  ageMonths: z.number().int().min(0, 'Age must be a positive number')
-});
+  ageMonths: z.number().int().min(0, 'Age must be a positive number'),
+})
 
 // Define event data schema for type safety
 const feedingReminderEventSchema = z.object({
   petId: z.string(),
-  enqueuedAt: z.number()
-});
+  enqueuedAt: z.number(),
+})
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -24,59 +24,71 @@ export const config: ApiRouteConfig = {
   emits: ['ts.pet.created', 'ts.feeding.reminder.enqueued'],
   flows: ['TsPetManagement'],
   // Add schema validation
-  bodySchema: createPetSchema
-};
+  bodySchema: createPetSchema,
+}
 
-export const handler: Handlers['TsCreatePet'] = async (req, { emit, logger }) => {
+export const handler: Handlers['TsCreatePet'] = async (
+  req,
+  { emit, logger }
+) => {
   try {
     // Zod automatically validates and parses the request body
-    const validatedData = createPetSchema.parse(req.body);
-    
-    const pet = TSStore.create({ 
-      name: validatedData.name, 
-      species: validatedData.species, 
-      ageMonths: validatedData.ageMonths 
-    });
-    
+    const validatedData = createPetSchema.parse(req.body)
+
+    const pet = TSStore.create({
+      name: validatedData.name,
+      species: validatedData.species,
+      ageMonths: validatedData.ageMonths,
+    })
+
     if (logger) {
-      logger.info('🐾 Pet created', { petId: pet.id, name: pet.name, species: pet.species, status: pet.status });
+      logger.info('🐾 Pet created', {
+        petId: pet.id,
+        name: pet.name,
+        species: pet.species,
+        status: pet.status,
+      })
     }
-    
+
     if (emit) {
       // Type-safe event emission
       const feedingReminderData = feedingReminderEventSchema.parse({
         petId: pet.id,
-        enqueuedAt: Date.now()
-      });
-      
+        enqueuedAt: Date.now(),
+      })
+
       await (emit as any)({
         topic: 'ts.pet.created',
-        data: { petId: pet.id, event: 'pet.created', name: pet.name, species: pet.species }
-      });
-      
+        data: {
+          petId: pet.id,
+          event: 'pet.created',
+          name: pet.name,
+          species: pet.species,
+        },
+      })
+
       // Enqueue feeding reminder background job
       await (emit as any)({
         topic: 'ts.feeding.reminder.enqueued',
-        data: feedingReminderData
-      });
+        data: feedingReminderData,
+      })
     }
-    
-    return { status: 201, body: pet };
-    
+
+    return { status: 201, body: pet }
   } catch (error) {
     if (error instanceof z.ZodError) {
       return {
         status: 400,
         body: {
           message: 'Validation error',
-          errors: error.errors
-        }
-      };
+          errors: error.issues,
+        },
+      }
     }
-    
+
     return {
       status: 500,
-      body: { message: 'Internal server error' }
-    };
+      body: { message: 'Internal server error' },
+    }
   }
-};
+}
