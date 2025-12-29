@@ -1,4 +1,4 @@
-// steps/javascript/create-pet.step.js
+// src/javascript/create-pet.step.js
 import { create } from './js-store.js'
 
 export const config = {

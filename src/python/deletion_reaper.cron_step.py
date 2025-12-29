@@ -1,4 +1,4 @@
-# steps/python/deletion_reaper.cron.step.py
+# src/python/deletion_reaper.cron.step.py
 config = {
     "type": "cron",
     "name": "PyDeletionReaper",

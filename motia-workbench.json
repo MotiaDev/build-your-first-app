@@ -2,22 +2,22 @@
   {
     "id": "basic-tutorial",
     "config": {
-      "steps/state_audit_cron_step.py": {
+      "src/state_audit_cron_step.py": {
         "x": -38,
         "y": 683,
         "sourceHandlePosition": "right"
       },
-      "steps/process_food_order_step.py": {
+      "src/process_food_order_step.py": {
         "x": 384,
         "y": 476,
         "targetHandlePosition": "left"
       },
-      "steps/notification_step.py": {
+      "src/notification_step.py": {
         "x": 601,
         "y": 724,
         "targetHandlePosition": "left"
       },
-      "steps/api_step.py": {
+      "src/api_step.py": {
         "x": 15,
         "y": 461,
         "sourceHandlePosition": "right"
@@ -27,24 +27,24 @@
   {
     "id": "JsPetManagement",
     "config": {
-      "steps/javascript/update-pet.step.js": {
+      "src/javascript/update-pet.step.js": {
         "x": -400,
         "y": 300,
         "sourceHandlePosition": "top"
       },
-      "steps/javascript/get-pets.step.js": {
+      "src/javascript/get-pets.step.js": {
         "x": -800,
         "y": 300
       },
-      "steps/javascript/get-pet.step.js": {
+      "src/javascript/get-pet.step.js": {
         "x": -600,
         "y": 300
       },
-      "steps/javascript/delete-pet.step.js": {
+      "src/javascript/delete-pet.step.js": {
         "x": -200,
         "y": 300
       },
-      "steps/javascript/create-pet.step.js": {
+      "src/javascript/create-pet.step.js": {
         "x": -994,
         "y": 298,
         "sourceHandlePosition": "right"
@@ -54,23 +54,23 @@
   {
     "id": "PyPetManagement",
     "config": {
-      "steps/python/update_pet_step.py": {
+      "src/python/update_pet_step.py": {
         "x": -561,
         "y": 182
       },
-      "steps/python/get_pets_step.py": {
+      "src/python/get_pets_step.py": {
         "x": -355,
         "y": 183
       },
-      "steps/python/get_pet_step.py": {
+      "src/python/get_pet_step.py": {
         "x": -172,
         "y": 185
       },
-      "steps/python/delete_pet_step.py": {
+      "src/python/delete_pet_step.py": {
         "x": 35,
         "y": 186
       },
-      "steps/python/create_pet_step.py": {
+      "src/python/create_pet_step.py": {
         "x": -763,
         "y": 181
       }
@@ -79,33 +79,33 @@
   {
     "id": "TsPetManagement",
     "config": {
-      "steps/typescript/update-pet.step.ts": {
+      "src/typescript/update-pet.step.ts": {
         "x": -797,
         "y": 494,
         "sourceHandlePosition": "top"
       },
-      "steps/typescript/set-next-feeding-reminder.job.step.ts": {
+      "src/typescript/set-next-feeding-reminder.job.step.ts": {
         "x": -239,
         "y": 348,
         "targetHandlePosition": "left"
       },
-      "steps/typescript/get-pets.step.ts": {
+      "src/typescript/get-pets.step.ts": {
         "x": -904,
         "y": 341
       },
-      "steps/typescript/get-pet.step.ts": {
+      "src/typescript/get-pet.step.ts": {
         "x": -1018,
         "y": 497
       },
-      "steps/typescript/deletion-reaper.cron.step.ts": {
+      "src/typescript/deletion-reaper.cron.step.ts": {
         "x": -243,
         "y": 521
       },
-      "steps/typescript/delete-pet.step.ts": {
+      "src/typescript/delete-pet.step.ts": {
         "x": -922,
         "y": 646
       },
-      "steps/typescript/create-pet.step.ts": {
+      "src/typescript/create-pet.step.ts": {
         "x": -567,
         "y": 491,
         "sourceHandlePosition": "right"

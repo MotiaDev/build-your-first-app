@@ -1,4 +1,4 @@
-// steps/javascript/delete-pet.step.js
+// src/javascript/delete-pet.step.js
 import { softDelete } from './js-store.js'
 
 export const config = {

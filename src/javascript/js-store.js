@@ -1,4 +1,4 @@
-// steps/javascript/js-store.js
+// src/javascript/js-store.js
 import fs from 'node:fs'
 import path from 'node:path'
 
