@@ -1,20 +1,25 @@
-from pydantic import BaseModel
-from enum import Enum
+# steps/services/types.py
+from typing import TypedDict, Literal, Optional, List
 
-class OrderStatus(str, Enum):
-    PLACED = "placed"
-    APPROVED = "approved"
-    DELIVERED = "delivered"
+Species = Literal['dog','cat','bird','other']
+Status = Literal['new','in_quarantine','healthy','available','pending','adopted','ill','under_treatment','recovered','deleted']
 
-class Pet(BaseModel):
+class PetProfile(TypedDict):
+    bio: str
+    breedGuess: str
+    temperamentTags: List[str]
+    adopterHints: str
+
+class Pet(TypedDict, total=False):
     id: str
     name: str
-    photoUrl: str
-
-class Order(BaseModel):
-    id: str
-    quantity: int
-    petId: str
-    shipDate: str
-    status: OrderStatus
-    complete: bool
+    species: Species
+    ageMonths: int
+    status: Status
+    createdAt: int
+    updatedAt: int
+    notes: str
+    nextFeedingAt: int
+    deletedAt: int
+    purgeAt: int
+    profile: PetProfile
