@@ -39,7 +39,7 @@ export const handler: Handlers['TsDeletePet'] = async (req) => {
         status: 400,
         body: {
           message: 'Invalid pet ID',
-          errors: error.errors,
+          errors: error.issues,
         },
       }
     }
