@@ -23,7 +23,6 @@ A multi-language pet management system built with Motia, demonstrating CRUD oper
 ```bash
 # Install dependencies
 npm run install
-pip install -r requirements.txt  # Optional, for Python
 
 # Set up environment
 echo "OPENAI_API_KEY=your_key_here" > .env
@@ -533,7 +532,7 @@ The system uses language-specific event namespaces to prevent cross-language tri
 ## File Structure
 
 ```
-steps/
+src/
 ├── javascript/
 │   ├── create-pet.step.js           # POST /js/pets (triggers PostCreateLite)
 │   ├── get-pets.step.js             # GET /js/pets
@@ -559,11 +558,11 @@ steps/
 │   ├── update_pet.step.py           # PUT /py/pets/:id
 │   ├── delete_pet.step.py           # DELETE /py/pets/:id (soft delete)
 │   ├── postcreate_lite_job.step.py  # Background job (queue-based)
-│   ├── deletion_reaper.cron.step.py # Background job (cron-based)
-│   └── services/
-│       ├── pet_store.py             # Data persistence layer
-│       └── types.py                 # Type definitions
-└── motia-workbench.json             # Workflow configuration
+│   └── deletion_reaper.cron.step.py # Background job (cron-based)
+└── services/
+    ├── pet_store.py                 # Data persistence layer
+    └── types.py                     # Type definitions
+motia-workbench.json                 # Workflow configuration
 ```
 
 ## Data Storage
@@ -1132,7 +1131,7 @@ This guide will walk you through the complete pet management workflow, demonstra
 #### Prerequisites
 ```bash
 # 1. Start the Motia server
-npm start
+npm run dev
 
 # 2. Verify server is running (should see "Server running on port 3000")
 # 3. Keep the server logs open to observe the workflow in action
