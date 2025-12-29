@@ -1,41 +1,41 @@
 // steps/javascript/health-review-agent.step.js
-const { get } = require('./js-store');
-const { 
-  HEALTH_REVIEW_EMITS, 
-  buildAgentContext, 
+import { get } from './js-store.js'
+import {
+  HEALTH_REVIEW_EMITS,
+  buildAgentContext,
   callAgentDecision,
-  getAgentArtifacts
-} = require('./agent-decision-framework');
+  getAgentArtifacts,
+} from './agent-decision-framework.js'
 
-exports.config = {
+export const config = {
   type: 'api',
   name: 'JsHealthReviewAgent',
   path: '/js/pets/:id/health-review',
   method: 'POST',
   emits: ['js.health.treatment_required', 'js.health.no_treatment_needed'],
-  flows: ['JsPetManagement']
-};
+  flows: ['JsPetManagement'],
+}
 
-exports.handler = async (req, context) => {
-  const { emit, logger } = context || {};
-  const petId = req.pathParams?.id;
+export const handler = async (req, context) => {
+  const { emit, logger } = context || {}
+  const petId = req.pathParams?.id
 
   if (!petId) {
-    return { status: 400, body: { message: 'Pet ID is required' } };
+    return { status: 400, body: { message: 'Pet ID is required' } }
   }
 
   // Get pet
-  const pet = get(petId);
+  const pet = get(petId)
   if (!pet) {
-    return { status: 404, body: { message: 'Pet not found' } };
+    return { status: 404, body: { message: 'Pet not found' } }
   }
 
   if (logger) {
-    logger.info('🏥 Health Review Agent triggered', { 
-      petId, 
+    logger.info('🏥 Health Review Agent triggered', {
+      petId,
       currentStatus: pet.status,
-      symptoms: pet.symptoms || []
-    });
+      symptoms: pet.symptoms || [],
+    })
   }
 
   // Check if pet is in a valid state for health review
@@ -43,32 +43,33 @@ exports.handler = async (req, context) => {
     return {
       status: 400,
       body: {
-        message: 'Health review can only be performed on healthy or quarantined pets',
-        currentStatus: pet.status
-      }
-    };
+        message:
+          'Health review can only be performed on healthy or quarantined pets',
+        currentStatus: pet.status,
+      },
+    }
   }
 
   // Build agent context
-  const agentContext = buildAgentContext(pet);
+  const agentContext = buildAgentContext(pet)
 
   // Check for idempotency - if we have a recent successful decision for this pet in this state
-  const recentArtifacts = getAgentArtifacts(petId)
-    .filter(a => 
-      a.agentType === 'health-review' && 
-      a.success && 
+  const recentArtifacts = getAgentArtifacts(petId).filter(
+    (a) =>
+      a.agentType === 'health-review' &&
+      a.success &&
       a.inputs.currentStatus === pet.status &&
-      (Date.now() - a.timestamp) < 60000 // Within last minute
-    );
+      Date.now() - a.timestamp < 60000 // Within last minute
+  )
 
   if (recentArtifacts.length > 0) {
-    const recent = recentArtifacts[recentArtifacts.length - 1];
+    const recent = recentArtifacts[recentArtifacts.length - 1]
     if (logger) {
       logger.info('🔄 Idempotent health review - returning cached decision', {
         petId,
         chosenEmit: recent.parsedDecision.chosenEmit,
-        timestamp: recent.timestamp
-      });
+        timestamp: recent.timestamp,
+      })
     }
 
     return {
@@ -79,10 +80,10 @@ exports.handler = async (req, context) => {
         agentDecision: recent.parsedDecision,
         artifact: {
           timestamp: recent.timestamp,
-          success: recent.success
-        }
-      }
-    };
+          success: recent.success,
+        },
+      },
+    }
   }
 
   try {
@@ -92,7 +93,7 @@ exports.handler = async (req, context) => {
       agentContext,
       HEALTH_REVIEW_EMITS,
       logger
-    );
+    )
 
     if (!artifact.success) {
       return {
@@ -100,21 +101,23 @@ exports.handler = async (req, context) => {
         body: {
           message: 'Agent decision failed',
           error: artifact.error,
-          petId
-        }
-      };
+          petId,
+        },
+      }
     }
 
     // Find the chosen emit
-    const chosenEmitDef = HEALTH_REVIEW_EMITS.find(e => e.id === artifact.parsedDecision.chosenEmit);
+    const chosenEmitDef = HEALTH_REVIEW_EMITS.find(
+      (e) => e.id === artifact.parsedDecision.chosenEmit
+    )
     if (!chosenEmitDef) {
       return {
         status: 500,
         body: {
           message: 'Invalid emit chosen by agent',
-          chosenEmit: artifact.parsedDecision.chosenEmit
-        }
-      };
+          chosenEmit: artifact.parsedDecision.chosenEmit,
+        },
+      }
     }
 
     // Fire the chosen emit
@@ -125,17 +128,17 @@ exports.handler = async (req, context) => {
           petId,
           agentDecision: artifact.parsedDecision,
           timestamp: artifact.timestamp,
-          context: agentContext
-        }
-      });
+          context: agentContext,
+        },
+      })
 
       if (logger) {
         logger.info('✅ Health review emit fired', {
           petId,
           chosenEmit: artifact.parsedDecision.chosenEmit,
           topic: chosenEmitDef.topic,
-          rationale: artifact.parsedDecision.rationale
-        });
+          rationale: artifact.parsedDecision.rationale,
+        })
       }
     }
 
@@ -149,17 +152,16 @@ exports.handler = async (req, context) => {
         artifact: {
           timestamp: artifact.timestamp,
           success: artifact.success,
-          availableEmits: artifact.availableEmits.map(e => e.id)
-        }
-      }
-    };
-
+          availableEmits: artifact.availableEmits.map((e) => e.id),
+        },
+      },
+    }
   } catch (error) {
     if (logger) {
       logger.error('❌ Health review agent error', {
         petId,
-        error: error.message
-      });
+        error: error.message,
+      })
     }
 
     return {
@@ -167,8 +169,8 @@ exports.handler = async (req, context) => {
       body: {
         message: 'Health review failed',
         error: error.message,
-        petId
-      }
-    };
+        petId,
+      },
+    }
   }
-};
+}

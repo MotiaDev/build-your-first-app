@@ -1,6 +1,4 @@
 // steps/javascript/agent-decision-framework.js
-const { get } = require('./js-store');
-
 // Emit Registry - Tools available to agents
 const HEALTH_REVIEW_EMITS = [
   {
@@ -8,54 +6,55 @@ const HEALTH_REVIEW_EMITS = [
     topic: 'js.health.treatment_required',
     description: 'Pet requires medical treatment due to health concerns',
     orchestratorEffect: 'healthy → ill → under_treatment',
-    guards: ['must_be_healthy']
+    guards: ['must_be_healthy'],
   },
   {
     id: 'emit.health.no_treatment_needed',
-    topic: 'js.health.no_treatment_needed', 
+    topic: 'js.health.no_treatment_needed',
     description: 'Pet is healthy and requires no medical intervention',
     orchestratorEffect: 'stay healthy',
-    guards: ['must_be_healthy']
-  }
-];
+    guards: ['must_be_healthy'],
+  },
+]
 
 const ADOPTION_REVIEW_EMITS = [
   {
     id: 'emit.adoption.needs_data',
     topic: 'js.adoption.needs_data',
-    description: 'Pet needs additional data before being available for adoption',
+    description:
+      'Pet needs additional data before being available for adoption',
     orchestratorEffect: 'add needs_data flag (blocks available)',
-    guards: ['must_be_healthy']
+    guards: ['must_be_healthy'],
   },
   {
     id: 'emit.adoption.ready',
     topic: 'js.adoption.ready',
     description: 'Pet is ready for adoption and can be made available',
     orchestratorEffect: 'healthy → available (respect guards)',
-    guards: ['must_be_healthy', 'no_needs_data_flag']
-  }
-];
+    guards: ['must_be_healthy', 'no_needs_data_flag'],
+  },
+]
 
 // Agent artifact storage
-const agentArtifacts = [];
+const agentArtifacts = []
 
 const storeAgentArtifact = (artifact) => {
-  agentArtifacts.push(artifact);
-  
+  agentArtifacts.push(artifact)
+
   // Keep only last 100 artifacts per pet to prevent memory bloat
-  const petArtifacts = agentArtifacts.filter(a => a.petId === artifact.petId);
+  const petArtifacts = agentArtifacts.filter((a) => a.petId === artifact.petId)
   if (petArtifacts.length > 100) {
-    const toRemove = petArtifacts.slice(0, petArtifacts.length - 100);
-    toRemove.forEach(old => {
-      const index = agentArtifacts.indexOf(old);
-      if (index > -1) agentArtifacts.splice(index, 1);
-    });
+    const toRemove = petArtifacts.slice(0, petArtifacts.length - 100)
+    toRemove.forEach((old) => {
+      const index = agentArtifacts.indexOf(old)
+      if (index > -1) agentArtifacts.splice(index, 1)
+    })
   }
-};
+}
 
 const getAgentArtifacts = (petId) => {
-  return agentArtifacts.filter(a => a.petId === petId);
-};
+  return agentArtifacts.filter((a) => a.petId === petId)
+}
 
 const buildAgentContext = (pet) => {
   return {
@@ -66,11 +65,16 @@ const buildAgentContext = (pet) => {
     symptoms: pet.symptoms || [],
     flags: pet.flags || [],
     profile: pet.profile,
-    currentStatus: pet.status
-  };
-};
+    currentStatus: pet.status,
+  }
+}
 
-const callAgentDecision = async (agentType, context, availableEmits, logger) => {
+const callAgentDecision = async (
+  agentType,
+  context,
+  availableEmits,
+  logger
+) => {
   const artifact = {
     petId: context.petId,
     agentType,
@@ -79,22 +83,22 @@ const callAgentDecision = async (agentType, context, availableEmits, logger) => 
     availableEmits,
     modelOutput: '',
     parsedDecision: { chosenEmit: '', rationale: '' },
-    success: false
-  };
+    success: false,
+  }
 
   try {
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY
     if (!apiKey) {
-      throw new Error('OPENAI_API_KEY environment variable is not set');
+      throw new Error('OPENAI_API_KEY environment variable is not set')
     }
 
     // Build prompt based on agent type
-    const prompt = buildAgentPrompt(agentType, context, availableEmits);
+    const prompt = buildAgentPrompt(agentType, context, availableEmits)
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -102,85 +106,91 @@ const callAgentDecision = async (agentType, context, availableEmits, logger) => 
         messages: [
           {
             role: 'system',
-            content: 'You are a veterinary and pet adoption specialist AI agent. You must choose exactly one emit from the provided options and provide clear rationale. Always respond with valid JSON only.'
+            content:
+              'You are a veterinary and pet adoption specialist AI agent. You must choose exactly one emit from the provided options and provide clear rationale. Always respond with valid JSON only.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         max_tokens: 300,
         temperature: 0.3,
       }),
-    });
+    })
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `OpenAI API error: ${response.status} ${response.statusText}`
+      )
     }
 
-    const data = await response.json();
-    const aiResponse = data.choices[0]?.message?.content;
+    const data = await response.json()
+    const aiResponse = data.choices[0]?.message?.content
 
     if (!aiResponse) {
-      throw new Error('No response from OpenAI API');
+      throw new Error('No response from OpenAI API')
     }
 
-    artifact.modelOutput = aiResponse;
+    artifact.modelOutput = aiResponse
 
     // Parse AI response
     try {
-      const decision = JSON.parse(aiResponse);
-      
+      const decision = JSON.parse(aiResponse)
+
       if (!decision.chosenEmit || !decision.rationale) {
-        throw new Error('Invalid decision format: missing chosenEmit or rationale');
+        throw new Error(
+          'Invalid decision format: missing chosenEmit or rationale'
+        )
       }
 
       // Validate chosen emit exists
-      const validEmit = availableEmits.find(e => e.id === decision.chosenEmit);
+      const validEmit = availableEmits.find((e) => e.id === decision.chosenEmit)
       if (!validEmit) {
-        throw new Error(`Invalid chosen emit: ${decision.chosenEmit}`);
+        throw new Error(`Invalid chosen emit: ${decision.chosenEmit}`)
       }
 
       artifact.parsedDecision = {
         chosenEmit: decision.chosenEmit,
-        rationale: decision.rationale
-      };
-      artifact.success = true;
+        rationale: decision.rationale,
+      }
+      artifact.success = true
 
       if (logger) {
         logger.info(`🤖 Agent decision made`, {
           petId: context.petId,
           agentType,
           chosenEmit: decision.chosenEmit,
-          rationale: decision.rationale.substring(0, 100) + '...'
-        });
+          rationale: decision.rationale.substring(0, 100) + '...',
+        })
       }
-
     } catch (parseError) {
-      throw new Error(`Failed to parse agent decision: ${parseError.message}`);
+      throw new Error(`Failed to parse agent decision: ${parseError.message}`)
     }
-
   } catch (error) {
-    artifact.error = error.message;
-    artifact.success = false;
+    artifact.error = error.message
+    artifact.success = false
 
     if (logger) {
       logger.error(`❌ Agent decision failed`, {
         petId: context.petId,
         agentType,
-        error: error.message
-      });
+        error: error.message,
+      })
     }
   }
 
-  storeAgentArtifact(artifact);
-  return artifact;
-};
+  storeAgentArtifact(artifact)
+  return artifact
+}
 
 const buildAgentPrompt = (agentType, context, availableEmits) => {
-  const emitOptions = availableEmits.map(emit => 
-    `- ${emit.id}: ${emit.description} (Effect: ${emit.orchestratorEffect})`
-  ).join('\n');
+  const emitOptions = availableEmits
+    .map(
+      (emit) =>
+        `- ${emit.id}: ${emit.description} (Effect: ${emit.orchestratorEffect})`
+    )
+    .join('\n')
 
   if (agentType === 'health-review') {
     return `You are conducting a health review for a pet. Based on the pet's information, choose exactly one emit that best represents the appropriate health action.
@@ -203,7 +213,7 @@ You must respond with valid JSON in this exact format:
   "rationale": "Clear explanation of why this emit was chosen based on the pet's condition"
 }
 
-Choose the emit that best matches the pet's health status and needs.`;
+Choose the emit that best matches the pet's health status and needs.`
   } else {
     return `You are conducting an adoption readiness review for a pet. Based on the pet's information and profile completeness, choose exactly one emit that best represents the appropriate adoption action.
 
@@ -228,16 +238,15 @@ You must respond with valid JSON in this exact format:
   "rationale": "Clear explanation of why this emit was chosen based on the pet's adoption readiness"
 }
 
-Choose the emit that best matches the pet's adoption readiness and data completeness.`;
+Choose the emit that best matches the pet's adoption readiness and data completeness.`
   }
-};
+}
 
-module.exports = {
+export {
   HEALTH_REVIEW_EMITS,
   ADOPTION_REVIEW_EMITS,
   buildAgentContext,
   callAgentDecision,
   getAgentArtifacts,
-  storeAgentArtifact
-};
-
+  storeAgentArtifact,
+}

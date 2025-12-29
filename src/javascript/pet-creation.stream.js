@@ -1,16 +1,16 @@
-const z = require('zod').z;
+import { z } from 'zod'
 
-exports.config = {
+export const config = {
   /**
    * This will be available as context.streams.petCreation in the FlowContext
    */
   name: 'petCreation',
-  
+
   /**
    * Schema defines the structure of stream updates
    */
-  schema: z.object({ 
-    message: z.string()
+  schema: z.object({
+    message: z.string(),
   }),
 
   /**
