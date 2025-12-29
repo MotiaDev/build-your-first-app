@@ -1,7 +1,7 @@
 // steps/javascript/adoption-posting.step.js
-const { get, updateStatus } = require('./js-store');
+import { get } from './js-store.js';
 
-exports.config = {
+export const config = {
   type: 'event',
   name: 'JsAdoptionPosting',
   description: 'Posts pet for adoption and schedules adoption interviews when pet is ready',
@@ -10,7 +10,7 @@ exports.config = {
   flows: ['JsPetManagement']
 };
 
-exports.handler = async (input, context) => {
+export const handler = async (input, context) => {
   const { emit, logger } = context || {};
   const { petId, profile } = input;
 

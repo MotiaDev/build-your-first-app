@@ -1,7 +1,7 @@
 // steps/javascript/create-pet.step.js
-const { create } = require('./js-store');
+import { create } from './js-store.js';
 
-exports.config = {
+export const config = {
   type: 'api',
   name: 'JsCreatePet',
   path: '/js/pets',
@@ -10,7 +10,7 @@ exports.config = {
   flows: ['JsPetManagement']
 };
 
-exports.handler = async (req, context) => {
+export const handler = async (req, context) => {
   const { emit, logger } = context || {};
   const b = req.body || {};
   const name = typeof b.name === 'string' && b.name.trim();

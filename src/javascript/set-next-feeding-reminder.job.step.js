@@ -1,7 +1,7 @@
 // steps/javascript/set-next-feeding-reminder.job.step.js
-const { update } = require('./js-store');
+import { update } from './js-store.js';
 
-exports.config = {
+export const config = {
   type: 'event',
   name: 'JsSetNextFeedingReminder',
   description: 'Background job that sets next feeding reminder and adds welcome notes',
@@ -10,7 +10,7 @@ exports.config = {
   flows: ['JsPetManagement']
 };
 
-exports.handler = async (input, context) => {
+export const handler = async (input, context) => {
   const { emit, logger } = context || {};
   const { petId, enqueuedAt } = input;
 

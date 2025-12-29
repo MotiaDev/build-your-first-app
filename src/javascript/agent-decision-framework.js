@@ -1,6 +1,4 @@
 // steps/javascript/agent-decision-framework.js
-const { get } = require('./js-store');
-
 // Emit Registry - Tools available to agents
 const HEALTH_REVIEW_EMITS = [
   {
@@ -232,7 +230,7 @@ Choose the emit that best matches the pet's adoption readiness and data complete
   }
 };
 
-module.exports = {
+export {
   HEALTH_REVIEW_EMITS,
   ADOPTION_REVIEW_EMITS,
   buildAgentContext,

@@ -1,7 +1,7 @@
 // steps/javascript/treatment-scheduler.step.js
-const { get, updateStatus } = require('./js-store');
+import { get, updateStatus } from './js-store.js';
 
-exports.config = {
+export const config = {
   type: 'event',
   name: 'JsTreatmentScheduler',
   description: 'Schedules veterinary treatment and medication for pets requiring medical care',
@@ -10,7 +10,7 @@ exports.config = {
   flows: ['JsPetManagement']
 };
 
-exports.handler = async (input, context) => {
+export const handler = async (input, context) => {
   const { emit, logger } = context || {};
   const { petId, symptoms, urgency } = input;
 

@@ -1,5 +1,5 @@
 // steps/javascript/get-pets.step.js
-const { list } = require('./js-store');
+import { list } from './js-store.js';
 
-exports.config = { type:'api', name:'JsListPets', path:'/js/pets', method:'GET', emits: [], flows: ['JsPetManagement'] };
-exports.handler = async () => ({ status:200, body:list() });
+export const config = { type:'api', name:'JsListPets', path:'/js/pets', method:'GET', emits: [], flows: ['JsPetManagement'] };
+export const handler = async () => ({ status:200, body:list() });

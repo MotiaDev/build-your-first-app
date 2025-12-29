@@ -1,8 +1,8 @@
 // steps/javascript/delete-pet.step.js
-const { softDelete } = require('./js-store');
+import { softDelete } from './js-store.js';
 
-exports.config = { type:'api', name:'JsDeletePet', path:'/js/pets/:id', method:'DELETE', emits: [], flows: ['JsPetManagement'] };
-exports.handler = async (req, context) => {
+export const config = { type:'api', name:'JsDeletePet', path:'/js/pets/:id', method:'DELETE', emits: [], flows: ['JsPetManagement'] };
+export const handler = async (req, context) => {
   const { emit, logger } = context || {};
   const petId = req.pathParams.id;
   

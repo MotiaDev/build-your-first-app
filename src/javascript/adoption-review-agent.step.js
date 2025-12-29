@@ -1,13 +1,13 @@
 // steps/javascript/adoption-review-agent.step.js
-const { get } = require('./js-store');
-const { 
+import { get } from './js-store.js';
+import { 
   ADOPTION_REVIEW_EMITS, 
   buildAgentContext, 
   callAgentDecision,
   getAgentArtifacts
-} = require('./agent-decision-framework');
+} from './agent-decision-framework.js';
 
-exports.config = {
+export const config = {
   type: 'api',
   name: 'JsAdoptionReviewAgent',
   path: '/js/pets/:id/adoption-review',
@@ -16,7 +16,7 @@ exports.config = {
   flows: ['JsPetManagement']
 };
 
-exports.handler = async (req, context) => {
+export const handler = async (req, context) => {
   const { emit, logger } = context || {};
   const petId = req.pathParams?.id;
 

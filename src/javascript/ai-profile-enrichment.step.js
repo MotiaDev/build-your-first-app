@@ -1,7 +1,7 @@
 // steps/javascript/ai-profile-enrichment.step.js
-const { updateProfile } = require('./js-store');
+import { updateProfile } from './js-store.js';
 
-exports.config = {
+export const config = {
   type: 'event',
   name: 'JsAiProfileEnrichment',
   description: 'AI agent that enriches pet profiles using OpenAI',
@@ -10,7 +10,7 @@ exports.config = {
   flows: ['JsPetManagement']
 };
 
-exports.handler = async (input, context) => {
+export const handler = async (input, context) => {
   const { emit, logger } = context || {};
   const { petId, name, species } = input;
 

@@ -1,7 +1,7 @@
 // steps/javascript/recovery-monitor.step.js
-const { get, updateStatus } = require('./js-store');
+import { get, updateStatus } from './js-store.js';
 
-exports.config = {
+export const config = {
   type: 'event',
   name: 'JsRecoveryMonitor',
   description: 'Monitors pet recovery progress and schedules follow-up health checks',
@@ -10,7 +10,7 @@ exports.config = {
   flows: ['JsPetManagement']
 };
 
-exports.handler = async (input, context) => {
+export const handler = async (input, context) => {
   const { emit, logger } = context || {};
   const { petId, treatmentType, treatmentStatus } = input;
 

@@ -1,5 +1,5 @@
 // steps/javascript/pet-lifecycle-orchestrator.step.js
-const { get, updateStatus } = require('./js-store');
+import { get, updateStatus } from './js-store.js';
 
 const TRANSITION_RULES = [
   {
@@ -92,7 +92,7 @@ const TRANSITION_RULES = [
   }
 ];
 
-exports.config = {
+export const config = {
   type: 'event',
   name: 'JsPetLifecycleOrchestrator',
   description: 'Pet lifecycle state management with staff interaction points',
@@ -130,7 +130,7 @@ const checkGuards = (pet, guards) => {
   return { passed: true };
 };
 
-exports.handler = async (input, context) => {
+export const handler = async (input, context) => {
   const { emit, logger } = context || {};
   const { petId, event: eventType, requestedStatus, automatic } = input;
 
