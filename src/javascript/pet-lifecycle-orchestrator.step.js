@@ -1,126 +1,137 @@
-// steps/javascript/pet-lifecycle-orchestrator.step.js
-const { get, updateStatus } = require('./js-store');
+// src/javascript/pet-lifecycle-orchestrator.step.js
+const { get, updateStatus } = require('./js-store')
 
 const TRANSITION_RULES = [
   {
     from: ['new'],
     to: 'in_quarantine',
     event: 'feeding.reminder.completed',
-    description: 'Pet moved to quarantine after feeding setup'
+    description: 'Pet moved to quarantine after feeding setup',
   },
   {
     from: ['in_quarantine'],
     to: 'healthy',
     event: 'status.update.requested',
-    description: 'Staff health check - pet cleared from quarantine'
+    description: 'Staff health check - pet cleared from quarantine',
   },
   {
     from: ['healthy', 'in_quarantine', 'available'],
     to: 'ill',
     event: 'status.update.requested',
-    description: 'Staff assessment - pet identified as ill'
+    description: 'Staff assessment - pet identified as ill',
   },
   {
     from: ['healthy'],
     to: 'available',
     event: 'status.update.requested',
-    description: 'Staff decision - pet ready for adoption'
+    description: 'Staff decision - pet ready for adoption',
   },
   {
     from: ['ill'],
     to: 'under_treatment',
     event: 'status.update.requested',
-    description: 'Staff decision - treatment started'
+    description: 'Staff decision - treatment started',
   },
   {
     from: ['under_treatment'],
     to: 'recovered',
     event: 'status.update.requested',
-    description: 'Staff assessment - treatment completed'
+    description: 'Staff assessment - treatment completed',
   },
   {
     from: ['recovered'],
     to: 'healthy',
     event: 'status.update.requested',
-    description: 'Staff clearance - pet fully recovered'
+    description: 'Staff clearance - pet fully recovered',
   },
   {
     from: ['available'],
     to: 'pending',
     event: 'status.update.requested',
-    description: 'Adoption application received'
+    description: 'Adoption application received',
   },
   {
     from: ['pending'],
     to: 'adopted',
     event: 'status.update.requested',
-    description: 'Adoption completed'
+    description: 'Adoption completed',
   },
   {
     from: ['pending'],
     to: 'available',
     event: 'status.update.requested',
-    description: 'Adoption application rejected/cancelled'
-  }
-];
+    description: 'Adoption application rejected/cancelled',
+  },
+]
 
 exports.config = {
   type: 'event',
   name: 'JsPetLifecycleOrchestrator',
   description: 'Pet lifecycle state management with staff interaction points',
-  subscribes: ['js.pet.created', 'js.feeding.reminder.completed', 'js.pet.status.update.requested'],
+  subscribes: [
+    'js.pet.created',
+    'js.feeding.reminder.completed',
+    'js.pet.status.update.requested',
+  ],
   emits: [],
-  flows: ['JsPetManagement']
-};
+  flows: ['JsPetManagement'],
+}
 
 exports.handler = async (input, context) => {
-  const { emit, logger } = context || {};
-  const { petId, event: eventType, requestedStatus, automatic } = input;
+  const { emit, logger } = context || {}
+  const { petId, event: eventType, requestedStatus, automatic } = input
 
   if (logger) {
-    const logMessage = automatic ? '🤖 Automatic progression' : '🔄 Lifecycle orchestrator processing';
-    logger.info(logMessage, { petId, eventType, requestedStatus, automatic });
+    const logMessage = automatic
+      ? '🤖 Automatic progression'
+      : '🔄 Lifecycle orchestrator processing'
+    logger.info(logMessage, { petId, eventType, requestedStatus, automatic })
   }
 
   try {
-    const pet = get(petId);
+    const pet = get(petId)
     if (!pet) {
       if (logger) {
-        logger.error('❌ Pet not found for lifecycle transition', { petId, eventType });
+        logger.error('❌ Pet not found for lifecycle transition', {
+          petId,
+          eventType,
+        })
       }
-      return;
+      return
     }
 
     // For status update requests, find the rule based on requested status
-    let rule;
+    let rule
     if (eventType === 'status.update.requested' && requestedStatus) {
-      rule = TRANSITION_RULES.find(r => 
-        r.event === eventType && 
-        r.from.includes(pet.status) && 
-        r.to === requestedStatus
-      );
+      rule = TRANSITION_RULES.find(
+        (r) =>
+          r.event === eventType &&
+          r.from.includes(pet.status) &&
+          r.to === requestedStatus
+      )
     } else {
       // For other events (like feeding.reminder.completed)
-      rule = TRANSITION_RULES.find(r => 
-        r.event === eventType && r.from.includes(pet.status)
-      );
+      rule = TRANSITION_RULES.find(
+        (r) => r.event === eventType && r.from.includes(pet.status)
+      )
     }
 
     if (!rule) {
-      const reason = eventType === 'status.update.requested' 
-        ? `Invalid transition: cannot change from ${pet.status} to ${requestedStatus}`
-        : `No transition rule found for ${eventType} from ${pet.status}`;
-        
+      const reason =
+        eventType === 'status.update.requested'
+          ? `Invalid transition: cannot change from ${pet.status} to ${requestedStatus}`
+          : `No transition rule found for ${eventType} from ${pet.status}`
+
       if (logger) {
-        logger.warn('⚠️ Transition rejected', { 
-          petId, 
-          currentStatus: pet.status, 
+        logger.warn('⚠️ Transition rejected', {
+          petId,
+          currentStatus: pet.status,
           requestedStatus,
           eventType,
-          reason
-        });
+          reason,
+        })
       }
-      
+
       if (emit) {
         await emit({
           topic: 'js.lifecycle.transition.rejected',
@@ -130,34 +141,38 @@ exports.handler = async (input, context) => {
             requestedStatus,
             eventType,
             reason,
-            timestamp: Date.now()
-          }
-        });
+            timestamp: Date.now(),
+          },
+        })
       }
-      return;
+      return
     }
 
     // Check for idempotency
     if (pet.status === rule.to) {
       if (logger) {
-        logger.info('✅ Already in target status', { 
-          petId, 
+        logger.info('✅ Already in target status', {
+          petId,
           status: pet.status,
-          eventType
-        });
+          eventType,
+        })
       }
-      return;
+      return
     }
 
     // Apply the transition
-    const oldStatus = pet.status;
-    const updatedPet = updateStatus(petId, rule.to);
-    
+    const oldStatus = pet.status
+    const updatedPet = updateStatus(petId, rule.to)
+
     if (!updatedPet) {
       if (logger) {
-        logger.error('❌ Failed to update pet status', { petId, oldStatus, newStatus: rule.to });
+        logger.error('❌ Failed to update pet status', {
+          petId,
+          oldStatus,
+          newStatus: rule.to,
+        })
       }
-      return;
+      return
     }
 
     if (logger) {
@@ -167,8 +182,8 @@ exports.handler = async (input, context) => {
         newStatus: rule.to,
         eventType,
         description: rule.description,
-        timestamp: Date.now()
-      });
+        timestamp: Date.now(),
+      })
     }
 
     if (emit) {
@@ -180,51 +195,64 @@ exports.handler = async (input, context) => {
           newStatus: rule.to,
           eventType,
           description: rule.description,
-          timestamp: Date.now()
-        }
-      });
+          timestamp: Date.now(),
+        },
+      })
 
       // Check for automatic progressions after successful transition
-      await processAutomaticProgression(petId, rule.to, emit, logger);
+      await processAutomaticProgression(petId, rule.to, emit, logger)
     }
-
   } catch (error) {
     if (logger) {
-      logger.error('❌ Lifecycle orchestrator error', { petId, eventType, error: error.message });
+      logger.error('❌ Lifecycle orchestrator error', {
+        petId,
+        eventType,
+        error: error.message,
+      })
     }
   }
-};
+}
 
 async function processAutomaticProgression(petId, currentStatus, emit, logger) {
   // Define automatic progressions
   const automaticProgressions = {
-    'healthy': { to: 'available', description: 'Automatic progression - pet ready for adoption' },
-    'ill': { to: 'under_treatment', description: 'Automatic progression - treatment started' },
-    'recovered': { to: 'healthy', description: 'Automatic progression - recovery complete' }
-  };
+    healthy: {
+      to: 'available',
+      description: 'Automatic progression - pet ready for adoption',
+    },
+    ill: {
+      to: 'under_treatment',
+      description: 'Automatic progression - treatment started',
+    },
+    recovered: {
+      to: 'healthy',
+      description: 'Automatic progression - recovery complete',
+    },
+  }
 
-  const progression = automaticProgressions[currentStatus];
+  const progression = automaticProgressions[currentStatus]
   if (progression) {
     if (logger) {
-      logger.info('🤖 Processing automatic progression', { 
-        petId, 
-        currentStatus, 
-        nextStatus: progression.to 
-      });
+      logger.info('🤖 Processing automatic progression', {
+        petId,
+        currentStatus,
+        nextStatus: progression.to,
+      })
     }
 
     // Find the transition rule for automatic progression
-    const rule = TRANSITION_RULES.find(r => 
-      r.event === 'status.update.requested' && 
-      r.from.includes(currentStatus) && 
-      r.to === progression.to
-    );
+    const rule = TRANSITION_RULES.find(
+      (r) =>
+        r.event === 'status.update.requested' &&
+        r.from.includes(currentStatus) &&
+        r.to === progression.to
+    )
 
     if (rule) {
       // Apply the automatic transition immediately
-      const oldStatus = currentStatus;
-      const updatedPet = updateStatus(petId, rule.to);
-      
+      const oldStatus = currentStatus
+      const updatedPet = updateStatus(petId, rule.to)
+
       if (updatedPet) {
         if (logger) {
           logger.info('✅ Automatic progression completed', {
@@ -232,8 +260,8 @@ async function processAutomaticProgression(petId, currentStatus, emit, logger) {
             oldStatus,
             newStatus: rule.to,
             description: progression.description,
-            timestamp: Date.now()
-          });
+            timestamp: Date.now(),
+          })
         }
 
         if (emit) {
@@ -246,23 +274,26 @@ async function processAutomaticProgression(petId, currentStatus, emit, logger) {
               eventType: 'status.update.requested',
               description: progression.description,
               automatic: true,
-              timestamp: Date.now()
-            }
-          });
+              timestamp: Date.now(),
+            },
+          })
 
           // Check for further automatic progressions (for chaining like recovered → healthy → available)
-          await processAutomaticProgression(petId, rule.to, emit, logger);
+          await processAutomaticProgression(petId, rule.to, emit, logger)
         }
       } else if (logger) {
-        logger.error('❌ Failed to apply automatic progression', { petId, oldStatus, newStatus: rule.to });
+        logger.error('❌ Failed to apply automatic progression', {
+          petId,
+          oldStatus,
+          newStatus: rule.to,
+        })
       }
     } else if (logger) {
-      logger.warn('⚠️ No transition rule found for automatic progression', { 
-        petId, 
-        currentStatus, 
-        targetStatus: progression.to 
-      });
+      logger.warn('⚠️ No transition rule found for automatic progression', {
+        petId,
+        currentStatus,
+        targetStatus: progression.to,
+      })
     }
   }
 }
-

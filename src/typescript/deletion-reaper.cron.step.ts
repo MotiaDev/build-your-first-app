@@ -1,6 +1,6 @@
-// steps/typescript/deletion-reaper.cron.step.ts
-import { CronConfig, Handlers } from 'motia';
-import { TSStore } from './ts-store';
+// src/typescript/deletion-reaper.cron.step.ts
+import { CronConfig, Handlers } from 'motia'
+import { TSStore } from './ts-store'
 
 export const config: CronConfig = {
   type: 'cron',
@@ -8,93 +8,98 @@ export const config: CronConfig = {
   description: 'Daily job that permanently removes pets scheduled for deletion',
   cron: '0 2 * * *', // Daily at 2:00 AM
   emits: [],
-  flows: ['TsPetManagement']
-};
+  flows: ['TsPetManagement'],
+}
 
-export const handler: Handlers['TsDeletionReaper'] = async ({ emit, logger }) => {
+export const handler: Handlers['TsDeletionReaper'] = async ({
+  emit,
+  logger,
+}) => {
   if (logger) {
-    logger.info('🔄 Deletion Reaper started - scanning for pets to purge');
+    logger.info('🔄 Deletion Reaper started - scanning for pets to purge')
   }
 
   try {
-    const petsToReap = TSStore.findDeletedPetsReadyToPurge();
-    
+    const petsToReap = TSStore.findDeletedPetsReadyToPurge()
+
     if (petsToReap.length === 0) {
       if (logger) {
-        logger.info('✅ Deletion Reaper completed - no pets to purge');
+        logger.info('✅ Deletion Reaper completed - no pets to purge')
       }
-      
+
       if (emit) {
-        (emit as any)({
+        ;(emit as any)({
           topic: 'ts.reaper.completed',
-          data: { 
+          data: {
             scannedAt: Date.now(),
             purgedCount: 0,
-            message: 'No pets ready for purging'
-          }
-        });
+            message: 'No pets ready for purging',
+          },
+        })
       }
-      return;
+      return
     }
 
-    let purgedCount = 0;
-    
+    let purgedCount = 0
+
     for (const pet of petsToReap) {
-      const success = TSStore.remove(pet.id);
-      
+      const success = TSStore.remove(pet.id)
+
       if (success) {
-        purgedCount++;
-        
+        purgedCount++
+
         if (logger) {
-          logger.info('💀 Pet permanently purged', { 
-            petId: pet.id, 
+          logger.info('💀 Pet permanently purged', {
+            petId: pet.id,
             name: pet.name,
             deletedAt: new Date(pet.deletedAt!).toISOString(),
-            purgeAt: new Date(pet.purgeAt!).toISOString()
-          });
+            purgeAt: new Date(pet.purgeAt!).toISOString(),
+          })
         }
 
         if (emit) {
-          (emit as any)({
+          ;(emit as any)({
             topic: 'ts.pet.purged',
-            data: { 
-              petId: pet.id, 
+            data: {
+              petId: pet.id,
               name: pet.name,
               species: pet.species,
               deletedAt: pet.deletedAt,
-              purgedAt: Date.now()
-            }
-          });
+              purgedAt: Date.now(),
+            },
+          })
         }
       } else {
         if (logger) {
-          logger.warn('⚠️ Failed to purge pet', { petId: pet.id, name: pet.name });
+          logger.warn('⚠️ Failed to purge pet', {
+            petId: pet.id,
+            name: pet.name,
+          })
         }
       }
     }
 
     if (logger) {
-      logger.info('✅ Deletion Reaper completed', { 
+      logger.info('✅ Deletion Reaper completed', {
         totalScanned: petsToReap.length,
         purgedCount,
-        failedCount: petsToReap.length - purgedCount
-      });
+        failedCount: petsToReap.length - purgedCount,
+      })
     }
 
     if (emit) {
-      (emit as any)({
+      ;(emit as any)({
         topic: 'ts.reaper.completed',
-        data: { 
+        data: {
           scannedAt: Date.now(),
           purgedCount,
-          totalScanned: petsToReap.length
-        }
-      });
+          totalScanned: petsToReap.length,
+        },
+      })
     }
-
   } catch (error: any) {
     if (logger) {
-      logger.error('❌ Deletion Reaper error', { error: error.message });
+      logger.error('❌ Deletion Reaper error', { error: error.message })
     }
   }
-};
+}

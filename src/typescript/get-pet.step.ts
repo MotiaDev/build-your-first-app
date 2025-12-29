@@ -1,4 +1,4 @@
-// steps/typescript/get-pet.step.ts
+// src/typescript/get-pet.step.ts
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { TSStore } from './ts-store'
