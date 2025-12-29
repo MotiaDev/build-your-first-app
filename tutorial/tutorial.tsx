@@ -1372,10 +1372,7 @@ export const steps: TutorialStep[] = [
           Motia Examples Repository
         </a>{' '}
         or dive deeper into{' '}
-        <a
-          href="https://www.motia.dev/docs/getting-started/core-concepts"
-          target="_blank"
-        >
+        <a href="https://www.motia.dev/docs/concepts/overview" target="_blank">
           Motia's core concepts
         </a>
         .
