@@ -53,7 +53,7 @@ test_request "POST" "/ts/pets" '{
     "name": "Buddy",
     "species": "dog", 
     "breed": "Golden Retriever",
-    "age": 2,
+    "ageMonths": 2,
     "status": "available"
 }' "Create young dog (Buddy)"
 
@@ -61,7 +61,7 @@ test_request "POST" "/js/pets" '{
     "name": "Whiskers",
     "species": "cat",
     "breed": "Persian", 
-    "age": 5,
+    "ageMonths": 5,
     "status": "available"
 }' "Create older cat (Whiskers)"
 
@@ -69,7 +69,7 @@ test_request "POST" "/py/pets" '{
     "name": "Charlie",
     "species": "dog",
     "breed": "Labrador",
-    "age": 4, 
+    "ageMonths": 4, 
     "status": "available"
 }' "Create middle-aged dog (Charlie)"
 
@@ -77,7 +77,7 @@ test_request "POST" "/ts/pets" '{
     "name": "Luna",
     "species": "cat",
     "breed": "Siamese",
-    "age": 1,
+    "ageMonths": 1,
     "status": "available"
 }' "Create young cat (Luna)"
 
@@ -85,7 +85,7 @@ test_request "POST" "/js/pets" '{
     "name": "Max",
     "species": "dog", 
     "breed": "Beagle",
-    "age": 3,
+    "ageMonths": 3,
     "status": "adopted"
 }' "Create adopted dog (Max - should not appear in recommendations)"
 
