@@ -241,8 +241,7 @@ src/
 │   └── delete_pet_step.py      # DELETE /py/pets/:id
 └── services/
     ├── pet_store.py            # Data persistence layer (Python)
-    ├── types.py                # Type definitions (Python)
-    └── __init__.py
+    └── types.py                # Type definitions (Python)
 motia-workbench.json            # Workflow configuration
 ```
 
