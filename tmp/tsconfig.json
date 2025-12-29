@@ -2,9 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
+    "moduleResolution": "Node",
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
@@ -18,10 +16,10 @@
   },
   "include": [
     "**/*.ts",
-    "motia.config.ts",
     "**/*.tsx",
-    "types.d.ts",
-    "**/*.jsx"
+    "**/*.js",
+    "**/*.jsx",
+    "types.d.ts"
   ],
   "exclude": [
     "node_modules",
