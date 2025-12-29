@@ -218,11 +218,7 @@ Emitted when a new pet is created via any `POST /*/pets` endpoint.
 ## File Structure
 
 ```
-services/
-├── pet_store.py                # Data persistence layer (Python)
-├── types.py                    # Type definitions (Python)
-└── __init__.py
-steps/
+src/
 ├── javascript/
 │   ├── create-pet.step.js      # POST /js/pets
 │   ├── get-pets.step.js        # GET /js/pets
@@ -237,12 +233,16 @@ steps/
 │   ├── update-pet.step.ts      # PUT /ts/pets/:id
 │   ├── delete-pet.step.ts      # DELETE /ts/pets/:id
 │   └── ts-store.ts             # Data persistence layer
-└── python/
-    ├── create_pet.step.py      # POST /py/pets
-    ├── get_pets.step.py        # GET /py/pets
-    ├── get_pet.step.py         # GET /py/pets/:id
-    ├── update_pet.step.py      # PUT /py/pets/:id
-    └── delete_pet.step.py      # DELETE /py/pets/:id
+├── python/
+│   ├── create_pet_step.py      # POST /py/pets
+│   ├── get_pets_step.py        # GET /py/pets
+│   ├── get_pet_step.py         # GET /py/pets/:id
+│   ├── update_pet_step.py      # PUT /py/pets/:id
+│   └── delete_pet_step.py      # DELETE /py/pets/:id
+└── services/
+    ├── pet_store.py            # Data persistence layer (Python)
+    ├── types.py                # Type definitions (Python)
+    └── __init__.py
 motia-workbench.json            # Workflow configuration
 ```
 
@@ -349,12 +349,11 @@ All create and update operations include validation:
 1. **Install Dependencies**
    ```bash
    npm install
-   pip install -r requirements.txt
    ```
 
 2. **Start Motia Server**
    ```bash
-   motia dev
+   npm run dev
    ```
 
 3. **Open Workbench**
