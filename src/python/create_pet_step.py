@@ -17,7 +17,7 @@ async def handler(req, ctx=None):
         import os
         import time
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-        from services import pet_store
+        from src.services.pet_store import create
     except ImportError:
         # Fallback for import issues
         return {"status": 500, "body": {"message": "Import error"}}
@@ -34,7 +34,7 @@ async def handler(req, ctx=None):
         age_val = int(age)
     except Exception:
         return {"status": 400, "body": {"message": "Invalid ageMonths"}}
-    pet = pet_store.create(name, species, age_val)
+    pet = create(name, species, age_val)
     
     if logger:
         logger.info('🐾 Pet created', {

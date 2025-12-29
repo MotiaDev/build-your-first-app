@@ -10,12 +10,12 @@ async def handler(req, ctx=None):
         import os
         import time
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-        from services import pet_store
+        from src.services.pet_store import soft_delete
     except ImportError:
         return {"status": 500, "body": {"message": "Import error"}}
     
     pet_id = req.get("pathParams", {}).get("id")
-    deleted_pet = pet_store.soft_delete(pet_id)
+    deleted_pet = soft_delete(pet_id)
     
     if not deleted_pet:
         return {"status": 404, "body": {"message": "Not found"}}
