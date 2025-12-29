@@ -67,7 +67,7 @@ export const handler: Handlers['TsCreatePet'] = async (req, { emit, logger, stre
         status: 400,
         body: {
           message: 'Validation error',
-          errors: error.errors
+          errors: error.issues
         }
       };
     }

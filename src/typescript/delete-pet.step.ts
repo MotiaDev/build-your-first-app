@@ -51,7 +51,7 @@ export const handler: Handlers['TsDeletePet'] = async (req, { logger }) => {
         status: 400,
         body: {
           message: 'Validation error',
-          errors: error.errors
+          errors: error.issues
         }
       };
     }
