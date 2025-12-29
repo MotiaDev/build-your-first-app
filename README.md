@@ -248,7 +248,7 @@ The system uses language-specific event namespaces to prevent cross-language tri
 ## File Structure
 
 ```
-steps/
+src/
 ├── javascript/
 │   ├── create-pet.step.js           # POST /js/pets (triggers PostCreateLite)
 │   ├── get-pets.step.js             # GET /js/pets
@@ -275,9 +275,9 @@ steps/
 │   ├── delete_pet.step.py           # DELETE /py/pets/:id (soft delete)
 │   ├── postcreate_lite_job.step.py  # Background job (queue-based)
 │   ├── deletion_reaper.cron.step.py # Background job (cron-based)
-│   └── services/
-│       ├── pet_store.py             # Data persistence layer
-│       └── types.py                 # Type definitions
+├── services/
+│   ├── pet_store.py                 # Data persistence layer
+│   └── types.py                     # Type definitions
 └── motia-workbench.json             # Workflow configuration
 ```
 
@@ -412,12 +412,11 @@ All create and update operations include validation:
 1. **Install Dependencies**
    ```bash
    npm install
-   pip install -r requirements.txt
    ```
 
 2. **Start Motia Server**
    ```bash
-   motia dev
+   npm run dev
    ```
 
 3. **Open Workbench**
