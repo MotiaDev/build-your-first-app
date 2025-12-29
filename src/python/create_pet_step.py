@@ -1,4 +1,4 @@
-# steps/python/create_pet.step.py
+# src/python/create_pet.step.py
 import asyncio
 
 config = {

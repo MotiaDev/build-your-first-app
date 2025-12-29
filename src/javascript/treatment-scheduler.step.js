@@ -1,4 +1,4 @@
-// steps/javascript/treatment-scheduler.step.js
+// src/javascript/treatment-scheduler.step.js
 import { get } from './js-store.js'
 
 export const config = {

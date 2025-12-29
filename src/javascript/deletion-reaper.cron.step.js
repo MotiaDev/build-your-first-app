@@ -1,4 +1,4 @@
-// steps/javascript/deletion-reaper.cron.step.js
+// src/javascript/deletion-reaper.cron.step.js
 import { findDeletedPetsReadyToPurge, remove } from './js-store.js'
 
 export const config = {

@@ -1,4 +1,4 @@
-// steps/javascript/health-review-agent.step.js
+// src/javascript/health-review-agent.step.js
 import { get } from './js-store.js'
 import {
   HEALTH_REVIEW_EMITS,

@@ -1,4 +1,4 @@
-// steps/javascript/set-next-feeding-reminder.job.step.js
+// src/javascript/set-next-feeding-reminder.job.step.js
 import { update } from './js-store.js'
 
 export const config = {

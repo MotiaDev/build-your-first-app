@@ -1,4 +1,4 @@
-# steps/python/ai_profile_enrichment.step.py
+# src/python/ai_profile_enrichment.step.py
 import json
 import os
 import asyncio

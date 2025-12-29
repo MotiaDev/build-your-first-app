@@ -1,4 +1,4 @@
-// steps/javascript/recovery-monitor.step.js
+// src/javascript/recovery-monitor.step.js
 import { get } from './js-store.js'
 
 export const config = {

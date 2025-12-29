@@ -1,4 +1,4 @@
-// steps/javascript/adoption-posting.step.js
+// src/javascript/adoption-posting.step.js
 import { get } from './js-store.js'
 
 export const config = {

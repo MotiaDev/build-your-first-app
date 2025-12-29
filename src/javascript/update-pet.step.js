@@ -1,4 +1,4 @@
-// steps/javascript/update-pet.step.js
+// src/javascript/update-pet.step.js
 import { update, get } from './js-store.js'
 
 export const config = {

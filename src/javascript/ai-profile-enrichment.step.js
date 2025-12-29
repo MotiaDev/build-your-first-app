@@ -1,4 +1,4 @@
-// steps/javascript/ai-profile-enrichment.step.js
+// src/javascript/ai-profile-enrichment.step.js
 import { updateProfile } from './js-store.js'
 
 export const config = {

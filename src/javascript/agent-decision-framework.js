@@ -1,4 +1,4 @@
-// steps/javascript/agent-decision-framework.js
+// src/javascript/agent-decision-framework.js
 // Emit Registry - Tools available to agents
 const HEALTH_REVIEW_EMITS = [
   {

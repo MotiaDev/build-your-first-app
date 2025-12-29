@@ -1,4 +1,4 @@
-// steps/javascript/adoption-review-agent.step.js
+// src/javascript/adoption-review-agent.step.js
 import { get } from './js-store.js'
 import {
   ADOPTION_REVIEW_EMITS,

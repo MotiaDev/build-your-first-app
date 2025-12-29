@@ -1,4 +1,4 @@
-// steps/javascript/pet-lifecycle-orchestrator.step.js
+// src/javascript/pet-lifecycle-orchestrator.step.js
 import { get, updateStatus } from './js-store.js'
 
 const TRANSITION_RULES = [

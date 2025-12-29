@@ -1,96 +1,106 @@
-// steps/typescript/set-next-feeding-reminder.job.step.ts
-import { EventConfig, Handlers } from 'motia';
-import { TSStore } from './ts-store';
+// src/typescript/set-next-feeding-reminder.job.step.ts
+import { EventConfig, Handlers } from 'motia'
+import { TSStore } from './ts-store'
 
 export const config = {
   type: 'event',
   name: 'TsSetNextFeedingReminder',
-  description: 'Background job that sets next feeding reminder and adds welcome notes',
+  description:
+    'Background job that sets next feeding reminder and adds welcome notes',
   subscribes: ['ts.feeding.reminder.enqueued'],
   emits: ['ts.feeding.reminder.completed'],
-  flows: ['TsPetManagement']
-};
+  flows: ['TsPetManagement'],
+}
 
-export const handler: Handlers['TsSetNextFeedingReminder'] = async (input, { emit, logger, streams, traceId }) => {
-  const { petId, enqueuedAt } = input;
+export const handler: Handlers['TsSetNextFeedingReminder'] = async (
+  input,
+  { emit, logger, streams, traceId }
+) => {
+  const { petId, enqueuedAt } = input
 
   if (logger) {
-    logger.info('🔄 Setting next feeding reminder', { petId, enqueuedAt });
+    logger.info('🔄 Setting next feeding reminder', { petId, enqueuedAt })
   }
 
   try {
     // Calculate next feeding time (24 hours from now)
-    const nextFeedingAt = Date.now() + (24 * 60 * 60 * 1000);
-    
+    const nextFeedingAt = Date.now() + 24 * 60 * 60 * 1000
+
     // Fill in non-critical details and change status to in_quarantine
     const updates = {
-      notes: 'Welcome to our pet store! We\'ll take great care of this pet.',
+      notes: "Welcome to our pet store! We'll take great care of this pet.",
       nextFeedingAt: nextFeedingAt,
-      status: 'in_quarantine' as const
-    };
+      status: 'in_quarantine' as const,
+    }
 
-    const updatedPet = TSStore.update(petId, updates);
-    
+    const updatedPet = TSStore.update(petId, updates)
+
     if (!updatedPet) {
       if (logger) {
-        logger.error('❌ Failed to set feeding reminder - pet not found', { petId });
+        logger.error('❌ Failed to set feeding reminder - pet not found', {
+          petId,
+        })
       }
-      return;
+      return
     }
 
     if (logger) {
-      logger.info('✅ Next feeding reminder set', { 
-        petId, 
+      logger.info('✅ Next feeding reminder set', {
+        petId,
         notes: updatedPet.notes?.substring(0, 50) + '...',
-        nextFeedingAt: new Date(nextFeedingAt).toISOString()
-      });
+        nextFeedingAt: new Date(nextFeedingAt).toISOString(),
+      })
     }
 
     // Stream status updates using the simple pattern
     if (streams?.petCreation && traceId) {
-      await streams.petCreation.set(traceId, 'message', { 
-        message: `Pet ${updatedPet.name} entered quarantine period` 
-      });
+      await streams.petCreation.set(traceId, 'message', {
+        message: `Pet ${updatedPet.name} entered quarantine period`,
+      })
 
       // Check symptoms and stream appropriate updates
       if (!updatedPet.symptoms || updatedPet.symptoms.length === 0) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await streams.petCreation.set(traceId, 'message', { 
-          message: `Health check passed for ${updatedPet.name} - no symptoms found` 
-        });
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        await streams.petCreation.set(traceId, 'message', {
+          message: `Health check passed for ${updatedPet.name} - no symptoms found`,
+        })
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await streams.petCreation.set(traceId, 'message', { 
-          message: `${updatedPet.name} is healthy and ready for adoption! ✅` 
-        });
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        await streams.petCreation.set(traceId, 'message', {
+          message: `${updatedPet.name} is healthy and ready for adoption! ✅`,
+        })
       } else {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await streams.petCreation.set(traceId, 'message', { 
-          message: `Health check failed for ${updatedPet.name} - symptoms detected: ${updatedPet.symptoms.join(', ')}` 
-        });
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        await streams.petCreation.set(traceId, 'message', {
+          message: `Health check failed for ${
+            updatedPet.name
+          } - symptoms detected: ${updatedPet.symptoms.join(', ')}`,
+        })
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await streams.petCreation.set(traceId, 'message', { 
-          message: `${updatedPet.name} needs medical treatment ❌` 
-        });
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        await streams.petCreation.set(traceId, 'message', {
+          message: `${updatedPet.name} needs medical treatment ❌`,
+        })
       }
     }
 
     if (emit) {
-      (emit as any)({
+      ;(emit as any)({
         topic: 'ts.feeding.reminder.completed',
-        data: { 
-          petId, 
+        data: {
+          petId,
           event: 'feeding.reminder.completed',
           completedAt: Date.now(),
-          processingTimeMs: Date.now() - enqueuedAt
-        }
-      });
+          processingTimeMs: Date.now() - enqueuedAt,
+        },
+      })
     }
-
   } catch (error: any) {
     if (logger) {
-      logger.error('❌ Feeding reminder job error', { petId, error: error.message });
+      logger.error('❌ Feeding reminder job error', {
+        petId,
+        error: error.message,
+      })
     }
   }
-};
+}
