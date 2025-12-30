@@ -85,7 +85,7 @@ async def handler(input_data, ctx=None):
         import os
         import time
         sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-        from services import pet_store
+        from src.services.pet_store import get, update_status
     except ImportError:
         if logger:
             logger.error('❌ Lifecycle orchestrator failed - import error')
@@ -101,7 +101,7 @@ async def handler(input_data, ctx=None):
         logger.info(log_message, {'petId': pet_id, 'eventType': event_type, 'requestedStatus': requested_status, 'automatic': automatic})
 
     try:
-        pet = pet_store.get(pet_id)
+        pet = get(pet_id)
         if not pet:
             if logger:
                 logger.error('❌ Pet not found for lifecycle transition', {'petId': pet_id, 'eventType': event_type})
@@ -163,7 +163,7 @@ async def handler(input_data, ctx=None):
 
         # Apply the transition
         old_status = pet['status']
-        updated_pet = pet_store.update_status(pet_id, rule['to'])
+        updated_pet = update_status(pet_id, rule['to'])
         
         if not updated_pet:
             if logger:
@@ -226,8 +226,8 @@ async def check_automatic_progressions(pet_id, current_status, emit, logger):
                 import sys
                 import os
                 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-                from services import pet_store
-                fresh_pet = pet_store.get(pet_id)
+                from src.services.pet_store import get
+                fresh_pet = get(pet_id)
                 if fresh_pet and fresh_pet['status'] == current_status:
                     await emit({
                         'topic': 'py.pet.status.update.requested',
