@@ -24,7 +24,7 @@ curl -X POST http://localhost:3000/ts/pets \
     "name": "Buddy",
     "species": "dog",
     "breed": "Golden Retriever",
-    "age": 2,
+    "ageMonths": 2,
     "status": "available"
   }'
 
@@ -35,7 +35,7 @@ curl -X POST http://localhost:3000/js/pets \
     "name": "Whiskers",
     "species": "cat",
     "breed": "Persian",
-    "age": 5,
+    "ageMonths": 5,
     "status": "available"
   }'
 
@@ -46,7 +46,7 @@ curl -X POST http://localhost:3000/py/pets \
     "name": "Charlie",
     "species": "dog",
     "breed": "Labrador",
-    "age": 4,
+    "ageMonths": 4,
     "status": "available"
   }'
 
@@ -57,7 +57,7 @@ curl -X POST http://localhost:3000/ts/pets \
     "name": "Luna",
     "species": "cat",
     "breed": "Siamese",
-    "age": 1,
+    "ageMonths": 1,
     "status": "available"
   }'
 
@@ -68,7 +68,7 @@ curl -X POST http://localhost:3000/js/pets \
     "name": "Max",
     "species": "dog",
     "breed": "Beagle",
-    "age": 3,
+    "ageMonths": 3,
     "status": "adopted"
   }'
 ```
