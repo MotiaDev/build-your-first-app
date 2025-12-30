@@ -1,6 +1,6 @@
 // src/javascript/js-store.js
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
 const DATA_DIR = path.join(process.cwd(), '.data')
 const FILE = path.join(DATA_DIR, 'pets.json')
@@ -117,7 +117,7 @@ function findDeletedPetsReadyToPurge() {
   )
 }
 
-module.exports = {
+export {
   create,
   list,
   get,

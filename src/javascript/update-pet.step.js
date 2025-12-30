@@ -1,7 +1,7 @@
 // src/javascript/update-pet.step.js
-const { update, get } = require('./js-store')
+import { update, get } from './js-store.js'
 
-exports.config = {
+export const config = {
   type: 'api',
   name: 'JsUpdatePet',
   path: '/js/pets/:id',
@@ -10,7 +10,7 @@ exports.config = {
   flows: ['JsPetManagement'],
 }
 
-exports.handler = async (req, context) => {
+export const handler = async (req, context) => {
   const { emit, logger } = context || {}
   const b = req.body || {}
   const petId = req.pathParams.id

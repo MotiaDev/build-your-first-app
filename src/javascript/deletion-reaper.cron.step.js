@@ -1,7 +1,7 @@
 // src/javascript/deletion-reaper.cron.step.js
-const { findDeletedPetsReadyToPurge, remove } = require('./js-store')
+import { findDeletedPetsReadyToPurge, remove } from './js-store.js'
 
-exports.config = {
+export const config = {
   type: 'cron',
   name: 'JsDeletionReaper',
   description: 'Daily job that permanently removes pets scheduled for deletion',
@@ -10,7 +10,7 @@ exports.config = {
   flows: ['JsPetManagement'],
 }
 
-exports.handler = async ({ emit, logger }) => {
+export const handler = async ({ emit, logger }) => {
   if (logger) {
     logger.info('🔄 Deletion Reaper started - scanning for pets to purge')
   }
