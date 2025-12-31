@@ -473,7 +473,7 @@ The system uses language-specific event namespaces to prevent cross-language tri
 ## File Structure
 
 ```
-steps/
+src/
 ├── javascript/
 │   ├── create-pet.step.js           # POST /js/pets (triggers PostCreateLite)
 │   ├── get-pets.step.js             # GET /js/pets
@@ -499,11 +499,11 @@ steps/
 │   ├── update_pet.step.py           # PUT /py/pets/:id
 │   ├── delete_pet.step.py           # DELETE /py/pets/:id (soft delete)
 │   ├── postcreate_lite_job.step.py  # Background job (queue-based)
-│   ├── deletion_reaper.cron.step.py # Background job (cron-based)
-│   └── services/
-│       ├── pet_store.py             # Data persistence layer
-│       └── types.py                 # Type definitions
-└── motia-workbench.json             # Workflow configuration
+│   └── deletion_reaper.cron.step.py # Background job (cron-based)
+└── services/
+    ├── pet_store.py                 # Data persistence layer
+    └── types.py                     # Type definitions
+motia-workbench.json                 # Workflow configuration
 ```
 
 ## Data Storage
@@ -924,7 +924,6 @@ The pet record will include the AI-generated `profile` field with personalized b
 1. **Install Dependencies**
    ```bash
    npm install
-   pip install -r requirements.txt
    ```
 
 2. **Set Up Environment Variables**
@@ -964,7 +963,7 @@ The pet record will include the AI-generated `profile` field with personalized b
 
 3. **Start Motia Server**
    ```bash
-   motia dev
+   npm run dev
    ```
 
 4. **Open Workbench**
@@ -1147,7 +1146,7 @@ This guide will walk you through the complete pet management workflow, demonstra
 #### Prerequisites
 ```bash
 # 1. Start the Motia server
-npm start
+npm run dev
 
 # 2. Verify server is running (should see "Server running on port 3000")
 # 3. Keep the server logs open to observe the workflow in action
