@@ -6,5 +6,3 @@ venv
 .mermaid
 dist
 *.pyc
-TUTORIAL_CHEATSHEET.md
-docs/
