@@ -6,6 +6,3 @@ venv
 .mermaid
 dist
 *.pyc
-docs/
-.data/
-.env

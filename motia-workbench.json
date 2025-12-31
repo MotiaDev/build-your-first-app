@@ -1,95 +1,70 @@
 [
   {
-    "id": "basic-tutorial",
-    "config": {
-      "steps/state_audit_cron_step.py": {
-        "x": -38,
-        "y": 683,
-        "sourceHandlePosition": "right"
-      },
-      "steps/process_food_order_step.py": {
-        "x": 384,
-        "y": 476,
-        "targetHandlePosition": "left"
-      },
-      "steps/notification_step.py": {
-        "x": 601,
-        "y": 724,
-        "targetHandlePosition": "left"
-      },
-      "steps/api_step.py": {
-        "x": 15,
-        "y": 461,
-        "sourceHandlePosition": "right"
-      }
-    }
-  },
-  {
     "id": "PyPetManagement",
     "config": {
-      "steps/python/update_pet_step.py": {
+      "src/python/update_pet_step.py": {
         "x": -1020,
         "y": -94,
         "sourceHandlePosition": "top"
       },
-      "steps/python/treatment_scheduler_step.py": {
+      "src/python/treatment_scheduler_step.py": {
         "x": -384,
         "y": 10
       },
-      "steps/python/set_next_feeding_reminder.job_step.py": {
+      "src/python/set_next_feeding_reminder.job_step.py": {
         "x": -1666,
         "y": 630,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/python/recovery_monitor_step.py": {
+      "src/python/recovery_monitor_step.py": {
         "x": 37,
         "y": 325
       },
-      "steps/python/pet_lifecycle_orchestrator_step.py": {
+      "src/python/pet_lifecycle_orchestrator_step.py": {
         "x": -939,
         "y": 432,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/python/health_review_agent_step.py": {
+      "src/python/health_review_agent_step.py": {
         "x": -1661,
         "y": 355,
         "sourceHandlePosition": "right"
       },
-      "steps/python/get_pets_step.py": {
+      "src/python/get_pets_step.py": {
         "x": 864,
         "y": 44
       },
-      "steps/python/get_pet_step.py": {
+      "src/python/get_pet_step.py": {
         "x": 1044,
         "y": 35
       },
-      "steps/python/deletion_reaper.cron_step.py": {
+      "src/python/deletion_reaper.cron_step.py": {
         "x": 1256,
         "y": 32
       },
-      "steps/python/delete_pet_step.py": {
+      "src/python/delete_pet_step.py": {
         "x": 635,
         "y": 42
       },
-      "steps/python/create_pet_step.py": {
+      "src/python/create_pet_step.py": {
         "x": -2376,
         "y": 332,
         "sourceHandlePosition": "right"
       },
-      "steps/python/ai_profile_enrichment_step.py": {
+      "src/python/ai_profile_enrichment_step.py": {
         "x": -1654,
         "y": 88,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/python/adoption_review_agent_step.py": {
+      "src/python/adoption_review_agent_step.py": {
         "x": -939,
         "y": 759,
         "sourceHandlePosition": "right"
       },
-      "steps/python/adoption_posting_step.py": {
+      "src/python/adoption_posting_step.py": {
         "x": -363,
         "y": 591
       }
@@ -98,69 +73,69 @@
   {
     "id": "JsPetManagement",
     "config": {
-      "steps/javascript/update-pet.step.js": {
+      "src/javascript/update-pet.step.js": {
         "x": -772,
         "y": -131,
         "sourceHandlePosition": "bottom"
       },
-      "steps/javascript/treatment-scheduler.step.js": {
+      "src/javascript/treatment-scheduler.step.js": {
         "x": 187,
         "y": -96
       },
-      "steps/javascript/set-next-feeding-reminder.job.step.js": {
+      "src/javascript/set-next-feeding-reminder.job.step.js": {
         "x": -1317,
         "y": 400,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/javascript/recovery-monitor.step.js": {
+      "src/javascript/recovery-monitor.step.js": {
         "x": 314,
         "y": 159
       },
-      "steps/javascript/pet-lifecycle-orchestrator.step.js": {
+      "src/javascript/pet-lifecycle-orchestrator.step.js": {
         "x": -554,
         "y": 155,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/javascript/health-review-agent.step.js": {
+      "src/javascript/health-review-agent.step.js": {
         "x": -1324,
         "y": 175,
         "sourceHandlePosition": "right"
       },
-      "steps/javascript/get-pets.step.js": {
+      "src/javascript/get-pets.step.js": {
         "x": 1351,
         "y": -73
       },
-      "steps/javascript/get-pet.step.js": {
+      "src/javascript/get-pet.step.js": {
         "x": 1130,
         "y": -74
       },
-      "steps/javascript/deletion-reaper.cron.step.js": {
+      "src/javascript/deletion-reaper.cron.step.js": {
         "x": 1766,
         "y": -78
       },
-      "steps/javascript/delete-pet.step.js": {
+      "src/javascript/delete-pet.step.js": {
         "x": 1544,
         "y": -65
       },
-      "steps/javascript/create-pet.step.js": {
+      "src/javascript/create-pet.step.js": {
         "x": -1730,
         "y": 160,
         "sourceHandlePosition": "right"
       },
-      "steps/javascript/ai-profile-enrichment.step.js": {
+      "src/javascript/ai-profile-enrichment.step.js": {
         "x": -1323,
         "y": -43,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/javascript/adoption-review-agent.step.js": {
+      "src/javascript/adoption-review-agent.step.js": {
         "x": -465,
         "y": 626,
         "sourceHandlePosition": "bottom"
       },
-      "steps/javascript/adoption-posting.step.js": {
+      "src/javascript/adoption-posting.step.js": {
         "x": 191,
         "y": 440
       }
@@ -169,71 +144,71 @@
   {
     "id": "TsPetManagement",
     "config": {
-      "steps/typescript/update-pet.step.ts": {
+      "src/typescript/update-pet.step.ts": {
         "x": -1014,
         "y": -144,
         "sourceHandlePosition": "bottom"
       },
-      "steps/typescript/treatment-scheduler.step.ts": {
+      "src/typescript/treatment-scheduler.step.ts": {
         "x": 69,
         "y": -306
       },
-      "steps/typescript/set-next-feeding-reminder.job.step.ts": {
+      "src/typescript/set-next-feeding-reminder.job.step.ts": {
         "x": -1641,
         "y": 296,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/typescript/recovery-monitor.step.ts": {
+      "src/typescript/recovery-monitor.step.ts": {
         "x": 65,
         "y": 36
       },
-      "steps/typescript/pet-lifecycle-orchestrator.step.ts": {
+      "src/typescript/pet-lifecycle-orchestrator.step.ts": {
         "x": -538,
         "y": 43,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/typescript/health-review-agent.step.ts": {
+      "src/typescript/health-review-agent.step.ts": {
         "x": -1621,
         "y": 44,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "top"
       },
-      "steps/typescript/get-pets.step.ts": {
+      "src/typescript/get-pets.step.ts": {
         "x": -1004,
         "y": -300
       },
-      "steps/typescript/get-pet.step.ts": {
+      "src/typescript/get-pet.step.ts": {
         "x": -2034,
         "y": -195
       },
-      "steps/typescript/deletion-reaper.cron.step.ts": {
+      "src/typescript/deletion-reaper.cron.step.ts": {
         "x": -534,
         "y": 250
       },
-      "steps/typescript/delete-pet.step.ts": {
+      "src/typescript/delete-pet.step.ts": {
         "x": -2043,
         "y": 293
       },
-      "steps/typescript/create-pet.step.ts": {
+      "src/typescript/create-pet.step.ts": {
         "x": -2032,
         "y": 36,
         "sourceHandlePosition": "right"
       },
-      "steps/typescript/ai-profile-enrichment.step.ts": {
+      "src/typescript/ai-profile-enrichment.step.ts": {
         "x": -1632,
         "y": -203,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/typescript/adoption-review-agent.step.ts": {
+      "src/typescript/adoption-review-agent.step.ts": {
         "x": -1233,
         "y": 472,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "top"
       },
-      "steps/typescript/adoption-posting.step.ts": {
+      "src/typescript/adoption-posting.step.ts": {
         "x": 82,
         "y": 469
       }
