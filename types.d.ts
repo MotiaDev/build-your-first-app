@@ -28,4 +28,5 @@ declare module 'motia' {
     'PyDeletePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'PyCreatePet': ApiRouteHandler<Record<string, unknown>, unknown, never>
   }
+    
 }
