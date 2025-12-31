@@ -80,7 +80,6 @@ By the end of this tutorial, you'll have a complete pet management system with:
 1. **Install Dependencies**
    ```bash
    npm install
-   pip install -r requirements.txt
    ```
 
 2. **Set Up Environment Variables**
@@ -100,8 +99,6 @@ By the end of this tutorial, you'll have a complete pet management system with:
 3. **Start Motia Server**
    ```bash
    npm run dev
-   # or
-   motia dev
    ```
 
 4. **Open Workbench**
@@ -727,7 +724,7 @@ The diagram clearly visualizes how the progressive tutorial builds from simple A
 ## 📁 File Structure
 
 ```
-steps/
+src/
 ├── javascript/
 │   ├── create-pet.step.js              # POST /js/pets (with streaming)
 │   ├── get-pets.step.js                # GET /js/pets
@@ -744,6 +741,7 @@ steps/
 │   ├── adoption-posting.step.js        # Staff action automation
 │   ├── recovery-monitor.step.js        # Staff action automation
 │   ├── pet-creation.stream.js          # Stream configuration ⭐
+│   ├── agent-decision-framework.js     # Shared agent decision logic
 │   └── js-store.js                     # Data persistence layer
 │
 ├── typescript/
@@ -780,12 +778,12 @@ steps/
 │   ├── treatment_scheduler_step.py     # Staff action automation
 │   ├── adoption_posting_step.py        # Staff action automation
 │   ├── recovery_monitor_step.py        # Staff action automation
-│   ├── pet_creation.stream.py          # Stream configuration ⭐
-│   └── services/
-│       ├── pet_store.py                # Data persistence layer
-│       └── types.py                    # Type definitions
+│   └── pet_creation.stream.py          # Stream configuration ⭐
 │
-└── motia-workbench.json                # Workflow configuration
+└── services/
+    ├── pet_store.py                    # Data persistence layer (Python)
+    └── types.py                        # Type definitions (Python)
+motia-workbench.json                    # Workflow configuration
 ```
 
 ---
